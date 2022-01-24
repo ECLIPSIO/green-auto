@@ -55,7 +55,7 @@ export default function Header(){
                         <div className="main-menu">
                             <ul>
                                 <li>
-                                    <NavLink to="/">Dashboard</NavLink>
+                                    <NavLink exact to="/reporting">Dashboard</NavLink>
                                 </li>
                                 <li>
                                     <a href="#">Leads</a>

@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+// import {attrs, styles} from 'd3-selection-multi';
+import './d3-multi-selection.min.js';
 import data from './data.csv';
-require('./d3-multi-selection.min.js');
+// require('./d3-multi-selection.min.js');
 
 let tickDuration = 3000;
 let top_n = 10;
@@ -10,33 +12,35 @@ let width = 600;
 let firstYear = 2000;
 let lastYear = 2019;
 let colors = [ '#343E2F', '#46533B', "#98b580", "#98b580" ];
-let halo = function(text, strokeWidth) {
-    text.select(function() { return this.parentNode.insertBefore(this.cloneNode(true), this); })
-    .styles({
-        fill: 'white',
-        stroke: 'white',
-        'stroke-width': strokeWidth,
-        'stroke-linejoin': 'round',
-        opacity: 0
-    });
-};
-
-const  svgC = d3.select("#raceGraph").append("div")
-    // Container class to make it responsive.
-    .classed("svg-container", true) 
-    .append("svg")
-    // Responsive SVG needs these 2 attributes and no width and height attr.
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 600 300")
-    // Class to make it responsive.
-    .classed("svg-content-responsive", true);
 
 function BarChartRace(brandData){
+    const halo = function(text, strokeWidth) {
+        text.select(function() { return this.parentNode.insertBefore(this.cloneNode(true), this); })
+        .styles({
+            fill: 'white',
+            stroke: 'white',
+            'stroke-width': strokeWidth,
+            'stroke-linejoin': 'round',
+            opacity: 0
+        });
+        console.log('Hal Called');
+    };
+    
+    const  svgC = d3.select("#raceGraph").append("div")
+        // Container class to make it responsive.
+        .classed("svg-container", true) 
+        .append("svg")
+        // Responsive SVG needs these 2 attributes and no width and height attr.
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 600 300")
+        // Class to make it responsive.
+        .classed("svg-content-responsive", true);
+    console.log('start')
     const svg = svgC //attr("width", width).attr("height", height);
 
     // Define the div for the tooltip
     var div = d3.select("#raceGraph").append("div")	
-    .attr("class", "tooltip")				
+    .attr("class", "tooltip")			
     .style("opacity", 0);
 
     var grad = svgC.append('defs')
@@ -345,18 +349,20 @@ function BarChartRace(brandData){
         if (year == lastYear) ticker.stop();
         year = d3.format('.0f')((+year) + 1);
     }, tickDuration);
-      
+    
+    console.log('loaded');
     return svg.node();
 }
 
 export default function RaceChart(){
     useEffect(()=> {
         d3.csv(data).then(data => {
-            // console.log(data);
-            console.clear();
-            console.log('Data Loaded');
+            // console.log('Data Loaded');
             BarChartRace(data);
         })
+        .catch(error => {
+            console.table(error);
+        });
     });
 
     return(

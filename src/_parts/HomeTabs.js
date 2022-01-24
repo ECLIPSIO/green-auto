@@ -5,6 +5,7 @@ import infoIcon from '../img/ico-info.svg';
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
 export default function HomeTabs(){
+    console.log('Init');
     return(
         <>
         <div className="custom-tabs">
