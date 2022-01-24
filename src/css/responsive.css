@@ -1,0 +1,829 @@
+@media (min-width: 1200px){
+	.container {
+	    max-width: 1230px;
+	}
+}
+@media (max-width: 1366px){
+	.header-wrap .container,
+	.footer-wrap .container,
+	.adword-lead-wrap .container {
+	    max-width: 1240px;
+	}
+	.container {
+	    max-width: 1170px;
+	}
+	.audience-steps-wrap {
+		overflow: hidden;
+	}
+}
+@media(max-width: 1280px) {
+	.main-heading {
+		font-size: 36px;
+	    line-height: 43px;
+	}
+	.service-title {
+		font-size: 18px;
+		line-height: 28px;
+	}
+	.gray-heading {
+		font-size: 70px;
+		line-height: 70px;
+	}
+	.green-sub-heading {
+		font-size: 22px;
+		line-height: 30px;
+	}
+	.dealership-slider .owl-dots {
+	    margin-top: 50px;
+	}
+}
+@media(max-width: 1199px) {
+	.header-wrap .container,
+	.footer-wrap .container,
+	.adword-lead-wrap .container {
+	    max-width: 960px;
+	}
+	.container {
+	    max-width: 940px;
+	}
+	.login-block {
+		margin-left: 20px;
+	}
+	.main-menu ul li a {
+		padding: 0 7px;
+	}
+	.fs-list li {
+		padding: 8px 0 8px 25px;
+	}
+	.fs-list li:before {
+		top: 16px;
+	}
+	.pd-lr-35.row {
+	    margin-left: -15px !important;
+	    margin-right: -15px !important;
+	}
+	.pd-lr-35.row .col-md-4 {
+	    padding-left: 15px !important;
+	    padding-right: 15px !important;
+	}
+	.step-green-circle {
+	    width: 80px;
+	    height: 80px;
+	}
+	.step-green-circle img {
+		max-width: 34px;
+		max-height: 34px;
+	}
+	.audience-steps-flex li {
+		margin: 44px 0
+	}
+	.step-title {
+		margin-bottom: 60px;
+	}
+	.au-step-box {
+		padding: 50px 32px 30px;
+	}
+	.audience-steps-flex:before {
+		background-size: 610px;
+		left: 18%;
+		top: 20%;
+	}
+	.sell-more-car-box {
+		margin: 70px auto 0;
+	}
+	.adword-step-box {
+		min-height: 321px;
+		padding: 38px 25px;
+	}
+	.adword-step-box.mnh-250 {
+	    min-height: 270px;
+	}
+	.circle-count {
+		width: 32px;
+		height: 32px;
+		font-size: 12px;
+		line-height: 32px;
+		top: 36px;
+	}
+}
+@media(max-width: 1024px) {
+	.audience-steps-flex li {
+	    width: 100%;
+	    margin: 20px 0;
+	}
+	.audience-steps-flex:before {
+		display: none;
+	}
+	.audience-steps-flex:after {
+		content: "";
+	    position: absolute;
+	    left: 50%;
+	    right: 0;
+	    margin-left: -5px;
+	    top: 100px;
+	    bottom: 420px;
+	    /* background: url(./img/mobile-border-line.png) repeat-y center top; */
+	    width: 9px;
+	    z-index: 0;
+	}
+	.audience-steps-flex li {
+		position: relative;
+	}
+	.audience-steps-flex li:nth-child(4):after{
+		content: "";
+	    position: absolute;
+	    left: 50%;
+	    transform: translate(-50%, 0);
+	    /* background: url(./img/after-arrow.png) no-repeat center center; */
+	    background-size: 100%;
+	    width: 49px;
+	    height: 49px;
+	    bottom: -140px;
+	}
+	.sell-more-car-box {
+	    margin: 150px auto 0;
+	}
+	.audience-steps-flex {
+	    margin: 30px 0 0;
+	}
+	.about-content p {
+	    text-align: left;
+	}
+}
+@media(max-width: 991px) {
+	/****Responsive CSS***/
+    .mobile-inner-header {
+        display: block;
+        margin-top: 13px;
+        margin-left: auto;
+        width: 40px;
+        height: 24px;
+        position: relative;
+    }
+    .mobile-inner-nav {
+        background-color: rgba(3,28,62,0.9);
+        width: 100%;
+        position: absolute;
+        top: 0;
+        right: 0px;
+        bottom: 0;
+        padding-top: 30px;
+        padding-bottom: 80px;
+        display: none;
+        z-index: 9;
+        height: 100%;
+        overflow: auto;
+    }
+    .mobile-inner-header-icon{
+        color: #ffffff;
+        font-size:25px;
+        text-align: center;
+        float:right;
+        position: relative;
+        -webkit-transition: background 0.5s;
+        -moz-transition: background 0.5s;
+        -o-transition: background 0.5s;
+        transition: background 0.5s;
+        margin-top: 6px;
+    }
+    .mobile-inner-header-icon{
+		color: #ffffff;
+		height: 28px;
+		font-size: 24px;
+		text-align: center;
+		float: right;
+		width: 34px;
+		position: relative;
+		-webkit-transition: background 0.5s;
+		-moz-transition: background 0.5s;
+		-o-transition: background 0.5s;
+		transition: background 0.5s;
+		z-index: 99;
+		margin-top: 0;
+    }
+    .mobile-inner-header-icon:hover{
+        cursor: pointer;
+    }
+    .mobile-inner-header-icon span{
+        position: absolute;
+        left: calc((100% - 20px) / 2);
+        top: calc((100% - 32px) / 2);
+        width: 34px;
+    	height: 3px;
+        background-color: rgb(255 255 255);
+    }
+    .mobile-inner-header-icon span:nth-child(1){
+        transform: translateY(4px) rotate(0deg);
+    }
+    .mobile-inner-header-icon span:nth-child(2){
+        transform: translateY(-4px) rotate(0deg);
+    }
+    .mobile-inner-header-icon span:nth-child(3){
+        display: none;
+    }  
+    .mobile-inner-header-icon-click span:nth-child(1){
+        animation-duration: 0.5s;
+        animation-fill-mode: both;
+        animation-name: clickfirst;
+    }       
+    .mobile-inner-header-icon-click span:nth-child(2){
+        animation-duration: 0.5s;
+        animation-fill-mode: both;
+        animation-name: clicksecond;
+    }
+    @keyframes clickfirst {
+      0% {
+          transform: translateY(4px) rotate(0deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(45deg);
+      }
+    }   
+    @keyframes clicksecond {
+      0% {
+          transform: translateY(-4px) rotate(0deg);
+      }
+      100% {
+        transform: translateY(0) rotate(-45deg);
+      }
+    }   
+    .mobile-inner-header-icon-out span:nth-child(1){
+        animation-duration: 0.5s;
+        animation-fill-mode: both;
+        animation-name: outfirst;
+        }       
+    .mobile-inner-header-icon-out span:nth-child(2){
+        animation-duration: 0.5s;
+        animation-fill-mode: both;
+        animation-name: outsecond;
+        margin-top: 0;
+        top: calc((100% - 9px) / 2);
+        }
+    .mobile-inner-header-icon-out span:nth-child(3){
+        display: block;
+        top: calc((100% - 20px) / 2);
+    }
+    @keyframes outfirst {
+      0% {
+        transform: translateY(0) rotate(-45deg);
+      }
+
+      100% {
+        transform: translateY(-4px) rotate(0deg);
+      }
+    }   
+    @keyframes outsecond {
+      0% {
+        transform: translateY(0) rotate(45deg);
+      }
+
+      100% {
+        transform: translateY(4px) rotate(0deg);
+      }
+    }
+    .mobile-inner-header-icon.mobile-inner-header-icon-click {
+        z-index: 10;
+    }
+    .mobile-inner-header-icon.mobile-inner-header-icon-click span {
+        background-color: #fff;
+    }
+    .main-menu {
+        background: #353a40;
+        position: fixed;
+        height: 100%;
+        z-index: 1;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        transition: all 0.5s ease-in-out 0s;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 20px;
+        border-top: solid 1px #848484;
+        overflow-y: auto;
+        height: calc(100vh - 61px);
+        display:none;
+    }
+    .main-menu.active {
+        top: 98px;
+		display:block;
+    }
+    .main-menu>ul {        
+        margin: 0;
+        width: 100%;
+        text-align: left;
+        display: block;
+        padding: 0 0 0 20px;
+    }
+    .main-menu>ul>li {
+        display: block;
+        padding: 0; 
+        border-bottom: solid 1px #848484;
+    }
+    .main-menu>ul>li>a {
+        display: block;
+        padding: 14px 15px; 
+		font-size: 1em;
+		font-weight: 400;
+    }
+    .overflow-active {
+    	overflow: hidden;
+    }
+    .overlay-bg {
+        background: rgba(0, 0, 0, 0.15);
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        display: none;
+    } 
+    .overlay-bg.active {
+        display: block;
+    }
+    /***End Responsive css***/ 
+	.availability-wrap .sub-heading {
+		margin-top: 15px !important;
+	}
+	.featured-flex {
+		display: block !important;
+	}
+	.featured-left,
+	.featured-right {
+	    width: 100%;
+	}
+	.dealers-wrap .row .col-md-4 {
+		-webkit-box-flex: 0;
+		-ms-flex: 0 0 100%;
+		flex: 0 0 100%;
+		max-width: 100%;
+		padding-top: 15px;
+		padding-bottom: 15px;
+	}
+	.dealer-box {
+		display: flex;
+		align-items: center;
+		min-height: inherit;
+	}
+	.dealer-icon {
+		width: 210px;
+		margin-bottom: 0;
+	}
+	.dealer-title {
+		text-align: left;
+		width: calc(100% - 210px);
+	}
+	.dealer-content .main-heading {
+		text-align: center;
+	}
+	.dealer-content p {
+		text-align: center;
+	}
+	.featured-left {
+		padding-top: 40px;
+		max-width: 360px;
+		margin: 0 auto;
+	}
+	.login-block {
+		margin-right: 30px;
+	}
+	.mobile-inner-header-icon.mobile-inner-header-icon-click {
+		margin-top: 3px;
+	}
+	.availability-wrap .main-heading,
+	.availability-wrap .sub-heading {
+		text-align: center !important;
+	}
+	.lead-generation-wrap .d-flex,
+	.inventory-wrap .d-flex {
+		display: block !important;
+	}
+	.banner-content {
+		width: 100%;
+		padding-left: 0;
+		padding-top: 50px;
+	}
+	.banner-content .text-left {
+		text-align: center !important;
+	}
+	.banner-img {
+		width: 100%;
+		text-align: center;
+	} 
+	.inventory-left {
+		width: 100%;
+	}
+	.inventory-right {
+		width: 100%;
+		padding-left: 0;
+		padding-top: 50px;
+	}
+	.service-flex {
+	    min-height: 190px;
+	}
+	.gi-title {
+		margin-top: 30px;
+		text-align: center;
+	}
+	.address-info {
+		text-align: center;
+	}
+	.consulation-wrap .main-heading,
+	.consulation-wrap .green-sub-heading {
+		text-align: center !important;
+	}
+	.consulation-wrap .main-heading br {
+		display: none;
+	}
+	.consulation-wrap .custom-form {
+		margin-top: 30px;
+	}
+	.about-content p {
+	    text-align: left;
+	}
+}
+@media(max-width: 767px) {
+	.container {
+	    max-width: 100% !important;
+	    padding-left: 25px !important;
+	    padding-right: 25px !important;
+	}
+	.footer-wrap .d-flex {
+		display: block !important;
+		text-align: center;
+	}
+	.info-menu ul {
+		justify-content: center;
+		margin-bottom: 15px;
+	}
+	.service-flex {
+		min-height: inherit;
+		margin-bottom: 50px;
+	}
+	.gray-heading {
+	   text-align: center;
+	}
+	.service-wrap {
+		padding-top: 0;
+	}
+	.inventory-wrap {
+		padding: 60px 0;
+	}
+	.login-for-desktop {
+		display: none;
+	}
+	.login-for-mobile {
+		display: block;
+		text-align: center;
+		padding: 0;
+		margin-top: 45px;
+	}
+	.header-wrap {
+		padding: 12px 0;
+	}
+	.main-logo img {
+		max-height: 25px;
+	}
+	.service-content {
+		max-width: 100%;
+	}
+	.inventory-left {
+		text-align: center;
+	}
+	.inventory-right {
+		padding-top: 25px;
+	}
+	.inventory-right .text-left{
+		text-align: center !important;
+	}
+	.fs-list {
+		max-width: 300px;
+		margin: 25px auto 0;
+	}
+	.custom-dev-flex {
+		display: block !important;
+	}
+	.custom-dev-left {
+		width: 100%;
+	}
+	.custom-dev-right {
+		width: 100%;
+		padding-top: 30px;
+		padding-left: 0;
+	}
+	.custom-dev-right .text-left {
+		text-align: center !important;
+	}
+	.consulation-wrap {
+		padding: 60px 0;
+	}
+	.dealership-wrap {
+		padding: 60px 0;	
+	}
+	.custom-dev-wrap {
+		padding-bottom: 90px;
+	}
+	.service-wrap {
+		padding-bottom: 30px;
+	}
+	.audience-steps-wrap .main-heading br {
+		display: none;
+	}
+	.audience-steps-wrap .sub-heading br {
+		display: none;
+	}
+	.banner-for-desktop {
+	    display: none;
+	}
+	.banner-for-mobile {
+	    display: block;
+	}
+	.adword-lead-flex {
+		display: block;
+	}
+	.adword-lead-flex {
+	    margin: 40px 0 0;
+	}
+	.adword-lead-flex>li {
+		width: 100%;
+	}
+	.vs-box {
+		display: none;
+	}
+	.adword-lead-flex>li + li {
+		margin-top: 40px;
+	}
+	.adword-step-block .step-title {
+	    margin-bottom: 30px;
+	}
+	.adword-step-box {
+	    min-height: inherit !important;
+	}
+	#sync2 .item h1 {
+		font-size: 13px;
+		line-height: 32px;
+	}
+	.banner-video-pos {
+		bottom: 0px;
+		height: 100%;
+	}
+	.sync1-block {
+	    height: calc(100% - 100px);
+	}
+	.banner-wrap video {
+		height: 560px;
+		width: auto;
+	}
+	.tb-row .col-md-2 {
+		display: none;
+	}
+	.tb-row .col-2 {
+	    -webkit-box-flex: 0;
+	    -ms-flex: 0 0 50px;
+	    flex: 0 0 50px;
+	    max-width: 50px;
+	    padding: 0;
+	}
+	.tb-row .col-10 {
+	    -ms-flex: 0 0 calc(100% - 50px);
+	    flex: 0 0 calc(100% - 50px);
+	    max-width: calc(100% - 50px);
+	}
+	.titmeline-title {
+		font-size: 14px;
+		line-height: 19px;
+	}
+	.timeline-list li {
+		font-size: 13px;
+		line-height: 18px;
+		padding: 7px 0 7px 22px;
+	}
+	.timeline-right-box {
+		padding: 25px 20px 20px;
+		margin-bottom: 30px;
+	}
+	.timeline-list {
+	    margin: 16px 0 0;
+	}
+	.timeline-list li:before {
+		top: 10px;
+	}
+	.timeline-right-box:before {
+		border-top: solid 10px transparent;
+		border-bottom: solid 10px transparent;
+		border-right: solid 10px #79BB30;
+		left: -10px;
+	}
+	.timeline-right-box:after {
+		border-top: solid 10px transparent;
+		border-bottom: solid 10px transparent;
+		border-right: solid 10px #2E3033;
+		left: -8px;
+	}
+	.timeline-wrap {
+		padding: 45px 0;
+	}
+	.timeline-wrap .main-heading {
+		margin-bottom: 38px;
+		font-size: 24px;
+	}
+	.tb-border:before {
+		height: 112%;
+	}
+}
+@media(max-width: 600px) {
+	.dealer-title {
+		font-size: 15px;
+		line-height: 20px;
+	}
+	.dealer-icon img {
+	    max-width: 56px;
+	    max-height: 56px;
+	}
+	.dealer-box {
+		padding: 7px;
+	}
+	.dealer-icon {
+	    width: 80px;
+	    min-height: 85px;
+	    margin-right: 15px;
+	}
+	.dealer-title {
+		width: calc(100% - 95px);
+	}
+	.dealer-content p {
+		font-size: 16px;
+		line-height: 20px;
+	}
+	.dealer-content {
+	    padding: 40px 0 0;
+	}
+	.green-btn span {
+		display: none;
+	}
+	.lead-generation-wrap .main-heading br {
+	    display: block;
+	}
+	.main-heading {
+	    font-size: 30px;
+	    line-height: 36px;
+	}
+	.banner-content {
+		padding-top: 0;
+	}
+	.banner-content .green-btn {
+		max-width: 305px;
+		display: inline-block;
+		width: 100%;
+	}
+	.mb-free-consulation-img {
+	    display: block;
+	    width: 100%;
+	}
+	.free-consulation-img {
+		display: none;
+	}
+	.green-sub-heading {
+		font-size: 16px;
+		line-height: 24px;
+	}
+	.fs-list li {
+		font-size: 16px;
+		line-height: 20px;
+	}
+	.free-consulation-wrap .main-heading {
+		max-width: 305px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.free-consulation-wrap .main-heading br {
+		display: none;
+	} 
+	.green-sub-heading {
+		max-width: 320px;
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.gi-title,
+	.address-info {
+		display: none;
+	}
+	.custom-form button {
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+	}
+	.copyright {
+		padding-top: 10px;
+	}
+	.dealership-wrap {
+		padding: 60px 0;
+	}
+	.dealership-slider {
+	    margin-top: 35px;
+	}
+	.gray-heading {
+	    font-size: 60px;
+	}
+	.audience-banner-wrap {
+		padding: 60px 0;
+	}
+	.audience-banner-wrap .green-sub-heading {
+		max-width: 350px;
+	}
+	.ssi-box img {
+		max-width: 67px;
+		max-height: 67px;
+	}
+	.audience-steps-wrap .main-heading {
+	    font-size: 21px;
+	    line-height: 29px;
+	    max-width: 340px;
+	    margin: 0 auto;
+	}
+	.step-title {
+		font-size: 21px;
+		line-height: 30px;
+	}
+	.au-step-box p {
+		font-size: 15px;
+		line-height: 26px;
+	}
+	.audience-steps-wrap .sub-heading {
+		font-size: 16px;
+	  line-height: 24px;
+	}
+	.audience-steps-wrap {
+		padding: 40px 0 100px;
+	}
+	.adword-lead-wrap .main-heading {
+		font-size: 24px;
+		font-weight: 500;
+		line-height: 33px;
+	}
+	
+	.adword-lead-wrap {
+		padding: 10px 0;
+	}
+	
+	.adword-lead-wrap .main-heading img {
+		max-width: 30px;
+		max-height: 30px;
+		vertical-align: -5px;
+	}
+	.adword-lead-wrap .step-title {
+	    font-size: 16px;
+	    line-height: 22px;
+	}
+	.adword-lead-wrap .adword-list li {
+		font-size: 16px;
+		padding-left: 20px;
+	}
+	.adword-lead-wrap .adw-block {
+	    padding: 35px 0;
+	}
+	.adword-lead-wrap .step-green-circle img {
+	    max-width: 42px;
+	    max-height: 42px;
+	}
+	.adword-lead-flex {
+	    margin: 30px 0 0;
+	}
+	.adword-step-box {
+	    padding: 38px 21px;
+	}
+	.adword-lead-flex>li {
+		padding: 0 5px;
+	}
+	.image-banner .green-sub-heading {
+		font-size: 20px !important;
+	}
+	.banner-video-block {
+		overflow: hidden;
+	}
+	.dealer-content {
+	    padding: 0 0 0;
+	}
+}
+@media(max-width: 480px) {
+	.green-btn {
+		padding: 15px 21px;
+	}
+	.banner-wrap video {
+		margin-left: -60%;
+	}
+}
+@media(max-width: 420px) {
+	.gray-heading {
+	    font-size: 50px;
+	}
+}
+@media(max-width: 360px) {
+	.free-consulation-btn-block {
+	    margin-top: 20px !important;
+	}
+}
