@@ -1,5 +1,6 @@
 {
-  "name": "d3-race",
+  "name": "gas",
+  "homepage": "http://dev.greenlightautomotivesolutions.com/reporting",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
