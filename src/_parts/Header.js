@@ -17,12 +17,12 @@ const openMobileMenu = (e) => {
     jQuery('.overlay-bg').toggleClass('active');
 };
 
-const overlayBG = (e) => {
-    jQuery(".mobile-inner-header-icon-click").toggleClass("mobile-inner-header-icon-click mobile-inner-header-icon-out");
-    jQuery(".main-menu").removeClass("active");
-    jQuery('body').removeClass('overflow-active');
-    jQuery('.overlay-bg').removeClass('active');
-};
+// const overlayBG = (e) => {
+//     jQuery(".mobile-inner-header-icon-click").toggleClass("mobile-inner-header-icon-click mobile-inner-header-icon-out");
+//     jQuery(".main-menu").removeClass("active");
+//     jQuery('body').removeClass('overflow-active');
+//     jQuery('.overlay-bg').removeClass('active');
+// };
 export default function Header(){
     useEffect(() => {
         // jQuery(".mobile-inner-header-icon").click(function(){
@@ -55,7 +55,7 @@ export default function Header(){
                         <div className="main-menu">
                             <ul>
                                 <li>
-                                    <NavLink exact to="/reporting">Dashboard</NavLink>
+                                    <NavLink exact="true" to="/reporting">Dashboard</NavLink>
                                 </li>
                                 <li>
                                     <a href="#">Leads</a>

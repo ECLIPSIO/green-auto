@@ -4,6 +4,16 @@ import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
+import DateRange from './DateRange';
+const histDate = {
+	start : 'hist-start',
+	end   : 'hist-end',
+};
+
+const currDate = {
+	start : 'curr-start',
+	end   : 'curr-end',
+};
 export default function HomeTabs(){
     console.log('Init');
     return(
@@ -25,9 +35,9 @@ export default function HomeTabs(){
 						<div className="gray-box pl-0 pr-0">
 							<div className="container-fluid">
 									<div className="row date-filter-block">
-									<div className="col-md-4">
+									<div className="col-md-5">
 										<label className="custom-label text-uppercase">Historical</label>
-										<div className="white-box">
+										{/* <div className="white-box">
 											<div className="d-flex align-items-center hc-box">
 												<div className="icon">
 													<img className="ico_date" alt="date" src={dateIcon} />
@@ -40,12 +50,13 @@ export default function HomeTabs(){
 													<img className="ico_close dt-picker-clear" alt="close" src={closeIcon} />
 												</div>
 											</div>
-										</div>
+										</div> */}
+										<DateRange target={histDate}/>
 									</div>
-									<div className="col-md-4"></div>
-									<div className="col-md-4">
+									<div className="col-md-2"></div>
+									<div className="col-md-5">
 										<label className="custom-label text-uppercase">Current</label>
-										<div className="white-box">
+										{/* <div className="white-box">
 											<div className="d-flex align-items-center hc-box">
 												<div className="icon">
 													<img className="ico_date" alt="date" src={dateIcon} />
@@ -58,7 +69,8 @@ export default function HomeTabs(){
 													<img className="ico_close dt-picker-clear" alt="close" src={closeIcon} />
 												</div>
 											</div>
-										</div>
+										</div> */}
+										<DateRange target={currDate}/>
 									</div>
 								</div>
 								<div className="l-gray-box mt-40">
