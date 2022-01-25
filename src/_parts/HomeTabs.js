@@ -1,21 +1,47 @@
-import dateIcon from '../img/ico-date.svg';
-import closeIcon from '../img/ico-close.svg';
+import React, {useState} from 'react';
 import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
-import DateRange from './DateRange';
-const histDate = {
-	start : 'hist-start',
-	end   : 'hist-end',
-};
-
-const currDate = {
-	start : 'curr-start',
-	end   : 'curr-end',
-};
+import {RangeDatePicker} from "react-google-flight-datepicker";
+import "react-google-flight-datepicker/dist/main.css";
 export default function HomeTabs(){
-    console.log('Init');
+	const histDate = {
+		start : new Date("2022-01-01"),
+		end   : new Date("2022-01-31"),
+		startPlace: "From",
+		endPlace: "To",
+		class : "hist-dates"
+	};
+	
+	const currDate = {
+		start : new Date("2022-01-01"),
+		end   : new Date("2022-01-31"),
+		startPlace: "From",
+		endPlace: "To",
+		class : "curr-dates"
+	};
+	const [histStartDate, setHistStartDate] = useState(histDate.start);
+	const [histEndDate, setHistEndDate] = useState(histDate.end);
+	const [currStartDate, setCurrStartDate] = useState(currDate.start);
+	const [currEndDate, setCurrEndDate] = useState(currDate.end);
+    // console.log('Init');
+	const histDateChanges = (...dates) =>{
+		console.table({
+			histS:dates[0],
+			histE:dates[1]
+		});
+		// setHistStartDate(dates[0]);
+		// setHistEndDate(dates[1]);
+	};
+	const currDateChanges = (...dates) =>{
+		console.table({
+			currS:dates[0],
+			currE:dates[1]
+		});
+		// setCurrStartDate(dates[0]);
+		// setCurrEndDate(dates[1]);
+	};
     return(
         <>
         <div className="custom-tabs">
@@ -37,40 +63,38 @@ export default function HomeTabs(){
 									<div className="row date-filter-block">
 									<div className="col-md-5">
 										<label className="custom-label text-uppercase">Historical</label>
-										{/* <div className="white-box">
-											<div className="d-flex align-items-center hc-box">
-												<div className="icon">
-													<img className="ico_date" alt="date" src={dateIcon} />
-												</div>
-												<div>
-													<input type="text" className="date-input" name="daterange" />
-												</div>
-												
-												<div className="icon">
-													<img className="ico_close dt-picker-clear" alt="close" src={closeIcon} />
-												</div>
-											</div>
-										</div> */}
-										<DateRange target={histDate}/>
+										<RangeDatePicker
+											startDate={histStartDate}
+											endDate={histEndDate}
+											onChange={histDateChanges}
+											dateFormat="D MMM YYYY"
+											monthFormat="MMM YYYY"
+											startDatePlaceholder={histDate.startPlace}
+											endDatePlaceholder={histDate.endPlace}
+											disabled={false}
+											className={histDate.class}
+											startWeekDay="monday"
+											highlightToday={true}
+										/>
+										{/* <GDateRange target={histDate}/> */}
 									</div>
 									<div className="col-md-2"></div>
 									<div className="col-md-5">
 										<label className="custom-label text-uppercase">Current</label>
-										{/* <div className="white-box">
-											<div className="d-flex align-items-center hc-box">
-												<div className="icon">
-													<img className="ico_date" alt="date" src={dateIcon} />
-												</div>
-												<div>
-													<input type="text" name="daterange" className="date-input"/>
-												</div>
-												
-												<div className="icon">
-													<img className="ico_close dt-picker-clear" alt="close" src={closeIcon} />
-												</div>
-											</div>
-										</div> */}
-										<DateRange target={currDate}/>
+										<RangeDatePicker
+											startDate={currStartDate}
+											endDate={currEndDate}
+											onChange={currDateChanges}
+											dateFormat="D MMM YYYY"
+											monthFormat="MMM YYYY"
+											startDatePlaceholder={currDate.startPlace}
+											endDatePlaceholder={currDate.endPlace}
+											disabled={false}
+											className={currDate.class}
+											startWeekDay="monday"
+											highlightToday={true}
+										/>
+										{/* <GDateRange target={currDate}/> */}
 									</div>
 								</div>
 								<div className="l-gray-box mt-40">

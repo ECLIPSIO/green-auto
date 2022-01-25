@@ -618,3 +618,47 @@ text{
 .DateRangePicker {
     display:block !important;
 }
+
+.react-google-flight-datepicker{
+	font-size: 12px !important;
+}
+.react-google-flight-datepicker .dialog-date-picker{
+	width: 100% !important;
+}
+
+.react-google-flight-datepicker .calendar-wrapper{
+	min-height: 240px !important;
+}
+
+.react-google-flight-datepicker .month-calendar{
+	width: 50% !important;
+	margin-right: 40px !important;
+}
+
+.react-google-flight-datepicker .day{
+	height: 24px !important;
+	width: 24px !important;
+}
+.react-google-flight-datepicker .day.highlight::before{
+    height: 24px !important;
+	width: 24px !important;
+}
+.react-google-flight-datepicker .day::after{
+	height: 24px !important;
+	width: 24px !important;
+}
+
+.react-google-flight-datepicker .date-picker-input{
+    width: 100% !important;
+    max-height: 40px !important;
+}
+
+.react-google-flight-datepicker .date-picker{
+    padding: 0px !important;
+}
+
+.date.is-focus{background-color:#ffffff !important;}
+
+.react-google-flight-datepicker .date.is-focus::after {
+    border:none !important;
+}
