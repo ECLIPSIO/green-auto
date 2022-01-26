@@ -624,6 +624,7 @@ text{
 }
 .react-google-flight-datepicker .dialog-date-picker{
 	width: 100% !important;
+    max-width: 480px;
 }
 
 .react-google-flight-datepicker .calendar-wrapper{
@@ -648,9 +649,13 @@ text{
 	width: 24px !important;
 }
 
+.react-google-flight-datepicker .icon-calendar{
+    margin-right: 10px !important;
+}
+
 .react-google-flight-datepicker .date-picker-input{
     width: 100% !important;
-    max-height: 40px !important;
+    height: 40px !important;
 }
 
 .react-google-flight-datepicker .date-picker{
