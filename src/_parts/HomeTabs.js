@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios'; 
 import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
@@ -33,6 +34,7 @@ export default function HomeTabs(){
 		});
 		// setHistStartDate(dates[0]);
 		// setHistEndDate(dates[1]);
+		if(dates[0] && dates[1]) reloadReportData();
 	};
 	const currDateChanges = (...dates) =>{
 		console.table({
@@ -41,7 +43,46 @@ export default function HomeTabs(){
 		});
 		// setCurrStartDate(dates[0]);
 		// setCurrEndDate(dates[1]);
+		if(dates[0] && dates[1]) reloadReportData();
 	};
+
+	var gas_data;
+	
+	const url = 'http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com/bridge/analytics/gas.php';
+
+	/*const [data, setData] = useState('');*/
+
+	const reloadReportData = () => {
+		axios.get(url).then(function (response) {
+			gas_data = response.data;
+			console.log("got data");
+			console.log(gas_data);
+			setAnalyticsData(gas_data);
+		});
+	}
+
+	const [isLoading, setLoading] = useState(true);
+  	const [analyticsData, setAnalyticsData] = useState();
+
+	useEffect(() => {
+		console.log("getting data");
+
+		axios.get(url).then(function (response) {
+			gas_data = response.data;
+			console.log("got data");
+			console.log(gas_data);
+			setAnalyticsData(gas_data);
+			setLoading(false);
+		});
+	}, []);
+
+	//reloadReportData();
+	//setData("This is data from Parent Component to the Child Component.");
+
+	if (isLoading) {
+		return <div className="App">Loading...</div>;
+	}
+
     return(
         <>
         <div className="custom-tabs">
@@ -225,9 +266,8 @@ export default function HomeTabs(){
 												<div className="ml-40">Historical <span className="red-box"></span></div>
 											</div>
 										</div>
-									</div>
-									
-									<BarChart />
+									</div>									
+									<BarChart graphData={analyticsData.bar_chart}/>
 								</div>
 							</div>
 						</div>

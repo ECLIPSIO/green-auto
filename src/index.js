@@ -9,10 +9,10 @@ import reportWebVitals from './reportWebVitals';
 // import BarRaceChart from './components/BarRaceChart';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <>
     <App />
     {/* <Home /> */}
-  </React.StrictMode>,
+  </>,
   document.getElementById('root')
 );
 

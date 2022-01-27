@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ChartistGraph from 'react-chartist';
 import '../css/chartist.min.css';
 
@@ -45,11 +45,13 @@ const responsive = [
     }]
   ];
 
-export default function BarChart(){
+export default function BarChart({graphData}){
+
+    console.log(graphData);   
 
     return(
         <>
-        <ChartistGraph className="graph-block ct-chart ct-major-twelfth" id="power-ranking" data={data} options={options} type={type} responsiveOptions={responsive} />
+            <ChartistGraph className="graph-block ct-chart ct-major-twelfth" id="power-ranking" data={graphData} options={options} type={type} responsiveOptions={responsive} />
         </>
     )
 }

@@ -23,7 +23,7 @@ function BarChartRace(brandData){
             'stroke-linejoin': 'round',
             opacity: 0
         });
-        console.log('Hal Called');
+        console.log('Hal Calleds');
     };
     
     const  svgC = d3.select("#raceGraph").append("div")
