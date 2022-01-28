@@ -51,8 +51,6 @@ export default function HomeTabs(){
 	}
 
 	const getAnalyticsIndicator = (value,reverseColor = false) => {
-		//<div class="p-value green"><div class="up-arrow"></div> -1.1 %</div>
-		//<div class="p-value red"><div class="down-arrow"></div> 1.7 %</div>
 
 		if(value >= 0) {
 			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(value * 100)} %</div>);
@@ -66,12 +64,15 @@ export default function HomeTabs(){
 	var tempDate = new Date();
 	tempDate.setDate(todayDate.getDate() - 60);
 	const [histStartDate, setHistStartDate] = useState(tempDate);
+
 	var tempDate = new Date();
 	tempDate.setDate(todayDate.getDate() - 30);
 	const [histEndDate, setHistEndDate] = useState(tempDate);
+
 	var tempDate = new Date();
 	tempDate.setDate(todayDate.getDate() - 30);
 	const [currStartDate, setCurrStartDate] = useState(tempDate);
+
 	var tempDate = new Date();
 	tempDate.setDate(todayDate.getDate() - 0);
 	const [currEndDate, setCurrEndDate] = useState(tempDate);
@@ -95,36 +96,15 @@ export default function HomeTabs(){
 	const histDateChanges = (...dates) =>{
 		setHistStartDate(dates[0]);
 		setHistEndDate(dates[1]);
-		/*if(histStartDate && histEndDate) reloadReportData();
-		else {
-			setTimeout(() => {
-				if(histStartDate && histEndDate) reloadReportData();
-				else console.log("both hist dates not set");
-				console.log(dates);
-			}, 3000);			
-		}*/
-
 	};
 	const currDateChanges = (...dates) =>{
 		setCurrStartDate(dates[0]);
 		setCurrEndDate(dates[1]);
-		/*if(currStartDate && currEndDate) reloadReportData();
-		else {
-			setTimeout(() => {
-				if(currStartDate && currEndDate) reloadReportData();
-				else console.log("both current dates not set");
-				console.log(dates);
-			}, 3000);			
-		}*/
-
-		
 	};
 
 	var gas_data;
 	
 	const url = 'http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com/bridge/analytics/gas.php';
-
-	/*const [data, setData] = useState('');*/
 
 	const [isLoading, setLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState();
@@ -136,33 +116,17 @@ export default function HomeTabs(){
 			currS:currStartDate,
 			currE:currEndDate
 		});
-		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000);
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6";
 
 		console.log(build_url);
 
 		return build_url;
 	}
 
-	/*const reloadReportData = () => {
-		setLoading(true);		
-
-		console.log("getting data");
-		axios.get(buildUrl()).then(function (response) {
-			gas_data = response.data;
-			console.log("got data");
-			console.log(gas_data);
-			setAnalyticsData(gas_data);
-			setLoading(false);
-		});
-	}*/
-
 	const prevCurrStart = useRef(0);
 	const prevCurrEnd = useRef(0);
 	const prevHistStart = useRef(0);
 	const prevHistEnd = useRef(0);
-
-
-	//const [firstLoad, setfirstLoad] = useState(true);
 
 	useEffect(() => {
 
@@ -176,22 +140,16 @@ export default function HomeTabs(){
 			prevHistStart.current = histStartDate.getTime();
 			prevHistEnd.current = histEndDate.getTime();
 
-
 			axios.get(buildUrl()).then(function (response) {
 				gas_data = response.data;
 				console.log("got data");
 				console.log(gas_data);
 				setAnalyticsData(gas_data);
 				setLoading(false);
-
-				//setfirstLoad(false);
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
 	}, [currStartDate, currEndDate, histStartDate, histEndDate]);
-
-	//reloadReportData();
-	//setData("This is data from Parent Component to the Child Component.");
 
     return(
         <>
@@ -287,7 +245,7 @@ export default function HomeTabs(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{isLoading ? 'Loading' : <RaceChart/>}
+									{isLoading ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
