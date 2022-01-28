@@ -143,7 +143,7 @@ export default function HomeTabs(){
 		return build_url;
 	}
 
-	const reloadReportData = () => {
+	/*const reloadReportData = () => {
 		setLoading(true);		
 
 		console.log("getting data");
@@ -154,12 +154,28 @@ export default function HomeTabs(){
 			setAnalyticsData(gas_data);
 			setLoading(false);
 		});
-	}
+	}*/
+
+	const prevCurrStart = useRef(0);
+	const prevCurrEnd = useRef(0);
+	const prevHistStart = useRef(0);
+	const prevHistEnd = useRef(0);
+
+
+	//const [firstLoad, setfirstLoad] = useState(true);
 
 	useEffect(() => {
-		console.log("getting data");
 
-		if(currStartDate && currEndDate && histStartDate && histEndDate) {
+		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() < currEndDate.getTime() && histStartDate.getTime() < histEndDate.getTime()) {
+
+			setLoading(true);
+			console.log("getting data");
+
+			prevCurrStart.current = currStartDate.getTime();
+			prevCurrEnd.current = currEndDate.getTime();
+			prevHistStart.current = histStartDate.getTime();
+			prevHistEnd.current = histEndDate.getTime();
+
 
 			axios.get(buildUrl()).then(function (response) {
 				gas_data = response.data;
@@ -167,9 +183,11 @@ export default function HomeTabs(){
 				console.log(gas_data);
 				setAnalyticsData(gas_data);
 				setLoading(false);
+
+				//setfirstLoad(false);
 			});
 		} else 
-			console.log("all dates not set");
+			console.log("all dates not set, or dates not changed");
 	}, [currStartDate, currEndDate, histStartDate, histEndDate]);
 
 	//reloadReportData();
