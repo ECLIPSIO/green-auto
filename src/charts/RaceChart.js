@@ -5,7 +5,7 @@ import './d3-multi-selection.min.js';
 import data from './data.csv';
 // require('./d3-multi-selection.min.js');
 
-let tickDuration = 3000;
+let tickDuration = 1000;
 let top_n = 10;
 let height = 300;
 let width = 600;

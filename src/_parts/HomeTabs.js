@@ -106,6 +106,8 @@ export default function HomeTabs(){
 	
 	const url = 'http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com/bridge/analytics/gas.php';
 
+	//const [searchParams, setSearchParams] = useSearchParams();
+
 	const [isLoading, setLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState();
 
@@ -116,7 +118,10 @@ export default function HomeTabs(){
 			currS:currStartDate,
 			currE:currEndDate
 		});
-		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6";
+
+		const queryParams = new URLSearchParams(window.location.search);
+
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + queryParams.get('dealership');
 
 		console.log(build_url);
 
