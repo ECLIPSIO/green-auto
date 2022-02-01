@@ -157,10 +157,11 @@ export default function HomeTabs(){
 				gas_data = response.data;
 				console.log("got data");
 				console.log(gas_data);
+				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
 				setLoading(false);
 
-				if(gas_data.hist_combined.length == 0) alert("No data for current historical period");
+				if(!gas_data || gas_data.hist_combined.length == 0) alert("No data for current historical period");
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
@@ -225,28 +226,28 @@ export default function HomeTabs(){
 									<div className="d-flex">
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Current Spend</div>
-											{analyticsData && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
+											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
 											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Website Hits</div>
-											{analyticsData && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Time on Site</div>
-											{analyticsData && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Pages / Session</div>
-											{analyticsData && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											{analyticsData && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'],'percent') : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'],'percent') : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
 									</div>
 								</div>
@@ -260,7 +261,7 @@ export default function HomeTabs(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{isLoading ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
+									{isLoading || analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
@@ -308,7 +309,7 @@ export default function HomeTabs(){
 											</div>
 										</div>
 									</div>									
-									{isLoading ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
+									{isLoading || analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
