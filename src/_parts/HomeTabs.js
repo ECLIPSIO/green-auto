@@ -42,9 +42,9 @@ export default function HomeTabs(){
 		if(type == 'time') {
 			return (<div className="m-value">{timeFormatter(value)}</div>);
 		} else if(type == 'currency') {
-			return (<div className="m-value">{numberFormatter(value,true)}</div>);
+			return (<div className="m-value">{numberFormatter(Math.round(value),true)}</div>);
 		} else if(type == 'percent') {
-			return (<div className="m-value">{numberFormatter(value)}%</div>);
+			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
 		}
 
 		return (<div className="m-value">{numberFormatter(value)}</div >);
@@ -53,29 +53,37 @@ export default function HomeTabs(){
 	const getAnalyticsIndicator = (value,reverseColor = false) => {
 
 		if(value >= 0) {
-			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(value * 100)} %</div>);
+			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(Math.round(value * 100))} %</div>);
 		} 
 
-		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(value * 100)} % </div>);
+		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
 	}
 
-	const todayDate = new Date();
-
 	var tempDate = new Date();
-	tempDate.setDate(todayDate.getDate() - 60);
-	const [histStartDate, setHistStartDate] = useState(tempDate);
-
-	var tempDate = new Date();
-	tempDate.setDate(todayDate.getDate() - 30);
-	const [histEndDate, setHistEndDate] = useState(tempDate);
-
-	var tempDate = new Date();
-	tempDate.setDate(todayDate.getDate() - 30);
+	if(tempDate.getDate() >= 7) tempDate.setDate(1);
+	else tempDate.setMonth(tempDate.getMonth() - 1);
+	tempDate.setHours(0,0,0,0);
 	const [currStartDate, setCurrStartDate] = useState(tempDate);
 
 	var tempDate = new Date();
-	tempDate.setDate(todayDate.getDate() - 0);
+	if(tempDate.getDate() < 7) tempDate.setDate(0);
+	tempDate.setHours(0,0,0,0);
 	const [currEndDate, setCurrEndDate] = useState(tempDate);
+
+	var tempDate = new Date(currStartDate.getTime());
+	tempDate.setMonth(tempDate.getMonth() - 1);
+	tempDate.setHours(0,0,0,0);
+	const [histStartDate, setHistStartDate] = useState(tempDate);
+
+	var tempDate = new Date(currEndDate.getTime());
+	tempDate.setMonth(tempDate.getMonth() - 1);
+	if(tempDate.getMonth() != histStartDate.getMonth()) {
+		tempDate = new Date(histStartDate.getTime());
+		tempDate.setMonth(tempDate.getMonth() + 1);
+		tempDate.setDate(0);
+	}
+	tempDate.setHours(0,0,0,0);
+	const [histEndDate, setHistEndDate] = useState(tempDate);
 
 	const histDate = {
 		start : histStartDate,
@@ -135,7 +143,7 @@ export default function HomeTabs(){
 
 	useEffect(() => {
 
-		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() < currEndDate.getTime() && histStartDate.getTime() < histEndDate.getTime()) {
+		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
 
 			setLoading(true);
 			console.log("getting data");
@@ -151,6 +159,8 @@ export default function HomeTabs(){
 				console.log(gas_data);
 				setAnalyticsData(gas_data);
 				setLoading(false);
+
+				if(gas_data.hist_combined.length == 0) alert("No data for current historical period");
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
@@ -216,27 +226,27 @@ export default function HomeTabs(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Current Spend</div>
 											{analyticsData && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
-											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : '-'}
+											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Website Hits</div>
 											{analyticsData && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : '-'}
+											{analyticsData && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Time on Site</div>
 											{analyticsData && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : '-'}
+											{analyticsData && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Pages / Session</div>
 											{analyticsData && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : '-'}
+											{analyticsData && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
 											{analyticsData && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'],'percent') : ''}
-											{analyticsData && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : '-'}
+											{analyticsData && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
 									</div>
 								</div>
@@ -277,10 +287,10 @@ export default function HomeTabs(){
 															<td>{index}</td>
 															<td>{analyticsData.top_queries[index]["ga:sessions"]}</td>
 															<td>{analyticsData.top_queries[index]["ga:sessions_hist"] ? analyticsData.top_queries[index]["ga:sessions_hist"] : "-"}</td>
-															<td>{numberFormatter(analyticsData.top_queries[index]["cost"],true)}</td>
+															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["cost"]),true)}</td>
 															<td>{timeFormatter(analyticsData.top_queries[index]["ga:avgSessionDuration"])}</td>
 															<td>{numberFormatter(analyticsData.top_queries[index]["ga:pageviewsPerSession"])}</td>
-															<td>{numberFormatter(analyticsData.top_queries[index]["ga:bounceRate"])}%</td>
+															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"]))}%</td>
 														</tr>
 													})
 												}
