@@ -112,7 +112,8 @@ export default function HomeTabs(){
 
 	var gas_data;
 	
-	const url = 'http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com/bridge/analytics/gas.php';
+	const protocol = window.location.protocol;
+	const url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/analytics/gas.php";
 
 	//const [searchParams, setSearchParams] = useSearchParams();
 
