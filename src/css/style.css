@@ -591,7 +591,26 @@ text{
   }
   
   
-    
+
+  .green-down-arrow {
+    background: url(./img/ico-up.svg) no-repeat 0 0 !important;
+    display: inline-block;
+  height: 10px;
+  width: 17px;
+    transform: rotate(180deg);
+   
+   }
+   
+   
+   .red-up-arrow {
+    background: url(./img/ico-down.svg) no-repeat 0 0 !important;
+    display: inline-block;
+    height: 10px;
+    width: 17px;
+    transform: rotate(180deg);
+   
+   }
+
   /*arrow class*/
   
   .down-arrow {
