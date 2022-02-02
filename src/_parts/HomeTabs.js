@@ -61,7 +61,10 @@ export default function HomeTabs(){
 
 	var tempDate = new Date();
 	if(tempDate.getDate() >= 7) tempDate.setDate(1);
-	else tempDate.setMonth(tempDate.getMonth() - 1);
+	else {
+		tempDate.setMonth(tempDate.getMonth() - 1);
+		tempDate.setDate(1);
+	}
 	tempDate.setHours(0,0,0,0);
 	const [currStartDate, setCurrStartDate] = useState(tempDate);
 
@@ -72,7 +75,6 @@ export default function HomeTabs(){
 
 	var tempDate = new Date(currStartDate.getTime());
 	tempDate.setMonth(tempDate.getMonth() - 1);
-	tempDate.setHours(0,0,0,0);
 	const [histStartDate, setHistStartDate] = useState(tempDate);
 
 	var tempDate = new Date(currEndDate.getTime());
@@ -82,7 +84,6 @@ export default function HomeTabs(){
 		tempDate.setMonth(tempDate.getMonth() + 1);
 		tempDate.setDate(0);
 	}
-	tempDate.setHours(0,0,0,0);
 	const [histEndDate, setHistEndDate] = useState(tempDate);
 
 	const histDate = {
