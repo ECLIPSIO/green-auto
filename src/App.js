@@ -8,6 +8,7 @@ import './css/responsive.css';
 // import './js/jquery-3.6.0.min.js';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+//import React, {useState, useEffect} from 'react'; 
 // import React from 'react';
 // import { Helmet } from 'react-helmet';
 
@@ -23,7 +24,12 @@ import './js/bootstrap.min.js';
 // require('./js/bootstrap.min.js');
 // require('bootstrap');
 
+
+
 function App() {
+
+
+  console.log('I was triggered during render');
   return (
     <Router>
       <Header />

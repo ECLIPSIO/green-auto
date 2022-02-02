@@ -5,13 +5,29 @@ import './d3-multi-selection.min.js';
 import data from './data.csv';
 // require('./d3-multi-selection.min.js');
 
-let tickDuration = 3000;
+let tickDuration = 1000;
 let top_n = 10;
 let height = 300;
 let width = 600;
-let firstYear = 2000;
-let lastYear = 2019;
+let firstYear;
+let lastYear;
+let datesByYear = [];
 let colors = [ '#343E2F', '#46533B', "#98b580", "#98b580" ];
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 function BarChartRace(brandData){
     const halo = function(text, strokeWidth) {
@@ -23,8 +39,10 @@ function BarChartRace(brandData){
             'stroke-linejoin': 'round',
             opacity: 0
         });
-        console.log('Hal Called');
+        console.log('Hal Calleds');
     };
+
+    d3.select("#raceGraph").empty();
     
     const  svgC = d3.select("#raceGraph").append("div")
         // Container class to make it responsive.
@@ -116,7 +134,7 @@ function BarChartRace(brandData){
       .attrs({
         class: 'bar',
         x: x(0) + 1,
-        width: d => x(d.value) - x(0) - 1,
+        width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
         y: d => y(d.rank) + 5,
         height: y(1) - y(0) - barPadding
       })
@@ -173,7 +191,7 @@ function BarChartRace(brandData){
       .styles({
         'text-anchor': 'end'
       })
-      .html(~~year)
+      .html(getFormattedDate(datesByYear[year]))
       .call(halo, 10);
 
     let ticker = d3.interval(e => {
@@ -202,7 +220,7 @@ function BarChartRace(brandData){
         .attrs({
           class: d => `bar`,
           x: x(0) + 1,
-          width: d => x(d.value) - x(0) - 1,
+          width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
           y: d => y(top_n + 1) + 5,
           height: y(1) - y(0) - barPadding
         })
@@ -221,7 +239,7 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          width: d => x(d.value) - x(0) - 1,
+          width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
           y: d => y(d.rank) + 5
         });
             			
@@ -231,7 +249,7 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          width: d => x(d.value) - x(0) - 1,
+          width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
           y: d => y(top_n + 1) + 5
         })
         .remove();
@@ -343,8 +361,7 @@ function BarChartRace(brandData){
              .style("opacity", 0);
         });
 
-            
-        yearText.html(~~year);
+        yearText.html(getFormattedDate(datesByYear[year]));
 
         if (year == lastYear) ticker.stop();
         year = d3.format('.0f')((+year) + 1);
@@ -354,15 +371,111 @@ function BarChartRace(brandData){
     return svg.node();
 }
 
-export default function RaceChart(){
+function getFormattedDate(date) {
+  return months[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear()
+}
+
+export default function RaceChart({graphData}){
     useEffect(()=> {
-        d3.csv(data).then(data => {
+
+        graphData.map(function(values) {
+          if(!firstYear) firstYear = values.year;
+          lastYear = values.year;
+          datesByYear[values.year] = new Date(values.date);
+        });
+
+        BarChartRace(graphData);
+        /*d3.csv(data).then(csv_data => {
             // console.log('Data Loaded');
-            BarChartRace(data);
+            console.log(csv_data);
+            BarChartRace(csv_data);
         })
         .catch(error => {
             console.table(error);
         });
+
+        data = graphData;
+
+        data.map(function(values) {
+          //console.log(new Date(+values.date));
+        });
+
+        console.log(data);
+
+        var names = new Set(data.map(d => d.name));
+
+        console.log(names);
+
+        var datevalues = Array.from(d3.rollup(data, ([d]) => d.value, d => d.date, d => d.name))
+          .map(([date, data]) => [new Date(date), data])
+          .sort(([a], [b]) => d3.ascending(a, b));
+
+        console.log(datevalues);
+
+        var n = 10;
+        var k = 1;
+
+        function rank(value) {
+            const data = Array.from(names, name => ({name, value: value(name)}));
+            data.sort((a, b) => d3.descending(a.value, b.value));
+            for (let i = 0; i < data.length; ++i) data[i].rank = Math.min(n, i);
+            return data;
+        }
+
+        var rankings = rank(name => datevalues[0][1].get(name));
+
+        console.log(rankings);
+
+        const keyframes = [];
+        let ka, a, kb, b;
+        for ([[ka, a], [kb, b]] of d3.pairs(datevalues)) {
+          for (let i = 0; i < k; ++i) {
+            const t = i / k;
+            keyframes.push([
+              new Date(ka * (1 - t) + kb * t),
+              rank(name => (a.get(name) || 0) * (1 - t) + (b.get(name) || 0) * t)
+            ]);
+          }
+        }
+        keyframes.push([new Date(kb), rank(name => b.get(name) || 0)]);
+
+        console.log(keyframes);
+
+        var nameframes = d3.groups(keyframes.flatMap(([, data]) => data), d => d.name);
+
+        console.log(nameframes);
+
+        var prev = new Map(nameframes.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a])));
+
+        console.log(prev);
+
+        var next = new Map(nameframes.flatMap(([, data]) => d3.pairs(data)));
+
+        console.log(next);
+
+      /*  keyframes = {
+            const keyframes = [];
+            let ka, a, kb, b;
+            for ([[ka, a], [kb, b]] of d3.pairs(datevalues)) {
+              for (let i = 0; i < k; ++i) {
+                const t = i / k;
+                keyframes.push([
+                  new Date(ka * (1 - t) + kb * t),
+                  rank(name => (a.get(name) || 0) * (1 - t) + (b.get(name) || 0) * t)
+                ]);
+              }
+            }
+            keyframes.push([new Date(kb), rank(name => b.get(name) || 0)]);
+            return keyframes;
+          };
+
+        console.log(keyframes);
+          
+        nameframes = d3.groups(keyframes.flatMap(([, data]) => data), d => d.name);
+        prev = new Map(nameframes.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a])));
+        next = new Map(nameframes.flatMap(([, data]) => d3.pairs(data)));*/
+
+
     });
 
     return(
