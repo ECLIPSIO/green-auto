@@ -4,6 +4,7 @@ import infoIcon from '../img/ico-info.svg';
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
 import {RangeDatePicker} from "react-google-flight-datepicker";
+import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
 export default function HomeTabs(){
 	const histDate = {
@@ -130,7 +131,8 @@ export default function HomeTabs(){
 									<div className="m-title text-uppercase">
                                         Website Hits by Source
                                         <span className="info-msg">
-                                            <img className="ico_info" src={infoIcon} alt="info" />
+                                            <img className="ico_info" src={infoIcon} alt="info" data-tip="Hits By Source" data-for="web-hits"/>
+											<ReactTooltip id='web-hits' place='top' type='light' effect='solid'></ReactTooltip>
                                             <div>
                                             </div>
                                         </span>
@@ -141,7 +143,13 @@ export default function HomeTabs(){
 								</div>
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
-										<div className="m-title text-uppercase mb-0">Leading Interceptions <span className="info-msg"><img className="ico_info" src={infoIcon} alt="info" /> <div></div></span></div>
+										<div className="m-title text-uppercase mb-0">
+											Leading Interceptions 
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='Leading Interceptions' data-for='lead-int'/>
+												<ReactTooltip id='lead-int' type='light' place='top' effect='solid'></ReactTooltip>
+											</span>
+										</div>
 										
 									</div>
 									<div className="cs-table-block">
@@ -218,7 +226,13 @@ export default function HomeTabs(){
 								</div>
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
-										<div className="m-title text-uppercase mb-0">Power Rankings <span className="info-msg"><img className="ico_info" src={infoIcon} alt="info" /> <div></div></span></div>
+										<div className="m-title text-uppercase mb-0">
+											Power Rankings 
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='Power Rankings' data-for='pw-rank'/>
+												<ReactTooltip id='pw-rank' type='light' place='top' effect='solid'></ReactTooltip>
+											</span>
+										</div>
 										<div className="ml-auto">
 											<div className="d-flex align-items-center colors-label">
 												<div>Current <span className="green-box"></span></div>
