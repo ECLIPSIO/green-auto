@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+import axios from 'axios'; 
 import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
@@ -7,42 +8,168 @@ import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
 export default function HomeTabs(){
+	  
+	const numberFormatter = (value, currency = false) => {
+		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+		
+		var sign = value >= 0 ? "" : "-";
+		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+		if(str.indexOf(".") > 0) {
+			parts = str.split(".");
+			str = parts[0];
+		}
+		str = str.split("").reverse();
+		for(var j = 0, len = str.length; j < len; j++) {
+			if(str[j] != ",") {
+				output.push(str[j]);
+				if(i%3 == 0 && j < (len - 1)) {
+					output.push(",");
+				}
+				i++;
+			}
+		}
+		formatted = output.reverse().join("");
+		return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+	}
+
+	const timeFormatter = (seconds, start = 14, length = 5) => {
+		//minutes seconds 14,5  hours minutes seconds 11,8
+		seconds = seconds ? seconds : 0;
+		return new Date(seconds * 1000).toISOString().substr(start, length);
+	}
+
+	const getAnalyticsSection = (value,type = 'number') => {
+
+		if(type == 'time') {
+			return (<div className="m-value">{timeFormatter(value)}</div>);
+		} else if(type == 'currency') {
+			return (<div className="m-value">{numberFormatter(Math.round(value),true)}</div>);
+		} else if(type == 'percent') {
+			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
+		}
+
+		return (<div className="m-value">{numberFormatter(value)}</div >);
+	}
+
+	const getAnalyticsIndicator = (value,reverseColor = false) => {
+
+		if(value >= 0) {
+			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(Math.round(value * 100))} %</div>);
+		} 
+
+		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
+	}
+
+	var tempDate = new Date();
+	if(tempDate.getDate() >= 7) tempDate.setDate(1);
+	else {
+		tempDate.setMonth(tempDate.getMonth() - 1);
+		tempDate.setDate(1);
+	}
+	tempDate.setHours(0,0,0,0);
+	const [currStartDate, setCurrStartDate] = useState(tempDate);
+
+	var tempDate = new Date();
+	if(tempDate.getDate() < 7) tempDate.setDate(0);
+	tempDate.setHours(0,0,0,0);
+	const [currEndDate, setCurrEndDate] = useState(tempDate);
+
+	var tempDate = new Date(currStartDate.getTime());
+	tempDate.setMonth(tempDate.getMonth() - 1);
+	const [histStartDate, setHistStartDate] = useState(tempDate);
+
+	var tempDate = new Date(currEndDate.getTime());
+	tempDate.setMonth(tempDate.getMonth() - 1);
+	if(tempDate.getMonth() != histStartDate.getMonth()) {
+		tempDate = new Date(histStartDate.getTime());
+		tempDate.setMonth(tempDate.getMonth() + 1);
+		tempDate.setDate(0);
+	}
+	const [histEndDate, setHistEndDate] = useState(tempDate);
+
 	const histDate = {
-		start : new Date("2022-01-01"),
-		end   : new Date("2022-01-31"),
+		start : histStartDate,
+		end   : histEndDate,
 		startPlace: "From",
 		endPlace: "To",
 		class : "hist-dates"
 	};
 	
 	const currDate = {
-		start : new Date("2022-01-01"),
-		end   : new Date("2022-01-31"),
+		start : currStartDate,
+		end   : currEndDate,
 		startPlace: "From",
 		endPlace: "To",
 		class : "curr-dates"
 	};
-	const [histStartDate, setHistStartDate] = useState(histDate.start);
-	const [histEndDate, setHistEndDate] = useState(histDate.end);
-	const [currStartDate, setCurrStartDate] = useState(currDate.start);
-	const [currEndDate, setCurrEndDate] = useState(currDate.end);
-    // console.log('Init');
+	
 	const histDateChanges = (...dates) =>{
-		console.table({
-			histS:dates[0],
-			histE:dates[1]
-		});
-		// setHistStartDate(dates[0]);
-		// setHistEndDate(dates[1]);
+		setHistStartDate(dates[0]);
+		setHistEndDate(dates[1]);
 	};
 	const currDateChanges = (...dates) =>{
-		console.table({
-			currS:dates[0],
-			currE:dates[1]
-		});
-		// setCurrStartDate(dates[0]);
-		// setCurrEndDate(dates[1]);
+		setCurrStartDate(dates[0]);
+		setCurrEndDate(dates[1]);
 	};
+
+	var gas_data;
+	
+	const protocol = window.location.protocol;
+	const url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/analytics/gas.php";
+
+	//const [searchParams, setSearchParams] = useSearchParams();
+
+	const [isLoading, setLoading] = useState(true);
+	const [analyticsData, setAnalyticsData] = useState();
+
+	const buildUrl = () => {
+		console.table({
+			histS:histStartDate,
+			histE:histEndDate,
+			currS:currStartDate,
+			currE:currEndDate
+		});
+
+		const queryParams = new URLSearchParams(window.location.search);
+
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + queryParams.get('dealership');
+
+		console.log(build_url);
+
+		return build_url;
+	}
+
+	const prevCurrStart = useRef(0);
+	const prevCurrEnd = useRef(0);
+	const prevHistStart = useRef(0);
+	const prevHistEnd = useRef(0);
+
+	useEffect(() => {
+
+		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
+
+			setLoading(true);
+			console.log("getting data");
+
+			prevCurrStart.current = currStartDate.getTime();
+			prevCurrEnd.current = currEndDate.getTime();
+			prevHistStart.current = histStartDate.getTime();
+			prevHistEnd.current = histEndDate.getTime();
+
+			axios.get(buildUrl()).then(function (response) {
+				gas_data = response.data;
+				console.log("got data");
+				console.log(gas_data);
+				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+				setAnalyticsData(gas_data);
+				setLoading(false);
+
+				if(!gas_data || gas_data.hist_combined.length == 0) alert("No data for current historical period");
+			});
+		} else 
+			console.log("all dates not set, or dates not changed");
+	}, [currStartDate, currEndDate, histStartDate, histEndDate]);
+
     return(
         <>
         <div className="custom-tabs">
@@ -102,28 +229,28 @@ export default function HomeTabs(){
 									<div className="d-flex">
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Current Spend</div>
-											<div className="m-value">$921</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
+											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
+											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Website Hits</div>
-											<div className="m-value">823</div>
-											<div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Time on Site</div>
-											<div className="m-value">3:45</div>
-											<div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Pages / Session</div>
-											<div className="m-value">174</div>
-											<div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											<div className="m-value">0.431</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'],'percent') : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
 									</div>
 								</div>
@@ -138,7 +265,7 @@ export default function HomeTabs(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-										<RaceChart/>
+									{isLoading || analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
@@ -166,60 +293,18 @@ export default function HomeTabs(){
 											    </tr>
 										  	</thead>
 										  	<tbody>
-											    <tr>
-											      	<td>Carmax Albany</td>
-											      	<td>21</td>
-											      	<td>18</td>
-											      	<td>$2.23</td>
-											      	<td>1:45</td>
-											      	<td>12</td>
-											      	<td>2.4%</td>
-											    </tr>
-											    <tr>
-											      	<td>Used Cars Albany</td>
-											      	<td>65</td>
-											      	<td>54</td>
-											      	<td>$1.09</td>
-											      	<td>2:16</td>
-											      	<td>24</td>
-											      	<td>1.6%</td>
-											    </tr>
-											    <tr>
-											      	<td>Carmax Albany</td>
-											      	<td>21</td>
-											      	<td>18</td>
-											      	<td>$2.23</td>
-											      	<td>1:45</td>
-											      	<td>12</td>
-											      	<td>2.4%</td>
-											    </tr>
-											    <tr>
-											      	<td>Used Cars Albany</td>
-											      	<td>65</td>
-											      	<td>54</td>
-											      	<td>$1.09</td>
-											      	<td>2:16</td>
-											      	<td>24</td>
-											      	<td>1.6%</td>
-											    </tr>
-											    <tr>
-											      	<td>Carmax Albany</td>
-											      	<td>21</td>
-											      	<td>18</td>
-											      	<td>$2.23</td>
-											      	<td>1:45</td>
-											      	<td>12</td>
-											      	<td>2.4%</td>
-											    </tr>
-											    <tr>
-											      	<td>Used Cars Albany</td>
-											      	<td>65</td>
-											      	<td>54</td>
-											      	<td>$1.09</td>
-											      	<td>2:16</td>
-											      	<td>24</td>
-											      	<td>1.6%</td>
-											    </tr>
+												{analyticsData && analyticsData.top_queries && Object.keys(analyticsData.top_queries).map(function(index) {
+														return <tr key={index}>
+															<td>{index}</td>
+															<td>{analyticsData.top_queries[index]["ga:sessions"]}</td>
+															<td>{analyticsData.top_queries[index]["ga:sessions_hist"] ? analyticsData.top_queries[index]["ga:sessions_hist"] : "-"}</td>
+															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["cost"]),true)}</td>
+															<td>{timeFormatter(analyticsData.top_queries[index]["ga:avgSessionDuration"])}</td>
+															<td>{numberFormatter(analyticsData.top_queries[index]["ga:pageviewsPerSession"])}</td>
+															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"]))}%</td>
+														</tr>
+													})
+												}
 										  	</tbody>
 										</table>
 									</div>
@@ -239,9 +324,8 @@ export default function HomeTabs(){
 												<div className="ml-40">Historical <span className="red-box"></span></div>
 											</div>
 										</div>
-									</div>
-									
-									<BarChart />
+									</div>									
+									{isLoading || analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
