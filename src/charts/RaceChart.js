@@ -170,7 +170,8 @@ function BarChartRace(brandData){
         y: d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1,
         'text-anchor': 'end'
       })
-      .html(d => d.name);
+      .html('');
+      // .html(d => d.name);
 
     svg.selectAll('text.valueLabel')
       .data(yearSlice, d => d.name)
@@ -178,10 +179,10 @@ function BarChartRace(brandData){
       .append('text')
       .attrs({
         class: 'valueLabel',
-        x: d => x(d.value) + 5,
+        x: d => x(d.value) + 1,
         y: d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1,
       })
-      .text(d => d3.format(',.0f')(d.lastValue));
+      .text(d => d.name + '(' + d3.format(',.0f')(d.lastValue) + ')');
       let yearText = svg.append('text')
       .attrs({
         class: 'yearText',
@@ -265,7 +266,8 @@ function BarChartRace(brandData){
           y: d => y(top_n + 1) + 5 + ((y(1) - y(0)) / 2),
           'text-anchor': 'end'
         })
-        .html(d => d.name)
+        .html('')
+        // .html(d => d.name)
         .transition()
         .duration(tickDuration)
         .ease(d3.easeLinear)
@@ -300,10 +302,10 @@ function BarChartRace(brandData){
         .append('text')
         .attrs({
           class: 'valueLabel',
-          x: d => x(d.value) + 5,
+          x: d => x(d.value) + 1,
           y: d => y(top_n + 1) + 5,
         })
-        .text(d => d3.format(',.0f')(d.lastValue))
+        .text(d => d.name + '(' +d3.format(',.0f')(d.lastValue)+ ')')
         .transition()
         .duration(tickDuration)
         .ease(d3.easeLinear)
@@ -321,13 +323,13 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          x: d => x(d.value) + 5,
+          x: d => x(d.value) + 1,
           y: d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1
         })
         .tween("text", function (d) {
           let i = d3.interpolateRound(d.lastValue, d.value);
           return function (t) {
-            this.textContent = d3.format(',')(i(t));
+            this.textContent = d.name + '(' +d3.format(',')(i(t))+ ')';
           };
         });
 
@@ -337,7 +339,7 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          x: d => x(d.value) + 5,
+          x: d => x(d.value) + 1,
           y: d => y(top_n + 1) + 5
         })
         .remove();

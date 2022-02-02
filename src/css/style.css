@@ -543,7 +543,7 @@ text{
     display: none;
   }
   .valueLabel{
-      font-size: 8px;
+      font-size: 6px;
       fill: white;
   }
 
@@ -666,4 +666,13 @@ text{
 
 .react-google-flight-datepicker .date.is-focus::after {
     border:none !important;
+}
+
+/* Popup */
+
+div#login_modal {
+    border-radius: 20px !important;
+    width: 33% !important;
+    background-color: #353a40 !important;
+    color: #fff;
 }
