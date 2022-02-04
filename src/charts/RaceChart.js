@@ -50,7 +50,7 @@ function BarChartRace(brandData){
         .append("svg")
         // Responsive SVG needs these 2 attributes and no width and height attr.
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 600 300")
+        .attr("viewBox", "0 0 "+width+" "+(height-100)+"")
         // Class to make it responsive.
         .classed("svg-content-responsive", true);
     console.log('start')
@@ -179,15 +179,15 @@ function BarChartRace(brandData){
       .append('text')
       .attrs({
         class: 'valueLabel',
-        x: d => x(d.value) + 1,
+        x: d => (x(d.value) > 530 && x(d.value)-105 > 0) ? x(d.value) - 105 : x(d.value) + 3,
         y: d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1,
       })
-      .text(d => d.name + '(' + d3.format(',.0f')(d.lastValue) + ')');
+      .text(d => d.name + ' (' + d3.format(',.0f')(d.lastValue) + ')');
       let yearText = svg.append('text')
       .attrs({
         class: 'yearText',
-        x: width - margin.right -40,
-        y: height - 25
+        x: width - margin.right - 40,
+        y: height - 100
       })
       .styles({
         'text-anchor': 'end'
@@ -302,10 +302,10 @@ function BarChartRace(brandData){
         .append('text')
         .attrs({
           class: 'valueLabel',
-          x: d => x(d.value) + 1,
+          x: d => (x(d.value) > 530 && x(d.value)-105 > 0) ? x(d.value) - 105 : x(d.value) + 3,
           y: d => y(top_n + 1) + 5,
         })
-        .text(d => d.name + '(' +d3.format(',.0f')(d.lastValue)+ ')')
+        .text(d => d.name + ' (' +d3.format(',.0f')(d.lastValue)+ ')')
         .transition()
         .duration(tickDuration)
         .ease(d3.easeLinear)
@@ -323,13 +323,13 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          x: d => x(d.value) + 1,
+          x: d => (x(d.value) > 530 && x(d.value)-105 > 0) ? x(d.value) - 105 : x(d.value) + 3,
           y: d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1
         })
         .tween("text", function (d) {
           let i = d3.interpolateRound(d.lastValue, d.value);
           return function (t) {
-            this.textContent = d.name + '(' +d3.format(',')(i(t))+ ')';
+            this.textContent = d.name + ' (' +d3.format(',')(i(t))+ ')';
           };
         });
 
@@ -339,7 +339,7 @@ function BarChartRace(brandData){
         .duration(tickDuration)
         .ease(d3.easeLinear)
         .attrs({
-          x: d => x(d.value) + 1,
+          x: d => (x(d.value) > 530 && x(d.value)-105 > 0) ? x(d.value) - 105 : x(d.value) + 3,
           y: d => y(top_n + 1) + 5
         })
         .remove();
