@@ -7,6 +7,17 @@ import RaceChart from '../charts/RaceChart';
 import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
+
+import vehicles from '../data/vehicle.json';
+import $ from 'jquery';
+// import OwlCarousel from 'react-owl-carousel';
+import 'owl.carousel/dist/assets/owl.carousel.css';
+
+window.jQuery = $;
+window.$ = $;
+global.jQuery = $;
+const OwlCarousel = require('react-owl-carousel');
+
 export default function HomeTabs(){
 	  
 	const numberFormatter = (value, currency = false) => {
@@ -68,15 +79,18 @@ export default function HomeTabs(){
 	}
 	tempDate.setHours(0,0,0,0);
 	const [currStartDate, setCurrStartDate] = useState(tempDate);
+	const [currSeoStartDate, setCurrSeoStartDate] = useState(tempDate);
 
 	var tempDate = new Date();
 	if(tempDate.getDate() < 7) tempDate.setDate(0);
 	tempDate.setHours(0,0,0,0);
 	const [currEndDate, setCurrEndDate] = useState(tempDate);
+	const [currSeoEndDate, setCurrSeoEndDate] = useState(tempDate);
 
 	var tempDate = new Date(currStartDate.getTime());
 	tempDate.setMonth(tempDate.getMonth() - 1);
 	const [histStartDate, setHistStartDate] = useState(tempDate);
+	const [histSeoStartDate, setHistSeoStartDate] = useState(tempDate);
 
 	var tempDate = new Date(currEndDate.getTime());
 	tempDate.setMonth(tempDate.getMonth() - 1);
@@ -86,6 +100,7 @@ export default function HomeTabs(){
 		tempDate.setDate(0);
 	}
 	const [histEndDate, setHistEndDate] = useState(tempDate);
+	const [histSeoEndDate, setHistSeoEndDate] = useState(tempDate);
 
 	const histDate = {
 		start : histStartDate,
@@ -102,6 +117,22 @@ export default function HomeTabs(){
 		endPlace: "To",
 		class : "curr-dates"
 	};
+
+	const histSeoDate = {
+		start	: histSeoStartDate,
+		end 	: histSeoEndDate,
+		startPlace : 'From',
+		endPlace : 'To',
+		class	: 'seo-curr-dates' 
+	};
+
+	const currSeoDate = {
+		start	: currSeoStartDate,
+		end 	: currSeoEndDate,
+		startPlace : 'From',
+		endPlace : 'To',
+		class	: 'seo-curr-dates' 
+	};
 	
 	const histDateChanges = (...dates) =>{
 		setHistStartDate(dates[0]);
@@ -110,6 +141,15 @@ export default function HomeTabs(){
 	const currDateChanges = (...dates) =>{
 		setCurrStartDate(dates[0]);
 		setCurrEndDate(dates[1]);
+	};
+
+	const histSeoDateChanges = (...dates) =>{
+		setHistSeoStartDate(dates[0]);
+		setHistSeoEndDate(dates[1]);
+	};
+	const currSeoDateChanges = (...dates) =>{
+		setCurrSeoStartDate(dates[0]);
+		setCurrSeoEndDate(dates[1]);
 	};
 
 	var gas_data;
@@ -178,7 +218,7 @@ export default function HomeTabs(){
 				    	<a className="nav-link active" id="cs_1_tab" data-toggle="tab" href="#cs_1" role="tab" aria-controls="cs_1" aria-selected="true">Key Metrics</a>
 				  	</li>
 				  	<li className="nav-item">
-				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">Section Two</a>
+				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
 				  	</li>
 				  	<li className="nav-item">
 				    	<a className="nav-link" id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">Section Three</a>
@@ -188,7 +228,7 @@ export default function HomeTabs(){
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
 						<div className="gray-box pl-0 pr-0">
 							<div className="container-fluid">
-									<div className="row date-filter-block">
+								<div className="row date-filter-block">
 									<div className="col-md-5">
 										<label className="custom-label text-uppercase">Historical</label>
 										<RangeDatePicker
@@ -332,7 +372,272 @@ export default function HomeTabs(){
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_2" role="tabpanel" aria-labelledby="cs_2_tab">
 						<div className="gray-box">
-							<div className="container-fluid"></div>
+							<div className="container-fluid">
+								{/* Date Range Block */}
+								<div className="row date-filter-block">
+									<div className="col-md-5">
+										<label className="custom-label text-uppercase">Historical</label>
+										<RangeDatePicker
+											startDate={histSeoStartDate}
+											endDate={histSeoEndDate}
+											onChange={histSeoDateChanges}
+											dateFormat="D MMM YYYY"
+											monthFormat="MMM YYYY"
+											startDatePlaceholder={histSeoDate.startPlace}
+											endDatePlaceholder={histSeoDate.endPlace}
+											disabled={false}
+											className={histSeoDate.class}
+											startWeekDay="monday"
+											highlightToday={true}
+										/>
+									</div>
+									<div className="col-md-2"></div>
+									<div className="col-md-5">
+										<label className="custom-label text-uppercase">Current</label>
+										<RangeDatePicker
+											startDate={currSeoStartDate}
+											endDate={currSeoEndDate}
+											onChange={currDateChanges}
+											dateFormat="D MMM YYYY"
+											monthFormat="MMM YYYY"
+											startDatePlaceholder={currSeoDate.startPlace}
+											endDatePlaceholder={currSeoDate.endPlace}
+											disabled={false}
+											className={currSeoDate.class}
+											startWeekDay="monday"
+											highlightToday={true}
+										/>
+									</div>
+								</div>
+
+								{/* Data Slide Block */}
+								<div className="l-gray-box mt-40">
+									{/* <div className=""> */}
+									<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Current Spend</div>
+											<div className="m-value">$921</div>
+											<div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Website Hits</div>
+											<div className="m-value">823</div>
+											<div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Time on Site</div>
+											<div className="m-value">3:45</div>
+											<div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Pages / Session</div>
+											<div className="m-value">174</div>
+											<div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
+											<div className="m-value">0.431</div>
+											<div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Current Spend</div>
+											<div className="m-value">$921</div>
+											<div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Website Hits</div>
+											<div className="m-value">823</div>
+											<div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Time on Site</div>
+											<div className="m-value">3:45</div>
+											<div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Pages / Session</div>
+											<div className="m-value">174</div>
+											<div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
+											<div className="m-value">0.431</div>
+											<div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
+										</div>
+									</OwlCarousel>
+									{/* </div> */}
+								</div>
+											
+								{/* Seo Report */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											SEO Report 
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="SEO Report" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid'></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									<div className="cs-table-block">
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th scope="col">Keyword</th>
+													<th scope="col">Clicks</th>
+													<th scope="col">Impressions</th>
+													<th scope="col">Avg Position</th>
+													<th scope="col">CTR</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+												<tr>
+													<td>Used Cars Albany</td>
+													<td>65</td>
+													<td>54</td>
+													<td>24</td>
+													<td>1.6%</td>
+												</tr>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+												<tr>
+													<td>Used Cars Albany</td>
+													<td>65</td>
+													<td>54</td>
+													<td>24</td>
+													<td>1.6%</td>
+												</tr>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+											</tbody>
+										</table>
+										<div className="text-center mt-35">
+											<a href="#" className="green-small-btn">Show 10 More</a>
+										</div>
+									</div>
+								</div>
+
+								{/* Vehicles Block */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											Top 5 Vehicle Detail Page Views
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="Top 5 Vehicle" data-for="top-vs"/>
+												<ReactTooltip id='top-vs' place='top' type='light' effect='solid'></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									<div className="d-flex vehicle-block-flex">
+										{Object.keys(vehicles).map(index => 
+										<div className="vehicle-block" key={index}>
+											<div className="vehicle-box">
+												<div className="vehicle-top">
+													<img src={require('../img/' +vehicles[index].img)} />
+												</div>
+												<div className="vehicle-bottom">
+													<div className="vehicle-title">{vehicles[index].title}</div>
+													<div className="vb-flex d-flex">
+														<div className="w-50">
+															<div className="vb-label">Current</div>
+															<div className="vb-label-count">{vehicles[index].current}</div>
+														</div>
+														<div className="w-50 vb-brder-l">
+															<div className="vb-label">Historical</div>
+															<div className="vb-label-count">{vehicles[index].historic}</div>
+														</div>
+													</div>
+													<div className={vehicles[index].type ? 'p-value green' : 'p-value red'}><div className={vehicles[index].type ? 'up-arrow' : 'down-arrow'}></div> {vehicles[index].value} %</div>
+												</div>
+											</div>
+										</div>
+										)}
+									</div>
+								</div>
+
+								{/* Traffic Block */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											Referral Traffic
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="Referral Traffic" data-for="ref-tf"/>
+												<ReactTooltip id='ref-tf' place='top' type='light' effect='solid'></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									<div className="cs-table-block">
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th scope="col">Source</th>
+													<th scope="col">Clicks</th>
+													<th scope="col">Impressions</th>
+													<th scope="col">Avg Position</th>
+													<th scope="col">CTR</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+												<tr>
+													<td>Used Cars Albany</td>
+													<td>65</td>
+													<td>54</td>
+													<td>24</td>
+													<td>1.6%</td>
+												</tr>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+												<tr>
+													<td>Used Cars Albany</td>
+													<td>65</td>
+													<td>54</td>
+													<td>24</td>
+													<td>1.6%</td>
+												</tr>
+												<tr>
+													<td>Carmax Albany</td>
+													<td>21</td>
+													<td>18</td>
+													<td>12</td>
+													<td>2.4%</td>
+												</tr>
+											</tbody>
+										</table>
+										<div className="text-center mt-35">
+											<a href="#" className="green-small-btn">Show 10 More</a>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">

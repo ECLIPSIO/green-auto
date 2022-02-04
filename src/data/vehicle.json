@@ -1,0 +1,42 @@
+[
+    {
+        "title"     : "2018 Ferrari Pista",
+        "current"   : 60,
+        "historic"  : 57,
+        "type"      : true,
+        "value"     : "0.7",
+        "img"       : "vehicle-img.jpg"
+    },
+    {
+        "title"     : "2018 Ferrari Pista",
+        "current"   : 60,
+        "historic"  : 57,
+        "type"      : false,
+        "value"     : "1.7",
+        "img"       : "vehicle-img.jpg"
+    },
+    {
+        "title"     : "2018 Ferrari Pista",
+        "current"   : 60,
+        "historic"  : 57,
+        "type"      : false,
+        "value"     : "0.5",
+        "img"       : "vehicle-img.jpg"
+    },
+    {
+        "title"     : "2018 Ferrari Pista",
+        "current"   : 60,
+        "historic"  : 57,
+        "type"      : true,
+        "value"     : "2.7",
+        "img"       : "vehicle-img.jpg"
+    },
+    {
+        "title"     : "2018 Ferrari Pista",
+        "current"   : 60,
+        "historic"  : 57,
+        "type"      : false,
+        "value"     : "0.9",
+        "img"       : "vehicle-img.jpg"
+    }
+]
