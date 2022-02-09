@@ -4,15 +4,16 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import reportWebVitals from './reportWebVitals';
+import UserContextProvider from './context/UserContext';
 
 
 // import BarRaceChart from './components/BarRaceChart';
 
 ReactDOM.render(
-  <>
+  <UserContextProvider>
     <App />
     {/* <Home /> */}
-  </>,
+  </UserContextProvider>,
   document.getElementById('root')
 );
 

@@ -13,12 +13,17 @@ import $ from 'jquery';
 // import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
+import {useContext} from 'react'
+import {UserContext} from '../context/UserContext';
+
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 const OwlCarousel = require('react-owl-carousel');
 
 export default function HomeTabs(){
+
+	const {user} = useContext(UserContext); 
 	  
 	const numberFormatter = (value, currency = false) => {
 		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
@@ -172,7 +177,7 @@ export default function HomeTabs(){
 
 		const queryParams = new URLSearchParams(window.location.search);
 
-		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + queryParams.get('dealership');
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + user.dealership_id;
 
 		console.log(build_url);
 
@@ -183,10 +188,13 @@ export default function HomeTabs(){
 	const prevCurrEnd = useRef(0);
 	const prevHistStart = useRef(0);
 	const prevHistEnd = useRef(0);
+	const prevDealership = useRef(0);
 
 	useEffect(() => {
 
-		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
+		console.log(user);
+
+		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			setLoading(true);
 			console.log("getting data");
@@ -195,6 +203,7 @@ export default function HomeTabs(){
 			prevCurrEnd.current = currEndDate.getTime();
 			prevHistStart.current = histStartDate.getTime();
 			prevHistEnd.current = histEndDate.getTime();
+			prevDealership.current = user.dealership_id;
 
 			axios.get(buildUrl()).then(function (response) {
 				gas_data = response.data;
@@ -208,7 +217,7 @@ export default function HomeTabs(){
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
-	}, [currStartDate, currEndDate, histStartDate, histEndDate]);
+	}, [currStartDate, currEndDate, histStartDate, histEndDate, user.dealership_id]);
 
     return(
         <>
