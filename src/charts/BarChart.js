@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ChartistGraph from 'react-chartist';
+// import {ctBarLabels} from 'chartist-plugin-barlabels';
 import '../css/chartist.min.css';
-
+// require('chartist');
 const options = {
     seriesBarDistance: 10,
     reverseData: true,
@@ -23,7 +24,7 @@ const options = {
     axisY: {
         offset: 70,
         showGrid: false
-    } 
+    }
 };
 
 const data = {

@@ -187,7 +187,7 @@ function BarChartRace(brandData){
       .attrs({
         class: 'yearText',
         x: width - margin.right - 40,
-        y: height - 100
+        y: height - 110
       })
       .styles({
         'text-anchor': 'end'

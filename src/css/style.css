@@ -379,6 +379,7 @@ body {
     text-transform: uppercase;
     border: none;
     padding: 16px 45px;
+    min-width: 185px;
 }
 .custom-tabs .nav-tabs .nav-link.active {
     border-radius: 5px 5px 0 0;
