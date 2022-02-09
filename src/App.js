@@ -23,18 +23,37 @@ import './js/bootstrap.min.js';
 // require('./js/moment.min.js');
 // require('./js/bootstrap.min.js');
 // require('bootstrap');
-
+import {useEffect, useContext, useRef} from 'react'
+import {UserContext} from './context/UserContext';
 
 
 function App() {
 
+  const {user, loggedInCheck} = useContext(UserContext); 
 
-  console.log('I was triggered during render');
+  const checkedLogin = useRef(null);
+  const test = false;
+
+  useEffect(() => {
+    // You need to restrict it at some point
+    // This is just dummy code and should be replaced by actual
+    if (!checkedLogin.current) {
+      checkLogin();
+    }
+  }, []);
+
+  const checkLogin = async () => {
+    console.log('checking login');
+    await loggedInCheck();
+    checkedLogin.current = true;
+    console.log(user);
+  }
+
   return (
     <Router>
-      <Header />
+      {checkedLogin.current && (<Header />)}
       <Routes>
-        <Route exact path="/reporting/" element={<Home />}/>
+        {checkedLogin.current ? (<Route exact path="/reporting/" element={<Home />}/>) : (<Route exact path="/reporting/"/>)}
       </Routes>
       <Footer />
     </Router>

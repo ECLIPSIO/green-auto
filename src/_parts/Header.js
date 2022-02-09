@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useContext, useEffect} from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import jQuery from 'jquery';
@@ -8,9 +8,8 @@ import jQuery from 'jquery';
 import logo from '../img/GAS-Logo.svg';
 import user_icon  from '../img/icon-user.png';
 
-import FormModal from "../_parts/Modals";
+import LoginModal from "../_parts/Modals";
 
-import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
 // require('bootstrap');
@@ -29,6 +28,10 @@ const openMobileMenu = (e) => {
 //     jQuery('.overlay-bg').removeClass('active');
 // };
 export default function Header(){
+    const {user, changeUserDealership} = useContext(UserContext); 
+
+    
+
     useEffect(() => {
         // jQuery(".mobile-inner-header-icon").click(function(){
 		//     jQuery(this).toggleClass("mobile-inner-header-icon-click mobile-inner-header-icon-out");
@@ -42,9 +45,13 @@ export default function Header(){
 		//     jQuery('body').removeClass('overflow-active');
 		//     jQuery('.overlay-bg').removeClass('active');
 		// });
+
+        setShowModal(!user);
     });
 
-    const user = useContext(UserContext); 
+    const [currDealership, setCurrDealership] = useState(null);
+
+    
     
     const [showModal, setShowModal] = useState(true);
 
@@ -53,13 +60,20 @@ export default function Header(){
         setShowModal(!showModal)
     }
 
+    const changeDealership = async (dealership) => {
+        changeUserDealership(dealership);
+        console.log(user);
+        setCurrDealership(dealership);
+        
+    }
+
     //  get page name
     // const location = useLocation();
     // const currentlocation = location.pathname.slice(1);
 
     return(
         <>
-        {!user && (<FormModal isOpen={showModal} toggle={toggleModal}/>)}
+        {showModal && (<LoginModal isOpen={showModal} toggle={toggleModal}/>)}
         <header className="header-wrap">
             <div className="container-fluid">
                 <div className="header-block">
@@ -94,14 +108,25 @@ export default function Header(){
                         </div>
                         <div className="login-block login-for-desktop">
                             <div className="btn-group custom-dropdown">
-                                <button type="button" className="btn btn-secondary dropdown-toggle text-green" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img src={user_icon} alt="GAS - User"/> Rick James
-                                </button>
-                                <div className="dropdown-menu dropdown-menu-right">
-                                    <button className="dropdown-item" type="button" onClick={toggleModal}>Action</button>
-                                    <button className="dropdown-item" type="button">Another action</button>
-                                    <button className="dropdown-item" type="button">Something else here</button>
-                                </div>
+                                {
+                                    user && user.role == "admin" &&
+                                    (<button type="button" className="btn btn-secondary dropdown-toggle text-green" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src={user_icon} alt="GAS - User"/> {user.dealership}
+                                    </button>)
+                                } 
+                                {
+                                    user && user.role != "admin" &&
+                                    (<button type="button" className="btn btn-secondary dropdown-toggle text-green" >
+                                        <img src={user_icon} alt="GAS - User"/> {user.dealership}
+                                    </button>)
+                                }
+                                {user && user.role == "admin" && <div className="dropdown-menu dropdown-menu-right">                                    
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('bulauto')}>Bul Auto Sales</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcalfa')}>Gold Coast Alfa Romeo</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcmaserati')}>Gold Coast Maserati</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports')}>Manheim Imports</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando')}>McLaren Orlando</button>
+                                </div>}
                             </div>
                         </div>
                         <div className="mobile-inner-header">
