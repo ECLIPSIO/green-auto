@@ -16,6 +16,9 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
+import SeoTable from './SeoTable';
+import ReferralTable from './ReferralTable';
+
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -488,59 +491,7 @@ export default function HomeTabs(){
 											</span>
 										</div>
 									</div>
-									<div className="cs-table-block">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th scope="col">Keyword</th>
-													<th scope="col">Clicks</th>
-													<th scope="col">Impressions</th>
-													<th scope="col">Avg Position</th>
-													<th scope="col">CTR</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-												<tr>
-													<td>Used Cars Albany</td>
-													<td>65</td>
-													<td>54</td>
-													<td>24</td>
-													<td>1.6%</td>
-												</tr>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-												<tr>
-													<td>Used Cars Albany</td>
-													<td>65</td>
-													<td>54</td>
-													<td>24</td>
-													<td>1.6%</td>
-												</tr>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-											</tbody>
-										</table>
-										<div className="text-center mt-35">
-											<a href="#" className="green-small-btn">Show 10 More</a>
-										</div>
-									</div>
+									<SeoTable />
 								</div>
 
 								{/* Vehicles Block */}
@@ -592,59 +543,7 @@ export default function HomeTabs(){
 											</span>
 										</div>
 									</div>
-									<div className="cs-table-block">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th scope="col">Source</th>
-													<th scope="col">Clicks</th>
-													<th scope="col">Impressions</th>
-													<th scope="col">Avg Position</th>
-													<th scope="col">CTR</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-												<tr>
-													<td>Used Cars Albany</td>
-													<td>65</td>
-													<td>54</td>
-													<td>24</td>
-													<td>1.6%</td>
-												</tr>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-												<tr>
-													<td>Used Cars Albany</td>
-													<td>65</td>
-													<td>54</td>
-													<td>24</td>
-													<td>1.6%</td>
-												</tr>
-												<tr>
-													<td>Carmax Albany</td>
-													<td>21</td>
-													<td>18</td>
-													<td>12</td>
-													<td>2.4%</td>
-												</tr>
-											</tbody>
-										</table>
-										<div className="text-center mt-35">
-											<a href="#" className="green-small-btn">Show 10 More</a>
-										</div>
-									</div>
+									<ReferralTable/>
 								</div>
 							</div>
 						</div>

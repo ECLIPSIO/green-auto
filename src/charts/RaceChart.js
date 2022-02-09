@@ -39,7 +39,7 @@ function BarChartRace(brandData){
             'stroke-linejoin': 'round',
             opacity: 0
         });
-        console.log('Hal Calleds');
+        // console.log('Hal Calleds');
     };
 
     d3.select("#raceGraph").empty();
@@ -50,7 +50,7 @@ function BarChartRace(brandData){
         .append("svg")
         // Responsive SVG needs these 2 attributes and no width and height attr.
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 "+width+" "+(height-100)+"")
+        .attr("viewBox", "0 0 "+width+" 600")
         // Class to make it responsive.
         .classed("svg-content-responsive", true);
     console.log('start')
@@ -86,7 +86,8 @@ function BarChartRace(brandData){
       left: 0
     };
 
-    let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
+    // let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
+    let barPadding = 5;
     let year = firstYear;
 
     brandData.forEach(d => {
@@ -136,7 +137,8 @@ function BarChartRace(brandData){
         x: x(0) + 1,
         width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
         y: d => y(d.rank) + 5,
-        height: y(1) - y(0) - barPadding
+        height: 21.5 // For bar height
+        // height: y(1) - y(0) - barPadding
       })
       .styles({
         fill: d => 'url(#grad)' //"rgb(84 138 84)"//d.colour //#74bc74
@@ -187,7 +189,7 @@ function BarChartRace(brandData){
       .attrs({
         class: 'yearText',
         x: width - margin.right - 40,
-        y: height - 110
+        y: height - 100
       })
       .styles({
         'text-anchor': 'end'
@@ -223,7 +225,8 @@ function BarChartRace(brandData){
           x: x(0) + 1,
           width: d => x(d.value) > x(0) + 1 ? x(d.value) - x(0) - 1 : 0,
           y: d => y(top_n + 1) + 5,
-          height: y(1) - y(0) - barPadding
+          height: 21.5 // for bar height
+          // height: y(1) - y(0) - barPadding
         })
         .styles({
           fill: d => 'url(#grad)' //"rgb(84 138 84)" //d.colour
