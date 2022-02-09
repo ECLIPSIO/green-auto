@@ -13,12 +13,17 @@ import $ from 'jquery';
 // import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
+import {useContext} from 'react'
+import {UserContext} from '../context/UserContext';
+
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 const OwlCarousel = require('react-owl-carousel');
 
 export default function HomeTabs(){
+
+	const user = useContext(UserContext); 
 	  
 	const numberFormatter = (value, currency = false) => {
 		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
@@ -186,7 +191,7 @@ export default function HomeTabs(){
 
 	useEffect(() => {
 
-		if(currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
+		if(user && currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
 
 			setLoading(true);
 			console.log("getting data");

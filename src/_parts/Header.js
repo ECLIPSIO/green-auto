@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import jQuery from 'jquery';
@@ -7,6 +7,11 @@ import jQuery from 'jquery';
 
 import logo from '../img/GAS-Logo.svg';
 import user_icon  from '../img/icon-user.png';
+
+import FormModal from "../_parts/Modals";
+
+import {useContext} from 'react'
+import {UserContext} from '../context/UserContext';
 
 // require('bootstrap');
 
@@ -39,12 +44,22 @@ export default function Header(){
 		// });
     });
 
+    const user = useContext(UserContext); 
+    
+    const [showModal, setShowModal] = useState(true);
+
+    const toggleModal = () => {
+        console.log("called toggle modal");
+        setShowModal(!showModal)
+    }
+
     //  get page name
     // const location = useLocation();
     // const currentlocation = location.pathname.slice(1);
 
     return(
         <>
+        {!user && (<FormModal isOpen={showModal} toggle={toggleModal}/>)}
         <header className="header-wrap">
             <div className="container-fluid">
                 <div className="header-block">
@@ -83,7 +98,7 @@ export default function Header(){
                                     <img src={user_icon} alt="GAS - User"/> Rick James
                                 </button>
                                 <div className="dropdown-menu dropdown-menu-right">
-                                    <button className="dropdown-item" type="button">Action</button>
+                                    <button className="dropdown-item" type="button" onClick={toggleModal}>Action</button>
                                     <button className="dropdown-item" type="button">Another action</button>
                                     <button className="dropdown-item" type="button">Something else here</button>
                                 </div>
