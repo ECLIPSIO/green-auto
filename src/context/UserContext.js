@@ -67,11 +67,14 @@ export const UserContextProvider = ({children}) => {
         }
     }
 
-    const changeUserDealership = (dealership_id) => {
+    const changeUserDealership = (dealership_id,dealership) => {
         const tempUserData = userData;
         tempUserData.dealership_id = dealership_id;
-        
+        tempUserData.dealership = dealership;
+
         setUserData(tempUserData);
+
+        console.log(userData);
     }
 
     useEffect(() => {

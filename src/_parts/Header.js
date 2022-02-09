@@ -27,7 +27,7 @@ const openMobileMenu = (e) => {
 //     jQuery('body').removeClass('overflow-active');
 //     jQuery('.overlay-bg').removeClass('active');
 // };
-export default function Header(){
+export default function Header(props){
     const {user, changeUserDealership} = useContext(UserContext); 
 
     
@@ -60,11 +60,10 @@ export default function Header(){
         setShowModal(!showModal)
     }
 
-    const changeDealership = async (dealership) => {
-        changeUserDealership(dealership);
-        console.log(user);
-        setCurrDealership(dealership);
-        
+    const changeDealership = (dealership_id,dealership) => {
+        changeUserDealership(dealership_id,dealership);
+        setCurrDealership(dealership_id);
+        props.callBack(dealership_id);        
     }
 
     //  get page name
@@ -121,11 +120,11 @@ export default function Header(){
                                     </button>)
                                 }
                                 {user && user.role == "admin" && <div className="dropdown-menu dropdown-menu-right">                                    
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('bulauto')}>Bul Auto Sales</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcalfa')}>Gold Coast Alfa Romeo</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcmaserati')}>Gold Coast Maserati</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports')}>Manheim Imports</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando')}>McLaren Orlando</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('bulauto','Bul Auto Sales')}>Bul Auto Sales</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcalfa','Gold Coast Alfa Romeo')}>Gold Coast Alfa Romeo</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcmaserati','Gold Coast Maserati')}>Gold Coast Maserati</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports','Manheim Imports')}>Manheim Imports</button>
+                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando','McLaren Orlando')}>McLaren Orlando</button>
                                 </div>}
                             </div>
                         </div>

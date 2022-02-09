@@ -23,7 +23,7 @@ import './js/bootstrap.min.js';
 // require('./js/moment.min.js');
 // require('./js/bootstrap.min.js');
 // require('bootstrap');
-import {useEffect, useContext, useRef} from 'react'
+import {useEffect, useContext, useState} from 'react'
 import {UserContext} from './context/UserContext';
 
 
@@ -31,13 +31,16 @@ function App() {
 
   const {user, loggedInCheck} = useContext(UserContext); 
 
-  const checkedLogin = useRef(null);
-  const test = false;
+  const [currDealership, setCurrDealership] = useState(null);
+
+  const [checkedLogin, setCheckedLogin] = useState(null);
+
+  console.log("triggered during render");
 
   useEffect(() => {
     // You need to restrict it at some point
     // This is just dummy code and should be replaced by actual
-    if (!checkedLogin.current) {
+    if (!checkedLogin) {
       checkLogin();
     }
   }, []);
@@ -45,15 +48,15 @@ function App() {
   const checkLogin = async () => {
     console.log('checking login');
     await loggedInCheck();
-    checkedLogin.current = true;
+    setCheckedLogin(true)
     console.log(user);
   }
 
   return (
     <Router>
-      {checkedLogin.current && (<Header />)}
+      {checkedLogin && (<Header callBack={setCurrDealership}/>)}
       <Routes>
-        {checkedLogin.current ? (<Route exact path="/reporting/" element={<Home />}/>) : (<Route exact path="/reporting/"/>)}
+        {checkedLogin && user ? (<Route exact path="/reporting/" element={<Home />}/>) : (<Route exact path="/reporting/"/>)}
       </Routes>
       <Footer />
     </Router>

@@ -188,12 +188,13 @@ export default function HomeTabs(){
 	const prevCurrEnd = useRef(0);
 	const prevHistStart = useRef(0);
 	const prevHistEnd = useRef(0);
+	const prevDealership = useRef(0);
 
 	useEffect(() => {
 
 		console.log(user);
 
-		if(user && currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()) {
+		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			setLoading(true);
 			console.log("getting data");
@@ -202,6 +203,7 @@ export default function HomeTabs(){
 			prevCurrEnd.current = currEndDate.getTime();
 			prevHistStart.current = histStartDate.getTime();
 			prevHistEnd.current = histEndDate.getTime();
+			prevDealership.current = user.dealership_id;
 
 			axios.get(buildUrl()).then(function (response) {
 				gas_data = response.data;
@@ -215,7 +217,7 @@ export default function HomeTabs(){
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
-	}, [currStartDate, currEndDate, histStartDate, histEndDate]);
+	}, [currStartDate, currEndDate, histStartDate, histEndDate, user.dealership_id]);
 
     return(
         <>
