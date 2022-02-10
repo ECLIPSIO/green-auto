@@ -497,9 +497,13 @@ body {
 	margin-bottom:20px;
 }
 
+g.ct-series.ct-series-a text.ct-barlabel {
+    display: none;
+}
 text{
-    font-size: 8px;
+    font-size: 10px;
     font-family: Open Sans, sans-serif;
+    fill: white;
   }
   text.title{
     font-size: 24px;

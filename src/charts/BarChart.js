@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import Chartist from 'chartist';
 import ChartistGraph from 'react-chartist';
+import ctPointLabels from './ChartistUtils';
 // import {ctBarLabels} from 'chartist-plugin-barlabels';
 import '../css/chartist.min.css';
 // require('chartist');
@@ -24,7 +26,16 @@ const options = {
     axisY: {
         offset: 70,
         showGrid: false
-    }
+    },
+    plugins: [
+        ctPointLabels({
+            textAnchor: 'right'
+        })
+    ]
+    // plugins : [
+    //     ctBarLabels()
+    // ]
+
 };
 
 const data = {
