@@ -18,7 +18,7 @@ import {UserContext} from '../context/UserContext';
 
 import SeoTable from './SeoTable';
 import ReferralTable from './ReferralTable';
-
+import Gmb from '../components/Gmb';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -233,12 +233,12 @@ export default function HomeTabs(){
 				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
 				  	</li>
 				  	<li className="nav-item">
-				    	<a className="nav-link" id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">Section Three</a>
+				    	<a className="nav-link" id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
 				  	</li>
 				</ul>
 				<div className="tab-content" id="myTabContent">
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
-						<div className="gray-box pl-0 pr-0">
+						<div className="gray-box px-0">
 							<div className="container-fluid">
 								<div className="row date-filter-block">
 									<div className="col-md-5">
@@ -383,7 +383,7 @@ export default function HomeTabs(){
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_2" role="tabpanel" aria-labelledby="cs_2_tab">
-						<div className="gray-box">
+						<div className="gray-box px-0">
 							<div className="container-fluid">
 								{/* Date Range Block */}
 								<div className="row date-filter-block">
@@ -549,9 +549,7 @@ export default function HomeTabs(){
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-						<div className="gray-box">
-							<div className="container-fluid"></div>
-						</div>
+						<Gmb />
 				  	</div>
 				</div>
 			</div>
