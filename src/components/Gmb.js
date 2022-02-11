@@ -130,10 +130,22 @@ export default function Gmb(){
         yaxis:{
             min:0,
             tickAmount:4
-        }
+        },
+        noData: {  
+            text: "Loading...",  
+            align: 'center',  
+            verticalAlign: 'middle',  
+            offsetX: 0,  
+            offsetY: 0,  
+            style: {  
+              color: "#ffffff", 
+              fontSize: '16px',  
+              fontFamily: "Helvetica"  
+            }  
+          }
     };
     const chartSeries = [{
-        name: "Searchs",
+        name: "Searches",
         data: [750, 1200, 1500, 1000, 2000, 3200, 1400, 1400, 3000, 1800, 1900, 2500]
     }];
 
