@@ -372,7 +372,9 @@ function BarChartRace(brandData){
         year = d3.format('.0f')((+year) + 1);
     }, tickDuration);
     
-    console.log('loaded');
+    // console.log('loaded');
+    // window.dispatchEvent(new Event('resize'));
+    // console.log('Resize Triggred');
     return svg.node();
 }
 

@@ -187,6 +187,11 @@ export default function HomeTabs(){
 		return build_url;
 	}
 
+	const resizeWindow = () => {
+		setTimeout(()=>{window.dispatchEvent(new Event('resize')); console.log('Resize Triggered');}, 1000);
+		
+	}
+
 	const prevCurrStart = useRef(0);
 	const prevCurrEnd = useRef(0);
 	const prevHistStart = useRef(0);
@@ -233,7 +238,7 @@ export default function HomeTabs(){
 				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
 				  	</li>
 				  	<li className="nav-item">
-				    	<a className="nav-link" id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
+				    	<a className="nav-link" onClick={resizeWindow} id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
 				  	</li>
 				</ul>
 				<div className="tab-content" id="myTabContent">

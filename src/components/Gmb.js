@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
@@ -71,6 +71,12 @@ export default function Gmb(){
             id: "gm-chart",
             toolbar:{
               show:false
+            },
+            events: {
+                mounted: (chart) => {
+                    chart.windowResizeHandler();
+                    chart.width('100%');
+                }
             }
         },
         foreColor: "#ccc",
@@ -130,25 +136,20 @@ export default function Gmb(){
         yaxis:{
             min:0,
             tickAmount:4
-        },
-        noData: {  
-            text: "Loading...",  
-            align: 'center',  
-            verticalAlign: 'middle',  
-            offsetX: 0,  
-            offsetY: 0,  
-            style: {  
-              color: "#ffffff", 
-              fontSize: '16px',  
-              fontFamily: "Helvetica"  
-            }  
-          }
+        }
     };
+    const [seriesData, setSeriesData] = useState([1,1,1,1,1,1,1,1,1,1,1,1]);
     const chartSeries = [{
         name: "Searches",
-        data: [750, 1200, 1500, 1000, 2000, 3200, 1400, 1400, 3000, 1800, 1900, 2500]
+        data: seriesData
     }];
 
+    useEffect(()=>{
+        setSeriesData([750, 1200, 1500, 1000, 2000, 3200, 1400, 1400, 3000, 1800, 1900, 2500]);
+        // window.dispatchEvent(new Event('resize'));
+        // console.clear();
+        // console.log('Resize Triggred');
+    },[]);
     return (
         <div className="gray-box px-0">
             <div className="container-fluid">
@@ -286,7 +287,7 @@ export default function Gmb(){
                         </div>
                     </div>
                     <div className="graph-block">
-                        <Chart options={chartOptions} series={chartSeries} type="area" width={'100%'} height={320} />
+                        <Chart options={chartOptions} series={chartSeries} type="area" height={320} />
                     </div>
                 </div>
             </div>
