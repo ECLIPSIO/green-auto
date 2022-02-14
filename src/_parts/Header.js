@@ -29,13 +29,13 @@ const openMobileMenu = (e) => {
 // };
 export default function Header(props){
     const {user, changeUserDealership} = useContext(UserContext); 
+    
+    const [showModal, setShowModal] = useState(true);
 
     useEffect(() => {
         console.log("Header.js useeffect");
         setShowModal(!user);
     });    
-    
-    const [showModal, setShowModal] = useState(true);
 
     const toggleModal = () => {
         console.log("called toggle modal");
@@ -44,7 +44,7 @@ export default function Header(props){
 
     const changeDealership = (dealership_id,dealership) => {
         changeUserDealership(dealership_id,dealership);
-        props.callBack(dealership_id);        
+        props.callBack(dealership_id);
     }
     return(
         <>
