@@ -35,11 +35,10 @@ function App() {
 
   const [checkedLogin, setCheckedLogin] = useState(null);
 
-  console.log("triggered during render");
-
   useEffect(() => {
     // You need to restrict it at some point
     // This is just dummy code and should be replaced by actual
+    console.log("App useEffect");
     if (!checkedLogin) {
       checkLogin();
     }

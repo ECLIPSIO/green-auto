@@ -200,7 +200,7 @@ export default function HomeTabs(){
 
 	useEffect(() => {
 
-		console.log(user);
+		console.log("HomeTab.js useEffect");
 
 		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 

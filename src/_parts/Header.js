@@ -30,28 +30,10 @@ const openMobileMenu = (e) => {
 export default function Header(props){
     const {user, changeUserDealership} = useContext(UserContext); 
 
-    
-
     useEffect(() => {
-        // jQuery(".mobile-inner-header-icon").click(function(){
-		//     jQuery(this).toggleClass("mobile-inner-header-icon-click mobile-inner-header-icon-out");
-		//     jQuery(".main-menu").toggleClass("active");
-		//     jQuery('body').toggleClass('overflow-active');
-		//     jQuery('.overlay-bg').toggleClass('active');
-		// });
-		// jQuery(".overlay-bg").click(function(){
-		//     jQuery(".mobile-inner-header-icon-click").toggleClass("mobile-inner-header-icon-click mobile-inner-header-icon-out");
-		//     jQuery(".main-menu").removeClass("active");
-		//     jQuery('body').removeClass('overflow-active');
-		//     jQuery('.overlay-bg').removeClass('active');
-		// });
-
+        console.log("Header.js useeffect");
         setShowModal(!user);
-    });
-
-    const [currDealership, setCurrDealership] = useState(null);
-
-    
+    });    
     
     const [showModal, setShowModal] = useState(true);
 
@@ -62,14 +44,8 @@ export default function Header(props){
 
     const changeDealership = (dealership_id,dealership) => {
         changeUserDealership(dealership_id,dealership);
-        setCurrDealership(dealership_id);
         props.callBack(dealership_id);        
     }
-
-    //  get page name
-    // const location = useLocation();
-    // const currentlocation = location.pathname.slice(1);
-
     return(
         <>
         {showModal && (<LoginModal isOpen={showModal} toggle={toggleModal}/>)}
