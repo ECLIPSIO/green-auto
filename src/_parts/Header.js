@@ -28,7 +28,7 @@ const openMobileMenu = (e) => {
 //     jQuery('.overlay-bg').removeClass('active');
 // };
 export default function Header(props){
-    const {user, changeUserDealership} = useContext(UserContext); 
+    const {user, changeUserDealership, logout} = useContext(UserContext); 
     
     const [showModal, setShowModal] = useState(true);
 
@@ -84,24 +84,19 @@ export default function Header(props){
                         <div className="login-block login-for-desktop">
                             <div className="btn-group custom-dropdown">
                                 {
-                                    user && user.role == "admin" &&
+                                    user &&
                                     (<button type="button" className="btn btn-secondary dropdown-toggle text-green" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img src={user_icon} alt="GAS - User"/> {user.dealership}
                                     </button>)
                                 } 
-                                {
-                                    user && user.role != "admin" &&
-                                    (<button type="button" className="btn btn-secondary dropdown-toggle text-green" >
-                                        <img src={user_icon} alt="GAS - User"/> {user.dealership}
-                                    </button>)
-                                }
-                                {user && user.role == "admin" && <div className="dropdown-menu dropdown-menu-right">                                    
+                                {user && user.role == "admin" ? <div className="dropdown-menu dropdown-menu-right">                                    
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('bulauto','Bul Auto Sales')}>Bul Auto Sales</button>
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('gcalfa','Gold Coast Alfa Romeo')}>Gold Coast Alfa Romeo</button>
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('gcmaserati','Gold Coast Maserati')}>Gold Coast Maserati</button>
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports','Manheim Imports')}>Manheim Imports</button>
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando','McLaren Orlando')}>McLaren Orlando</button>
-                                </div>}
+                                    <button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button>
+                                </div> : <div className="dropdown-menu dropdown-menu-right"><button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button></div>}
                             </div>
                         </div>
                         <div className="mobile-inner-header">
