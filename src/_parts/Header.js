@@ -34,7 +34,9 @@ export default function Header(props){
 
     useEffect(() => {
         console.log("Header.js useeffect");
-        setShowModal(!user);
+
+        if(user) setShowModal(false);
+        //setShowModal(!user);
     });    
 
     const toggleModal = () => {
@@ -76,9 +78,9 @@ export default function Header(props){
                                 <li>
                                     <a href="#">Menu Item</a>
                                 </li>
-                                <li>
-                                    <a href="#">Menu Item</a>
-                                </li>
+                                {!user && <li>
+                                    <a href="#" onClick={() => toggleModal()}>Log In</a>
+                                </li>}
                             </ul>
                         </div>
                         <div className="login-block login-for-desktop">
@@ -96,7 +98,7 @@ export default function Header(props){
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports','Manheim Imports')}>Manheim Imports</button>
                                     <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando','McLaren Orlando')}>McLaren Orlando</button>
                                     <button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button>
-                                </div> : <div className="dropdown-menu dropdown-menu-right"><button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button></div>}
+                                </div> : (user && <div className="dropdown-menu dropdown-menu-right"><button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button></div>)}
                             </div>
                         </div>
                         <div className="mobile-inner-header">
