@@ -379,7 +379,7 @@ function BarChartRace(brandData){
 }
 
 function getFormattedDate(date) {
-  return months[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear()
+  return date ? months[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear() : ""
 }
 
 export default function RaceChart({graphData}){

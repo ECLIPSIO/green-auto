@@ -45,6 +45,8 @@ export default function Header(props){
     }
 
     const changeDealership = (dealership_id,dealership) => {
+        console.log(dealership_id);
+        console.log(dealership);
         changeUserDealership(dealership_id,dealership);
         props.callBack(dealership_id);
     }
@@ -91,14 +93,12 @@ export default function Header(props){
                                         <img src={user_icon} alt="GAS - User"/> {user.dealership}
                                     </button>)
                                 } 
-                                {user && user.role == "admin" ? <div className="dropdown-menu dropdown-menu-right">                                    
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('bulauto','Bul Auto Sales')}>Bul Auto Sales</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcalfa','Gold Coast Alfa Romeo')}>Gold Coast Alfa Romeo</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('gcmaserati','Gold Coast Maserati')}>Gold Coast Maserati</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('manheimimports','Manheim Imports')}>Manheim Imports</button>
-                                    <button className="dropdown-item" type="button" onClick={() => changeDealership('mclarenorlando','McLaren Orlando')}>McLaren Orlando</button>
-                                    <button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button>
-                                </div> : (user && <div className="dropdown-menu dropdown-menu-right"><button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button></div>)}
+                                <div className="dropdown-menu dropdown-menu-right">
+                                    {user && user.role == "admin" && Object.keys(user.all_dealerships).map(function(index) {
+                                        return <button  key={index} className="dropdown-item" type="button" onClick={() => changeDealership(user.all_dealerships[index]["dealership_id"],user.all_dealerships[index]["dealership"])}>{user.all_dealerships[index]["dealership"]}</button>
+                                    })}
+                                    {user && <button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button>}
+                                </div>
                             </div>
                         </div>
                         <div className="mobile-inner-header">
