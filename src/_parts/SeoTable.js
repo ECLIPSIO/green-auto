@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import seoData from '../data/seo.json';
 import RenderSeo from "./RenderSeo";
 
 const dataAtonce = 10;
-const length = Object.keys(seoData).length;
 let dataStack = [];
 
-const SeoTable = () => {
+const SeoTable = ({seoData}) => {
+    const length = Object.keys(seoData).length;
+
     const [dataToShow, setDataToShow] = useState([]);
     const [anchor, setAnchor] = useState(10);
 

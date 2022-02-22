@@ -1,11 +1,34 @@
 import React from 'react';
+	  
+const numberFormatter = (value, currency = false) => {
+    var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+    
+    var sign = value >= 0 ? "" : "-";
+    var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+    if(str.indexOf(".") > 0) {
+        parts = str.split(".");
+        str = parts[0];
+    }
+    str = str.split("").reverse();
+    for(var j = 0, len = str.length; j < len; j++) {
+        if(str[j] != ",") {
+            output.push(str[j]);
+            if(i%3 == 0 && j < (len - 1)) {
+                output.push(",");
+            }
+            i++;
+        }
+    }
+    formatted = output.reverse().join("");
+    return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+}
 
 const RenderSeo = ({seoData}) => {
     return(
         <table className="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Source</th>
+                    <th scope="col">Keyword</th>
                     <th scope="col">Clicks</th>
                     <th scope="col">Impressions</th>
                     <th scope="col">Avg Position</th>
@@ -15,11 +38,11 @@ const RenderSeo = ({seoData}) => {
             <tbody>
             {seoData.map((seo, index) => (
                 <tr key={index}>
-                    <td>{seo.keyword}</td>
+                    <td>{seo.dimensions.query}</td>
                     <td>{seo.clicks}</td>
-                    <td>{seo.impression}</td>
-                    <td>{seo.avg_pos}</td>
-                    <td>{seo.ctr}</td>
+                    <td>{seo.impressions}</td>
+                    <td>{numberFormatter(seo.position)}</td>
+                    <td>{numberFormatter(seo.ctr * 100)}</td>
                 </tr>
             ))}
             </tbody>
