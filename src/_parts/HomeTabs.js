@@ -4,6 +4,7 @@ import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
+import Chart from 'react-apexcharts'
 import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
@@ -163,12 +164,14 @@ export default function HomeTabs(){
 	const protocol = window.location.protocol;
 	const analytics_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_analytics.php";
 	const search_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_search.php"; 
+	const business_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_business.php"; 
 
 	//const [searchParams, setSearchParams] = useSearchParams();
 
 	const [isLoading, setLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState();
 	const [searchData, setSearchData] = useState();
+	const [businessData, setBusinessData] = useState();
 
 	const buildUrl = (url) => {
 		console.table({
@@ -222,17 +225,31 @@ export default function HomeTabs(){
 				setLoading(false);
 
 				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
-			});
 
-			axios.get(buildUrl(search_url)).then(function (response) {
-				var gas_data = response.data;
-				console.log("got search data");
-				console.log(gas_data);
-				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
-				setSearchData(gas_data);
-				//setLoading(false);
+				
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
+				axios.get(buildUrl(search_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got search data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setSearchData(gas_data);
+					//setLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
+				});
+
+				axios.get(buildUrl(business_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got business data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setBusinessData(gas_data);
+					//setLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
+
+				});
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
@@ -542,7 +559,7 @@ export default function HomeTabs(){
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-						<Gmb />
+					  	{businessData && <Gmb businessData={businessData}/>}
 				  	</div>
 				</div>
 			</div>
