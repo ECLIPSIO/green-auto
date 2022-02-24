@@ -169,6 +169,8 @@ export default function HomeTabs(){
 	//const [searchParams, setSearchParams] = useSearchParams();
 
 	const [isLoading, setLoading] = useState(true);
+	const [isSEOLoading, setSEOLoading] = useState(true);
+	const [isGMBLoading, setGMBLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState();
 	const [searchData, setSearchData] = useState();
 	const [businessData, setBusinessData] = useState();
@@ -208,6 +210,8 @@ export default function HomeTabs(){
 		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			setLoading(true);
+			setSEOLoading(true);
+			setGMBLoading(true);
 			console.log("getting data");
 
 			prevCurrStart.current = currStartDate.getTime();
@@ -234,7 +238,7 @@ export default function HomeTabs(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setSearchData(gas_data);
-					//setLoading(false);
+					setSEOLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
 				});
@@ -245,7 +249,7 @@ export default function HomeTabs(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setBusinessData(gas_data);
-					//setLoading(false);
+					setGMBLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
 
@@ -499,7 +503,7 @@ export default function HomeTabs(){
 											</span>
 										</div>
 									</div>
-									{searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>}
+									{!isSEOLoading && searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -559,7 +563,7 @@ export default function HomeTabs(){
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-					  	{businessData && <Gmb businessData={businessData}/>}
+					  	{!isGMBLoading && businessData && <Gmb businessData={businessData}/>}
 				  	</div>
 				</div>
 			</div>
