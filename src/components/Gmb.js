@@ -191,52 +191,27 @@ export default function Gmb(){
                 <div className="l-gray-box mt-40">
                     <OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Current Spend</div>
+                            <div className="custom-label text-uppercase text-center"># of Clicks</div>
                             <div className="m-value">$921</div>
                             <div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Website Hits</div>
+                            <div className="custom-label text-uppercase text-center"># of Views</div>
                             <div className="m-value">823</div>
                             <div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Time on Site</div>
+                            <div className="custom-label text-uppercase text-center"># of Calls</div>
                             <div className="m-value">3:45</div>
                             <div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Pages / Session</div>
+                            <div className="custom-label text-uppercase text-center">Search Views</div>
                             <div className="m-value">174</div>
                             <div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Bounce Rate</div>
-                            <div className="m-value">0.431</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Current Spend</div>
-                            <div className="m-value">$921</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Website Hits</div>
-                            <div className="m-value">823</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Time on Site</div>
-                            <div className="m-value">3:45</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Pages / Session</div>
-                            <div className="m-value">174</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Bounce Rate</div>
+                            <div className="custom-label text-uppercase text-center">Map Views</div>
                             <div className="m-value">0.431</div>
                             <div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
                         </div>
