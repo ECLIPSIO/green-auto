@@ -4,6 +4,7 @@ import infoIcon from '../img/ico-info.svg';
 
 import BarChart from '../charts/BarChart';
 import RaceChart from '../charts/RaceChart';
+import Chart from 'react-apexcharts'
 import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
@@ -159,18 +160,22 @@ export default function HomeTabs(){
 		setCurrSeoStartDate(dates[0]);
 		setCurrSeoEndDate(dates[1]);
 	};
-
-	var gas_data;
 	
 	const protocol = window.location.protocol;
-	const url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/analytics/gas.php";
+	const analytics_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_analytics.php";
+	const search_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_search.php"; 
+	const business_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_business.php"; 
 
 	//const [searchParams, setSearchParams] = useSearchParams();
 
 	const [isLoading, setLoading] = useState(true);
+	const [isSEOLoading, setSEOLoading] = useState(true);
+	const [isGMBLoading, setGMBLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState();
+	const [searchData, setSearchData] = useState();
+	const [businessData, setBusinessData] = useState();
 
-	const buildUrl = () => {
+	const buildUrl = (url) => {
 		console.table({
 			histS:histStartDate,
 			histE:histEndDate,
@@ -200,11 +205,13 @@ export default function HomeTabs(){
 
 	useEffect(() => {
 
-		console.log(user);
+		console.log("HomeTab.js useEffect");
 
 		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			setLoading(true);
+			setSEOLoading(true);
+			setGMBLoading(true);
 			console.log("getting data");
 
 			prevCurrStart.current = currStartDate.getTime();
@@ -213,15 +220,40 @@ export default function HomeTabs(){
 			prevHistEnd.current = histEndDate.getTime();
 			prevDealership.current = user.dealership_id;
 
-			axios.get(buildUrl()).then(function (response) {
-				gas_data = response.data;
-				console.log("got data");
+			axios.get(buildUrl(analytics_url)).then(function (response) {
+				var gas_data = response.data;
+				console.log("got analytics data");
 				console.log(gas_data);
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
 				setLoading(false);
 
-				if(!gas_data || gas_data.hist_combined.length == 0) alert("No data for current historical period");
+				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
+
+				
+
+				axios.get(buildUrl(search_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got search data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setSearchData(gas_data);
+					setSEOLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
+				});
+
+				axios.get(buildUrl(business_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got business data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setBusinessData(gas_data);
+					setGMBLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
+
+				});
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
@@ -306,7 +338,7 @@ export default function HomeTabs(){
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'],'percent') : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'] * 100,'percent') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
 									</div>
@@ -358,7 +390,7 @@ export default function HomeTabs(){
 															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["cost"]),true)}</td>
 															<td>{timeFormatter(analyticsData.top_queries[index]["ga:avgSessionDuration"])}</td>
 															<td>{numberFormatter(analyticsData.top_queries[index]["ga:pageviewsPerSession"])}</td>
-															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"]))}%</td>
+															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"] * 100))}%</td>
 														</tr>
 													})
 												}
@@ -432,54 +464,29 @@ export default function HomeTabs(){
 									{/* <div className=""> */}
 									<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Current Spend</div>
-											<div className="m-value">$921</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
+											<div className="custom-label text-uppercase text-center">Avg Search Position</div>
+											{searchData && searchData.search_data[0] && searchData.search_data[0].position ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Website Hits</div>
-											<div className="m-value">823</div>
-											<div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
+											<div className="custom-label text-uppercase text-center">Mobile Device Usage</div>
+											{analyticsData && analyticsData.mobile_usage ? getAnalyticsSection(analyticsData.mobile_usage,'percent') : ''}
+											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Time on Site</div>
-											<div className="m-value">3:45</div>
-											<div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
+											<div className="custom-label text-uppercase text-center">Conversion Rate</div>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Pages / Session</div>
-											<div className="m-value">174</div>
-											<div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
+											<div className="custom-label text-uppercase text-center">Phone Calls from Ads</div>
+											{analyticsData && analyticsData.total_phone_calls ? getAnalyticsSection(analyticsData.total_phone_calls) : ''}
+											{analyticsData && analyticsData.phone_calls_diff ? getAnalyticsIndicator(analyticsData.phone_calls_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											<div className="m-value">0.431</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Current Spend</div>
-											<div className="m-value">$921</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Website Hits</div>
-											<div className="m-value">823</div>
-											<div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Time on Site</div>
-											<div className="m-value">3:45</div>
-											<div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Pages / Session</div>
-											<div className="m-value">174</div>
-											<div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											<div className="m-value">0.431</div>
-											<div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
+											<div className="custom-label text-uppercase text-center">Engagement Rate</div>
+											{analyticsData && analyticsData.engagement_rate ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
+											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
 										</div>
 									</OwlCarousel>
 									{/* </div> */}
@@ -496,7 +503,7 @@ export default function HomeTabs(){
 											</span>
 										</div>
 									</div>
-									<SeoTable />
+									{!isSEOLoading && searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -511,29 +518,31 @@ export default function HomeTabs(){
 										</div>
 									</div>
 									<div className="d-flex vehicle-block-flex">
-										{Object.keys(vehicles).map(index => 
-										<div className="vehicle-block" key={index}>
-											<div className="vehicle-box">
-												<div className="vehicle-top">
-													<img src={require('../img/' +vehicles[index].img)} />
-												</div>
-												<div className="vehicle-bottom">
-													<div className="vehicle-title">{vehicles[index].title}</div>
-													<div className="vb-flex d-flex">
-														<div className="w-50">
-															<div className="vb-label">Current</div>
-															<div className="vb-label-count">{vehicles[index].current}</div>
+										{analyticsData && analyticsData.vdp_views && Object.keys(analyticsData.vdp_views).map(function(index) { 
+											var vehicle = analyticsData.vdp_views[index];
+											return	<div className="vehicle-block" key={index}>
+													<div className="vehicle-box">
+														<div className="vehicle-top">
+															<img src={vehicle.primary_image} />
 														</div>
-														<div className="w-50 vb-brder-l">
-															<div className="vb-label">Historical</div>
-															<div className="vb-label-count">{vehicles[index].historic}</div>
+														<div className="vehicle-bottom">
+															<div className="vehicle-title">{vehicle.vehicle_name}</div>
+															<div className="vb-flex d-flex">
+																<div className="w-50">
+																	<div className="vb-label">Current</div>
+																	<div className="vb-label-count">{vehicle['ga:pageViews']}</div>
+																</div>
+																<div className="w-50 vb-brder-l">
+																	<div className="vb-label">Historical</div>
+																	<div className="vb-label-count">{vehicle['hist_ga:pageViews']}</div>
+																</div>
+															</div>
+															{getAnalyticsIndicator(vehicle['ga:pageViews_diff'])}
 														</div>
 													</div>
-													<div className={vehicles[index].type ? 'p-value green' : 'p-value red'}><div className={vehicles[index].type ? 'up-arrow' : 'down-arrow'}></div> {vehicles[index].value} %</div>
 												</div>
-											</div>
-										</div>
-										)}
+											})
+										}
 									</div>
 								</div>
 
@@ -548,13 +557,13 @@ export default function HomeTabs(){
 											</span>
 										</div>
 									</div>
-									<ReferralTable/>
+									{analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>}
 								</div>
 							</div>
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-						<Gmb />
+					  	{!isGMBLoading && businessData && <Gmb businessData={businessData}/>}
 				  	</div>
 				</div>
 			</div>

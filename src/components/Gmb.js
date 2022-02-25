@@ -12,7 +12,7 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import infoIcon from '../img/ico-info.svg';
 import graphImg from '../img/graph.jpg';
 
-export default function Gmb(){
+export default function Gmb({businessData}){
 
     var tempDate = new Date();
 	if(tempDate.getDate() >= 7) tempDate.setDate(1);
@@ -66,6 +66,60 @@ export default function Gmb(){
 		setCurrGmbEndDate(dates[1]);
 	};
 
+    const numberFormatter = (value, currency = false) => {
+		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+        var thousands = num > 1000;
+
+        if(thousands) num = Math.round(num / 100) / 10;
+		
+		var sign = num >= 0 ? "" : "-";
+		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+		if(str.indexOf(".") > 0) {
+			parts = str.split(".");
+			str = parts[0];
+		}
+		str = str.split("").reverse();
+		for(var j = 0, len = str.length; j < len; j++) {
+			if(str[j] != ",") {
+				output.push(str[j]);
+				if(i%3 == 0 && j < (len - 1)) {
+					output.push(",");
+				}
+				i++;
+			}
+		}
+		formatted = output.reverse().join("");
+		return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : "") + (thousands ? "k" : ""));
+	}
+
+	const timeFormatter = (seconds, start = 14, length = 5) => {
+		//minutes seconds 14,5  hours minutes seconds 11,8
+		seconds = seconds ? seconds : 0;
+		return new Date(seconds * 1000).toISOString().substr(start, length);
+	}
+
+	const getAnalyticsSection = (value,type = 'number') => {
+
+		if(type == 'time') {
+			return (<div className="m-value">{timeFormatter(value)}</div>);
+		} else if(type == 'currency') {
+			return (<div className="m-value">{numberFormatter(Math.round(value),true)}</div>);
+		} else if(type == 'percent') {
+			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
+		}
+
+		return (<div className="m-value">{numberFormatter(value)}</div >);
+	}
+
+	const getAnalyticsIndicator = (value,reverseColor = false) => {
+
+		if(value >= 0) {
+			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(Math.round(value * 100))} %</div>);
+		} 
+
+		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
+	}
+
     const chartOptions = {
         chart: {
             id: "gm-chart",
@@ -118,20 +172,7 @@ export default function Gmb(){
             strokeWidth: 3
         },
         xaxis: {
-            categories: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
-            ]
+            categories: businessData.VIEWS_MAPS_series_category
         },
         yaxis:{
             min:0,
@@ -145,7 +186,8 @@ export default function Gmb(){
     }];
 
     useEffect(()=>{
-        setSeriesData([750, 1200, 1500, 1000, 2000, 3200, 1400, 1400, 3000, 1800, 1900, 2500]);
+        console.log(businessData);
+        setSeriesData(businessData.VIEWS_MAPS_series_data);
         // window.dispatchEvent(new Event('resize'));
         // console.clear();
         // console.log('Resize Triggred');
@@ -191,54 +233,29 @@ export default function Gmb(){
                 <div className="l-gray-box mt-40">
                     <OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Current Spend</div>
-                            <div className="m-value">$921</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
+                            <div className="custom-label text-uppercase text-center"># of Clicks</div>
+                            {businessData && businessData.massaged_metrics.ACTIONS_WEBSITE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_WEBSITE) : ''}
+							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_WEBSITE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_WEBSITE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Website Hits</div>
-                            <div className="m-value">823</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
+                            <div className="custom-label text-uppercase text-center"># of Views</div>
+                            {businessData && businessData.massaged_metrics.total_views ? getAnalyticsSection(businessData.massaged_metrics.total_views) : ''}
+							{businessData && businessData.metrics_diff && businessData.metrics_diff.total_views ? getAnalyticsIndicator(businessData.metrics_diff.total_views) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Time on Site</div>
-                            <div className="m-value">3:45</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
+                            <div className="custom-label text-uppercase text-center"># of Calls</div>
+                            {businessData && businessData.massaged_metrics.ACTIONS_PHONE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_PHONE) : ''}
+							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_PHONE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_PHONE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Pages / Session</div>
-                            <div className="m-value">174</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
+                            <div className="custom-label text-uppercase text-center">Search Views</div>
+                            {businessData && businessData.massaged_metrics.VIEWS_SEARCH ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_SEARCH) : ''}
+							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_SEARCH ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_SEARCH) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Bounce Rate</div>
-                            <div className="m-value">0.431</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Current Spend</div>
-                            <div className="m-value">$921</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.7 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Website Hits</div>
-                            <div className="m-value">823</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 1.2 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Time on Site</div>
-                            <div className="m-value">3:45</div>
-                            <div className="p-value green"><div className="up-arrow"></div> 2.3 %</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Pages / Session</div>
-                            <div className="m-value">174</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 1.8%</div>
-                        </div>
-                        <div className="col">
-                            <div className="custom-label text-uppercase text-center">Bounce Rate</div>
-                            <div className="m-value">0.431</div>
-                            <div className="p-value red"><div className="down-arrow"></div> 0.5%</div>
+                            <div className="custom-label text-uppercase text-center">Map Views</div>
+                            {businessData && businessData.massaged_metrics.VIEWS_MAPS ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_MAPS) : ''}
+							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_MAPS ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_MAPS) : ''}
                         </div>
                     </OwlCarousel>
                 </div>
@@ -248,7 +265,7 @@ export default function Gmb(){
                             <div className="gc-box">
                                 <div className="green-gradient-circle">
                                     <div className="green-circle-inside">
-                                        <div className="gc-count">4.5</div>
+                                        <div className="gc-count">{businessData && businessData.reviews.averageRating ? numberFormatter(businessData.reviews.averageRating) : ''}</div>
                                     </div>
                                 </div>
                                 <div className="sb-title">Avg Review Score</div>
@@ -258,20 +275,20 @@ export default function Gmb(){
                             <div className="gc-box">
                                 <div className="green-gradient-circle">
                                     <div className="green-circle-inside">
-                                        <div className="gc-count">8.1</div>
+                                        <div className="gc-count">{businessData && businessData.massaged_metrics.total_actions ? numberFormatter(businessData.massaged_metrics.total_actions) : ''}</div>
                                     </div>
                                 </div>
-                                <div className="sb-title">GMB Rating</div>
+                                <div className="sb-title">Actions Taken</div>
                             </div>
                         </div>
                         <div className="col-sm-4">
                             <div className="gc-box">
                                 <div className="green-gradient-circle">
                                     <div className="green-circle-inside">
-                                        <div className="gc-count">1.3k</div>
+                                        <div className="gc-count">{businessData && businessData.massaged_metrics.ACTIONS_DRIVING_DIRECTIONS ? numberFormatter(businessData.massaged_metrics.ACTIONS_DRIVING_DIRECTIONS) : ''}</div>
                                     </div>
                                 </div>
-                                <div className="sb-title">Avg Review Score</div>
+                                <div className="sb-title">Directions Requested</div>
                             </div>
                         </div>
                     </div>

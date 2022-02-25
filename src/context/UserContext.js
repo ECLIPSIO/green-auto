@@ -68,16 +68,14 @@ export const UserContextProvider = ({children}) => {
     }
 
     const changeUserDealership = (dealership_id,dealership) => {
-        const tempUserData = userData;
-        tempUserData.dealership_id = dealership_id;
-        tempUserData.dealership = dealership;
-
-        setUserData(tempUserData);
+        userData.dealership_id = dealership_id;
+        userData.dealership = dealership;
 
         console.log(userData);
     }
 
     useEffect(() => {
+        console.log("UserContext.js useEffect");
         async function asyncCall(){
             await loggedInCheck();
         }

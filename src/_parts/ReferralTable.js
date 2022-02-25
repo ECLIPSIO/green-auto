@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import referralData from '../data/referral.json';
 import RenderReferral from "./RenderReferral";
 
 const dataAtonce = 10;
-const length = Object.keys(referralData).length;
 let dataStack = [];
 
-const ReferralTable = () => {
+const ReferralTable = ({referralData}) => {
+    referralData = Object.values(referralData);
+    const length = referralData.length;
     const [dataToShow, setDataToShow] = useState([]);
     const [anchor, setAnchor] = useState(10);
 
