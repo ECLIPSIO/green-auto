@@ -2,15 +2,16 @@
 // import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 // import jQuery from 'jquery';
 
-import HomeTabs from "../_parts/HomeTabs"
+// import HomeTabs from "../_parts/HomeTabs"
+import Main from '../_parts/Main';
 // import Modal from 'react-modal';
-import FormModal from "../_parts/Modals";
+// import FormModal from "../_parts/Modals";
 export default function Home() {
     return(
         <>
         <section className='main-block'>
             <div className="container-fluid">
-            <HomeTabs />
+            <Main />
             </div>
 
         </section>

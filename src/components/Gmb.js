@@ -186,7 +186,7 @@ export default function Gmb({businessData}){
     }];
 
     useEffect(()=>{
-        console.log(businessData);
+        // console.log(businessData);
         setSeriesData(businessData.VIEWS_MAPS_series_data);
         // window.dispatchEvent(new Event('resize'));
         // console.clear();
@@ -195,41 +195,6 @@ export default function Gmb({businessData}){
     return (
         <div className="gray-box px-0">
             <div className="container-fluid">
-                <div className="row date-filter-block">
-                    <div className="col-md-5">
-                        <label className="custom-label text-uppercase">Historical</label>
-                        <RangeDatePicker
-                            startDate={histGmbStartDate}
-                            endDate={histGmbEndDate}
-                            onChange={histGmbDateChanges}
-                            dateFormat="D MMM YYYY"
-                            monthFormat="MMM YYYY"
-                            startDatePlaceholder={histGmbDate.startPlace}
-                            endDatePlaceholder={histGmbDate.endPlace}
-                            disabled={false}
-                            className={histGmbDate.class}
-                            startWeekDay="monday"
-                            highlightToday={true}
-                        />
-                    </div>
-                    <div className="col-md-2"></div>
-                    <div className="col-md-5">
-                        <label className="custom-label text-uppercase">Current</label>
-                        <RangeDatePicker
-                            startDate={currGmbStartDate}
-                            endDate={currGmbEndDate}
-                            onChange={currGmbDateChanges}
-                            dateFormat="D MMM YYYY"
-                            monthFormat="MMM YYYY"
-                            startDatePlaceholder={currGmbDate.startPlace}
-                            endDatePlaceholder={currGmbDate.endPlace}
-                            disabled={false}
-                            className={currGmbDate.class}
-                            startWeekDay="monday"
-                            highlightToday={true}
-                        />
-                    </div>
-                </div>
                 <div className="l-gray-box mt-40">
                     <OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
                         <div className="col">

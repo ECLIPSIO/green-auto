@@ -9,7 +9,8 @@ import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import "react-google-flight-datepicker/dist/main.css";
 
-import vehicles from '../data/vehicle.json';
+import Loading from '../_parts/Loading';
+// import vehicles from '../data/vehicle.json';
 import $ from 'jquery';
 // import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
@@ -25,10 +26,10 @@ window.$ = $;
 global.jQuery = $;
 const OwlCarousel = require('react-owl-carousel');
 
-export default function HomeTabs(){
+export default function Main(){
 
 	const {user} = useContext(UserContext); 
-	  
+	const[loader, showLoader] = useState(false);
 	const numberFormatter = (value, currency = false) => {
 		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
 		
@@ -88,18 +89,15 @@ export default function HomeTabs(){
 	}
 	tempDate.setHours(0,0,0,0);
 	const [currStartDate, setCurrStartDate] = useState(tempDate);
-	const [currSeoStartDate, setCurrSeoStartDate] = useState(tempDate);
 
 	var tempDate = new Date();
 	if(tempDate.getDate() < 7) tempDate.setDate(0);
 	tempDate.setHours(0,0,0,0);
 	const [currEndDate, setCurrEndDate] = useState(tempDate);
-	const [currSeoEndDate, setCurrSeoEndDate] = useState(tempDate);
 
 	var tempDate = new Date(currStartDate.getTime());
 	tempDate.setMonth(tempDate.getMonth() - 1);
 	const [histStartDate, setHistStartDate] = useState(tempDate);
-	const [histSeoStartDate, setHistSeoStartDate] = useState(tempDate);
 
 	var tempDate = new Date(currEndDate.getTime());
 	tempDate.setMonth(tempDate.getMonth() - 1);
@@ -109,7 +107,6 @@ export default function HomeTabs(){
 		tempDate.setDate(0);
 	}
 	const [histEndDate, setHistEndDate] = useState(tempDate);
-	const [histSeoEndDate, setHistSeoEndDate] = useState(tempDate);
 
 	const histDate = {
 		start : histStartDate,
@@ -127,21 +124,6 @@ export default function HomeTabs(){
 		class : "curr-dates"
 	};
 
-	const histSeoDate = {
-		start	: histSeoStartDate,
-		end 	: histSeoEndDate,
-		startPlace : 'From',
-		endPlace : 'To',
-		class	: 'seo-curr-dates' 
-	};
-
-	const currSeoDate = {
-		start	: currSeoStartDate,
-		end 	: currSeoEndDate,
-		startPlace : 'From',
-		endPlace : 'To',
-		class	: 'seo-curr-dates' 
-	};
 	
 	const histDateChanges = (...dates) =>{
 		setHistStartDate(dates[0]);
@@ -150,15 +132,6 @@ export default function HomeTabs(){
 	const currDateChanges = (...dates) =>{
 		setCurrStartDate(dates[0]);
 		setCurrEndDate(dates[1]);
-	};
-
-	const histSeoDateChanges = (...dates) =>{
-		setHistSeoStartDate(dates[0]);
-		setHistSeoEndDate(dates[1]);
-	};
-	const currSeoDateChanges = (...dates) =>{
-		setCurrSeoStartDate(dates[0]);
-		setCurrSeoEndDate(dates[1]);
 	};
 	
 	const protocol = window.location.protocol;
@@ -193,7 +166,7 @@ export default function HomeTabs(){
 	}
 
 	const resizeWindow = () => {
-		setTimeout(()=>{window.dispatchEvent(new Event('resize')); console.log('Resize Triggered');}, 1000);
+		setTimeout(()=>{window.dispatchEvent(new Event('resize'));}, 1000);
 		
 	}
 
@@ -212,6 +185,7 @@ export default function HomeTabs(){
 			setLoading(true);
 			setSEOLoading(true);
 			setGMBLoading(true);
+            showLoader(true);
 			console.log("getting data");
 
 			prevCurrStart.current = currStartDate.getTime();
@@ -227,6 +201,7 @@ export default function HomeTabs(){
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
 				setLoading(false);
+                // showLoader(false);
 
 				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
 
@@ -250,6 +225,7 @@ export default function HomeTabs(){
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setBusinessData(gas_data);
 					setGMBLoading(false);
+                    showLoader(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
 
@@ -261,6 +237,7 @@ export default function HomeTabs(){
 
     return(
         <>
+        <Loading isOpen={loader} />
 		<div className="custom-tabs">
 			<div className="tab-content" id="myTabContentDate">
 				<div className="tab-pane fade show active" id="dt_1" role="tabpanel" aria-labelledby="dt_1_tab">
@@ -433,41 +410,6 @@ export default function HomeTabs(){
 						<div className="gray-box px-0">
 							<div className="container-fluid">
 								{/* Date Range Block */}
-								<div className="row date-filter-block">
-									<div className="col-md-5">
-										<label className="custom-label text-uppercase">Historical</label>
-										<RangeDatePicker
-											startDate={histSeoStartDate}
-											endDate={histSeoEndDate}
-											onChange={histSeoDateChanges}
-											dateFormat="D MMM YYYY"
-											monthFormat="MMM YYYY"
-											startDatePlaceholder={histSeoDate.startPlace}
-											endDatePlaceholder={histSeoDate.endPlace}
-											disabled={false}
-											className={histSeoDate.class}
-											startWeekDay="monday"
-											highlightToday={true}
-										/>
-									</div>
-									<div className="col-md-2"></div>
-									<div className="col-md-5">
-										<label className="custom-label text-uppercase">Current</label>
-										<RangeDatePicker
-											startDate={currSeoStartDate}
-											endDate={currSeoEndDate}
-											onChange={currDateChanges}
-											dateFormat="D MMM YYYY"
-											monthFormat="MMM YYYY"
-											startDatePlaceholder={currSeoDate.startPlace}
-											endDatePlaceholder={currSeoDate.endPlace}
-											disabled={false}
-											className={currSeoDate.class}
-											startWeekDay="monday"
-											highlightToday={true}
-										/>
-									</div>
-								</div>
 
 								{/* Data Slide Block */}
 								<div className="l-gray-box mt-40">
