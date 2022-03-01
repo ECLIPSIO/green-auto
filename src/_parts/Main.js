@@ -201,7 +201,7 @@ export default function Main(){
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
 				setLoading(false);
-                // showLoader(false);
+                showLoader(false);
 
 				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
 
@@ -225,7 +225,6 @@ export default function Main(){
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setBusinessData(gas_data);
 					setGMBLoading(false);
-                    showLoader(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
 
@@ -304,27 +303,32 @@ export default function Main(){
 								<div className="l-gray-box mt-40">
 									<div className="d-flex">
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Current Spend</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Current Spend" data-for="stat-1">Current Spend</div>
+											<ReactTooltip id='stat-1' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
 											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Website Hits</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Website Hits" data-for="stat-2">Website Hits</div>
+											<ReactTooltip id='stat-2' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Time on Site</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Time on Site" data-for="stat-3">Time on Site</div>
+											<ReactTooltip id='stat-3' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Pages / Session</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Pages / Session" data-for="stat-4">Pages / Session</div>
+											<ReactTooltip id='stat-4' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Bounce Rate" data-for="stat-5">Bounce Rate</div>
+											<ReactTooltip id='stat-5' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'] * 100,'percent') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
@@ -416,29 +420,40 @@ export default function Main(){
 									{/* <div className=""> */}
 									<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Avg Search Position</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Avg Search Position" data-for="stat-6">Avg Search Position</div>
+											<ReactTooltip id='stat-6' place='top' type='light' effect='solid'></ReactTooltip>
 											{searchData && searchData.search_data[0] && searchData.search_data[0].position ? getAnalyticsSection(searchData.search_data[0].position) : ''}
 											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Mobile Device Usage</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Mobile Device Usage" data-for="stat-7">Mobile Device Usage</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.mobile_usage ? getAnalyticsSection(analyticsData.mobile_usage,'percent') : ''}
 											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Conversion Rate</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Conversion Rate" data-for="stat-8">Conversion Rate</div>
+											<ReactTooltip id='stat-8' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Phone Calls from Ads</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Phone Calls from Ads" data-for="stat-9">Phone Calls from Ads</div>
+											<ReactTooltip id='stat-9' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.total_phone_calls ? getAnalyticsSection(analyticsData.total_phone_calls) : ''}
 											{analyticsData && analyticsData.phone_calls_diff ? getAnalyticsIndicator(analyticsData.phone_calls_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Engagement Rate</div>
+											<div className="custom-label text-uppercase text-center" data-tip="Engagement Rate" data-for="stat-10">Engagement Rate</div>
+											<ReactTooltip id='stat-10' place='top' type='light' effect='solid'></ReactTooltip>
 											{analyticsData && analyticsData.engagement_rate ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
 											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" data-tip="AdWords Clicks to Site" data-for="stat-11">AdWords Clicks to Site</div>
+											<ReactTooltip id='stat-11' place='top' type='light' effect='solid'></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels['Paid Search']['ga:sessions'] ? getAnalyticsSection(analyticsData.channels['Paid Search']['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff['Paid Search']['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff['Paid Search']['ga:sessions']) : ''}
 										</div>
 									</OwlCarousel>
 									{/* </div> */}

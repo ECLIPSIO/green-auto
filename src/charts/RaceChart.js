@@ -42,7 +42,7 @@ function BarChartRace(brandData){
         // console.log('Hal Calleds');
     };
 
-    d3.select("#raceGraph").empty();
+    d3.select("#raceGraph").html(null);
     
     const  svgC = d3.select("#raceGraph").append("div")
         // Container class to make it responsive.

@@ -4,13 +4,11 @@ window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 const OwlCarousel = require('react-owl-carousel');
-import {RangeDatePicker} from "react-google-flight-datepicker";
 import ReactTooltip from 'react-tooltip';
 import Chart from 'react-apexcharts'
 import "react-google-flight-datepicker/dist/main.css";
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import infoIcon from '../img/ico-info.svg';
-import graphImg from '../img/graph.jpg';
 
 export default function Gmb({businessData}){
 
@@ -198,27 +196,32 @@ export default function Gmb({businessData}){
                 <div className="l-gray-box mt-40">
                     <OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center"># of Clicks</div>
+                            <div className="custom-label text-uppercase text-center" data-tip="# of Clicks" data-for="stat-12"># of Clicks</div>
+							<ReactTooltip id='stat-12' place='top' type='light' effect='solid'></ReactTooltip>
                             {businessData && businessData.massaged_metrics.ACTIONS_WEBSITE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_WEBSITE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_WEBSITE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_WEBSITE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center"># of Views</div>
+                            <div className="custom-label text-uppercase text-center" data-tip="# of Views" data-for="stat-13"># of Views</div>
+							<ReactTooltip id='stat-13' place='top' type='light' effect='solid'></ReactTooltip>
                             {businessData && businessData.massaged_metrics.total_views ? getAnalyticsSection(businessData.massaged_metrics.total_views) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.total_views ? getAnalyticsIndicator(businessData.metrics_diff.total_views) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center"># of Calls</div>
+                            <div className="custom-label text-uppercase text-center" data-tip="# of Calls" data-for="stat-14"># of Calls</div>
+							<ReactTooltip id='stat-14' place='top' type='light' effect='solid'></ReactTooltip>
                             {businessData && businessData.massaged_metrics.ACTIONS_PHONE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_PHONE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_PHONE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_PHONE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Search Views</div>
+                            <div className="custom-label text-uppercase text-center" data-tip="Search Views" data-for="stat-15">Search Views</div>
+							<ReactTooltip id='stat-15' place='top' type='light' effect='solid'></ReactTooltip>
                             {businessData && businessData.massaged_metrics.VIEWS_SEARCH ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_SEARCH) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_SEARCH ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_SEARCH) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center">Map Views</div>
+                            <div className="custom-label text-uppercase text-center" data-tip="Map Views" data-for="stat-16">Map Views</div>
+							<ReactTooltip id='stat-16' place='top' type='light' effect='solid'></ReactTooltip>
                             {businessData && businessData.massaged_metrics.VIEWS_MAPS ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_MAPS) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_MAPS ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_MAPS) : ''}
                         </div>
@@ -233,7 +236,11 @@ export default function Gmb({businessData}){
                                         <div className="gc-count">{businessData && businessData.reviews.averageRating ? numberFormatter(businessData.reviews.averageRating) : ''}</div>
                                     </div>
                                 </div>
-                                <div className="sb-title">Avg Review Score</div>
+                                <div className="sb-title">
+                                    Avg Review Score&nbsp;
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Avg Review Score" data-for="review-score"/>
+                                    <ReactTooltip id='review-score' place='top' type='light' effect='solid'></ReactTooltip>
+                                </div>
                             </div>
                         </div>
                         <div className="col-sm-4">
@@ -243,7 +250,11 @@ export default function Gmb({businessData}){
                                         <div className="gc-count">{businessData && businessData.massaged_metrics.total_actions ? numberFormatter(businessData.massaged_metrics.total_actions) : ''}</div>
                                     </div>
                                 </div>
-                                <div className="sb-title">Actions Taken</div>
+                                <div className="sb-title">
+                                    Actions Taken&nbsp;
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Actions Taken" data-for="actions-taken"/>
+                                    <ReactTooltip id='actions-taken' place='top' type='light' effect='solid'></ReactTooltip>
+                                </div>
                             </div>
                         </div>
                         <div className="col-sm-4">
@@ -253,7 +264,11 @@ export default function Gmb({businessData}){
                                         <div className="gc-count">{businessData && businessData.massaged_metrics.ACTIONS_DRIVING_DIRECTIONS ? numberFormatter(businessData.massaged_metrics.ACTIONS_DRIVING_DIRECTIONS) : ''}</div>
                                     </div>
                                 </div>
-                                <div className="sb-title">Directions Requested</div>
+                                <div className="sb-title">
+                                    Directions Requested&nbsp;
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Directions Requested" data-for="directions-requested"/>
+								    <ReactTooltip id='directions-requested' place='top' type='light' effect='solid'></ReactTooltip>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -263,8 +278,8 @@ export default function Gmb({businessData}){
                         <div className="m-title text-uppercase mb-0">
                             Google Maps Searches
                             <span className="info-msg">
-                                <img className="ico_info" src={infoIcon} alt="info" data-tip="Google Maps Searches" data-for="gmb-ser"/>
-                                <ReactTooltip id='gmb-ser' place='top' type='light' effect='solid'></ReactTooltip>
+                                <img className="ico_info" src={infoIcon} alt="info" data-tip="Google Maps Searches<br />Google Maps Searches<br />Google Maps Searches<br />Google Maps Searches " data-for="gmb-ser"/>
+                                <ReactTooltip id='gmb-ser' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             </span>
                         </div>
                     </div>

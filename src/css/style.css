@@ -337,6 +337,9 @@ body {
 .ico_info {
     display: block;
 }
+.ico_info_in {
+    display: inline;
+}
 .graph-block {
     margin-top: 0;
 }
