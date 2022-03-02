@@ -194,38 +194,40 @@ export default function Gmb({businessData}){
         <div className="gray-box px-0">
             <div className="container-fluid">
                 <div className="l-gray-box mt-40">
-                    <OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
+                    <div className="d-flex">
+                    {/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center" data-tip="# of Clicks" data-for="stat-12"># of Clicks</div>
-							<ReactTooltip id='stat-12' place='top' type='light' effect='solid'></ReactTooltip>
+                            <div className="custom-label text-uppercase text-center" data-tip="<h6># OF CLICKS</h6>The number of visits to your GMB account for current period" data-for="stat-12"># of Clicks</div>
+							<ReactTooltip id='stat-12' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             {businessData && businessData.massaged_metrics.ACTIONS_WEBSITE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_WEBSITE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_WEBSITE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_WEBSITE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center" data-tip="# of Views" data-for="stat-13"># of Views</div>
-							<ReactTooltip id='stat-13' place='top' type='light' effect='solid'></ReactTooltip>
+                            <div className="custom-label text-uppercase text-center" data-tip="<h6># OF VIEWS</h6>The number of times your GMB listing was viewed (may or may not have been clicked)" data-for="stat-13"># of Views</div>
+							<ReactTooltip id='stat-13' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             {businessData && businessData.massaged_metrics.total_views ? getAnalyticsSection(businessData.massaged_metrics.total_views) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.total_views ? getAnalyticsIndicator(businessData.metrics_diff.total_views) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center" data-tip="# of Calls" data-for="stat-14"># of Calls</div>
-							<ReactTooltip id='stat-14' place='top' type='light' effect='solid'></ReactTooltip>
+                            <div className="custom-label text-uppercase text-center" data-tip="<h6># OF CALLS</h6>The number of calls from your GMB account" data-for="stat-14"># of Calls</div>
+							<ReactTooltip id='stat-14' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             {businessData && businessData.massaged_metrics.ACTIONS_PHONE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_PHONE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_PHONE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_PHONE) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center" data-tip="Search Views" data-for="stat-15">Search Views</div>
-							<ReactTooltip id='stat-15' place='top' type='light' effect='solid'></ReactTooltip>
+                            <div className="custom-label text-uppercase text-center" data-tip="<h6>SEARCH VIEWS</h6>The amount of times you GMB listing was shown in search results" data-for="stat-15">Search Views</div>
+							<ReactTooltip id='stat-15' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             {businessData && businessData.massaged_metrics.VIEWS_SEARCH ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_SEARCH) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_SEARCH ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_SEARCH) : ''}
                         </div>
                         <div className="col">
-                            <div className="custom-label text-uppercase text-center" data-tip="Map Views" data-for="stat-16">Map Views</div>
-							<ReactTooltip id='stat-16' place='top' type='light' effect='solid'></ReactTooltip>
+                            <div className="custom-label text-uppercase text-center" data-tip="<h6>MAP VIEWS</h6>The number of times viewers saw your listing on Google Maps" data-for="stat-16">Map Views</div>
+							<ReactTooltip id='stat-16' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             {businessData && businessData.massaged_metrics.VIEWS_MAPS ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_MAPS) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_MAPS ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_MAPS) : ''}
                         </div>
-                    </OwlCarousel>
+                    {/*</OwlCarousel>*/}
+                    </div>
                 </div>
                 <div className="score-block">
                     <div className="row">
@@ -238,8 +240,8 @@ export default function Gmb({businessData}){
                                 </div>
                                 <div className="sb-title">
                                     Avg Review Score&nbsp;
-                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Avg Review Score" data-for="review-score"/>
-                                    <ReactTooltip id='review-score' place='top' type='light' effect='solid'></ReactTooltip>
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="<h6>AVG REVIEW SCORE</h6>The overall average of all reviews left on your GMB account" data-for="review-score"/>
+                                    <ReactTooltip id='review-score' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                                 </div>
                             </div>
                         </div>
@@ -252,8 +254,8 @@ export default function Gmb({businessData}){
                                 </div>
                                 <div className="sb-title">
                                     Actions Taken&nbsp;
-                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Actions Taken" data-for="actions-taken"/>
-                                    <ReactTooltip id='actions-taken' place='top' type='light' effect='solid'></ReactTooltip>
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="<h6>ACTIONS TAKEN</h6>A total of all actions taken from your GMB account including calls, directions, messages & website visits" data-for="actions-taken"/>
+                                    <ReactTooltip id='actions-taken' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                                 </div>
                             </div>
                         </div>
@@ -266,8 +268,8 @@ export default function Gmb({businessData}){
                                 </div>
                                 <div className="sb-title">
                                     Directions Requested&nbsp;
-                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="Directions Requested" data-for="directions-requested"/>
-								    <ReactTooltip id='directions-requested' place='top' type='light' effect='solid'></ReactTooltip>
+                                    <img className="ico_info_in" src={infoIcon} alt="info" data-tip="<h6>DIRECTIONS REQUESTED</h6>The number of directions requested for current time period" data-for="directions-requested"/>
+								    <ReactTooltip id='directions-requested' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                                 </div>
                             </div>
                         </div>
@@ -278,7 +280,7 @@ export default function Gmb({businessData}){
                         <div className="m-title text-uppercase mb-0">
                             Google Maps Searches
                             <span className="info-msg">
-                                <img className="ico_info" src={infoIcon} alt="info" data-tip="Google Maps Searches<br />Google Maps Searches<br />Google Maps Searches<br />Google Maps Searches " data-for="gmb-ser"/>
+                                <img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>GOOGLE MAPS SEARCHES</h6>The number of times your listing was shown on Google Maps by day " data-for="gmb-ser"/>
                                 <ReactTooltip id='gmb-ser' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                             </span>
                         </div>
