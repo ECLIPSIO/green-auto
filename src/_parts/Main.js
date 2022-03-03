@@ -176,11 +176,66 @@ export default function Main(){
 	const prevHistEnd = useRef(0);
 	const prevDealership = useRef(0);
 
-	useEffect(() => {
+	const usePrevious = (value, initialValue) => {
+		const ref = useRef(initialValue);
+		useEffect(() => {
+		  ref.current = value;
+		});
+		return ref.current;
+	};
+
+	const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
+		const previousDeps = usePrevious(dependencies, []);
+	  
+		const changedDeps = dependencies.reduce((accum, dependency, index) => {
+		  if (dependency !== previousDeps[index]) {
+			const keyName = dependencyNames[index] || index;
+			return {
+			  ...accum,
+			  [keyName]: {
+				before: previousDeps[index],
+				after: dependency
+			  }
+			};
+		  }
+	  
+		  return accum;
+		}, {});
+	  
+		if (Object.keys(changedDeps).length) {
+		  console.log('[use-effect-debugger] ', changedDeps);
+		}
+	  
+		useEffect(effectHook, dependencies);
+	};
+
+	useEffectDebugger(() => {
 
 		console.log("HomeTab.js useEffect");
+		/*console.table({
+			histS:histStartDate.getTime(),
+			histSPrev:prevHistStart.current,
+			histSComp:prevHistStart.current == histStartDate.getTime(),
+			histE:histEndDate.getTime(),
+			histEPrev:prevHistEnd.current,
+			histEComp:prevHistEnd.current == histEndDate.getTime(),
+			currS:currStartDate.getTime(),
+			currSPrev:prevCurrStart.current,
+			currSComp:prevCurrStart.current == currStartDate.getTime(),
+			currE:currEndDate.getTime(),
+			currEPrev:prevCurrEnd.current,
+			currEComp:prevCurrEnd.current == currEndDate.getTime(),
+			bool1:user,
+			bool2:user.dealership_id != prevDealership.current,
+			bool3:currStartDate && currEndDate && histStartDate && histEndDate,
+			bool4:!(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()),
+			bool4n:(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()),
+			bool5: currStartDate.getTime() <= currEndDate.getTime(),
+			bool6:histStartDate.getTime() <= histEndDate.getTime(),
+			bool7:user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))
+		});*/
 
-		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
+		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			setLoading(true);
 			setSEOLoading(true);
@@ -203,9 +258,7 @@ export default function Main(){
 				setLoading(false);
                 showLoader(false);
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
-
-				
+				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period")				
 
 				axios.get(buildUrl(search_url)).then(function (response) {
 					var gas_data = response.data;
@@ -232,7 +285,7 @@ export default function Main(){
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
-	}, [currStartDate, currEndDate, histStartDate, histEndDate, user.dealership_id]);
+	}, [currStartDate.getTime(), currEndDate.getTime(), histStartDate.getTime(), histEndDate.getTime(), user.dealership_id]);
 
     return(
         <>
