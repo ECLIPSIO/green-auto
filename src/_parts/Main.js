@@ -81,7 +81,7 @@ export default function Main(){
 		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
 	}
 
-	var tempDate = new Date();
+	var tempDate = new Date(); 
 	if(tempDate.getDate() >= 7) tempDate.setDate(1);
 	else {
 		tempDate.setMonth(tempDate.getMonth() - 1);
