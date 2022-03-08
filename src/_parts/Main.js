@@ -18,8 +18,7 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
-import SeoTable from './SeoTable';
-import ReferralTable from './ReferralTable';
+import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 window.jQuery = $;
 window.$ = $;
@@ -141,12 +140,12 @@ export default function Main(){
 
 	//const [searchParams, setSearchParams] = useSearchParams();
 
-	const [isLoading, setLoading] = useState(true);
-	const [isSEOLoading, setSEOLoading] = useState(true);
-	const [isGMBLoading, setGMBLoading] = useState(true);
-	const [analyticsData, setAnalyticsData] = useState();
-	const [searchData, setSearchData] = useState();
-	const [businessData, setBusinessData] = useState();
+	//const [isLoading, setLoading] = useState(true);
+	//const [isSEOLoading, setSEOLoading] = useState(true);
+	//const [isGMBLoading, setGMBLoading] = useState(true);
+	const [analyticsData, setAnalyticsData] = useState(null);
+	const [searchData, setSearchData] = useState(null);
+	const [businessData, setBusinessData] = useState(null);
 
 	const buildUrl = (url) => {
 		console.table({
@@ -158,7 +157,7 @@ export default function Main(){
 
 		const queryParams = new URLSearchParams(window.location.search);
 
-		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + user.dealership_id;
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=999" + "&dealership=" + user.dealership_id;
 
 		console.log(build_url);
 
@@ -237,9 +236,12 @@ export default function Main(){
 
 		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
-			setLoading(true);
-			setSEOLoading(true);
-			setGMBLoading(true);
+			//setLoading(true);
+			//setSEOLoading(true);
+			//setGMBLoading(true);
+			setAnalyticsData(null);
+			setSearchData(null);
+			setBusinessData(null);
             showLoader(true);
 			console.log("getting data");
 
@@ -255,7 +257,7 @@ export default function Main(){
 				console.log(gas_data);
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
-				setLoading(false);
+				//setLoading(false);
                 showLoader(false);
 
 				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period")				
@@ -266,7 +268,7 @@ export default function Main(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setSearchData(gas_data);
-					setSEOLoading(false);
+					//setSEOLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
 				});
@@ -277,7 +279,7 @@ export default function Main(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setBusinessData(gas_data);
-					setGMBLoading(false);
+					//setGMBLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
 
@@ -398,7 +400,7 @@ export default function Main(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{isLoading || analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
+									{analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
@@ -413,33 +415,7 @@ export default function Main(){
 										
 									</div>
 									<div className="cs-table-block">
-										<table className="table table-striped">
-										  	<thead>
-											    <tr>
-												    <th scope="col">Search Term</th>
-												    <th scope="col">Web Hits Current</th>
-												    <th scope="col">Web Hits Historic</th>
-												    <th scope="col">Cost</th>
-												    <th scope="col">Time on Site</th>
-												    <th scope="col">Pages / Session</th>
-												    <th scope="col">Bounce Rate</th>
-											    </tr>
-										  	</thead>
-										  	<tbody>
-												{analyticsData && analyticsData.top_queries && Object.keys(analyticsData.top_queries).map(function(index) {
-														return <tr key={index}>
-															<td>{index}</td>
-															<td>{analyticsData.top_queries[index]["ga:sessions"]}</td>
-															<td>{analyticsData.top_queries[index]["ga:sessions_hist"] ? analyticsData.top_queries[index]["ga:sessions_hist"] : "-"}</td>
-															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["cost"]),true)}</td>
-															<td>{timeFormatter(analyticsData.top_queries[index]["ga:avgSessionDuration"])}</td>
-															<td>{numberFormatter(analyticsData.top_queries[index]["ga:pageviewsPerSession"])}</td>
-															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"] * 100))}%</td>
-														</tr>
-													})
-												}
-										  	</tbody>
-										</table>
+										{analyticsData && analyticsData.top_queries && <MoreTable tableData={Object.values(analyticsData.top_queries)} tableType="intercept"/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
@@ -458,7 +434,7 @@ export default function Main(){
 											</div>
 										</div>
 									</div>									
-									{isLoading || analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
+									{analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
@@ -523,7 +499,8 @@ export default function Main(){
 											</span>
 										</div>
 									</div>
-									{!isSEOLoading && searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>}
+									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
+									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -577,13 +554,14 @@ export default function Main(){
 											</span>
 										</div>
 									</div>
-									{analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>}
+									{/*analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>*/}									
+									{analyticsData && analyticsData.sources && <MoreTable tableData={Object.values(analyticsData.sources)} tableType="referral"/>}
 								</div>
 							</div>
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-					  	{!isGMBLoading && businessData && <Gmb businessData={businessData}/>}
+					  	{businessData && <Gmb businessData={businessData}/>}
 				  	</div>
 				</div>
 			</div>

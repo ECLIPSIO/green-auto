@@ -29,34 +29,38 @@ const timeFormatter = (seconds, start = 14, length = 5) => {
     return new Date(seconds * 1000).toISOString().substr(start, length);
 }
 
-const RenderReferral = ({tableData}) => {
+const RenderIntercept = ({tableData}) => {
     console.log(tableData);
     return(
         <table className="table table-striped">
             <thead>
-                <tr>
-                    <th scope="col">Source</th>
-                    <th scope="col">Web Hits Current</th>
-                    <th scope="col">Web Hits Historic</th>
-                    <th scope="col">Time on Site</th>
-                    <th scope="col">Pages / Session</th>
-                    <th scope="col">Bounce Rate</th>
-                </tr>
+            <tr>
+                <th scope="col">Search Term</th>
+                <th scope="col">Web Hits Current</th>
+                <th scope="col">Web Hits Historic</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Time on Site</th>
+                <th scope="col">Pages / Session</th>
+                <th scope="col">Bounce Rate</th>
+            </tr>
             </thead>
             <tbody>
-            {tableData.map((referral, index) => (
-                <tr key={index}>
-                    <td>{referral['source']}</td>
-                    <td>{referral['ga:sessions']}</td>
-                    <td>{referral['ga:sessions_hist']}</td>
-                    <td>{timeFormatter(referral['ga:avgSessionDuration'])}</td>
-                    <td>{numberFormatter(referral['ga:pageviewsPerSession'])}</td>
-                    <td>{numberFormatter(referral['ga:bounceRate'] * 100)}%</td>
-                </tr>
-            ))}
+            {tableData.map((intercept, index) => (
+                    <tr key={index}>
+                        <td>{intercept["ga:keyword"]}</td>
+                        <td>{intercept["ga:sessions"]}</td>
+                        <td>{intercept["ga:sessions_hist"] ? intercept["ga:sessions_hist"] : "-"}</td>
+                        <td>{numberFormatter(Math.round(intercept["cost"]),true)}</td>
+                        <td>{timeFormatter(intercept["ga:avgSessionDuration"])}</td>
+                        <td>{numberFormatter(intercept["ga:pageviewsPerSession"])}</td>
+                        <td>{numberFormatter(Math.round(intercept["ga:bounceRate"] * 100))}%</td>
+                    </tr>
+             ))
+            }
             </tbody>
-        </table>
+    </table>
+        
     )
 }
 
-export default RenderReferral;
+export default RenderIntercept;

@@ -23,7 +23,9 @@ const numberFormatter = (value, currency = false) => {
     return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
 }
 
-const RenderSeo = ({seoData}) => {
+const RenderSeo = ({tableData}) => {
+    console.log("renderseo tableData");
+    console.log(tableData);
     return(
         <table className="table table-striped">
             <thead>
@@ -36,7 +38,7 @@ const RenderSeo = ({seoData}) => {
                 </tr>
             </thead>
             <tbody>
-            {seoData.map((seo, index) => (
+            {tableData.map((seo, index) => (
                 <tr key={index}>
                     <td>{seo.dimensions.query}</td>
                     <td>{seo.clicks}</td>
