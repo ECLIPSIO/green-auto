@@ -56,6 +56,7 @@ export const UserContextProvider = ({children}) => {
     const loggedInCheck = async () => {
         const loginToken = localStorage.getItem('loginToken');
         Axios.defaults.headers.common['Authorization'] = 'Bearer '+loginToken;
+        console.log("loggedInCheck");
         if(loginToken){
             const {data} = await Axios.get('getUser.php');
             console.log(data);
@@ -76,10 +77,10 @@ export const UserContextProvider = ({children}) => {
 
     useEffect(() => {
         console.log("UserContext.js useEffect");
-        async function asyncCall(){
+        /*async function asyncCall(){
             await loggedInCheck();
         }
-        asyncCall();
+        asyncCall();*/
     },[]);
 
     const logout = () => {
