@@ -400,7 +400,7 @@ export default function Main(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
+									{analyticsData && <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
@@ -434,7 +434,7 @@ export default function Main(){
 											</div>
 										</div>
 									</div>									
-									{analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
+									{analyticsData && <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
