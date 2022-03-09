@@ -451,7 +451,7 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>AVG SEARCH POSITION</h6>The average rank that your website listing appears on Google" data-for="stat-6">Avg Search Position</div>
 											<ReactTooltip id='stat-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{searchData && searchData.search_data[0] && searchData.search_data[0].position ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position ? getAnalyticsSection(searchData.search_data[0].position) : ''}
 											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
 										</div>
 										<div className="col">
@@ -482,7 +482,7 @@ export default function Main(){
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>AdWords Clicks to Site</h6>The number of visits to your site via AdWords" data-for="stat-11">AdWords Clicks to Site</div>
 											<ReactTooltip id='stat-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels['Paid Search'] && analyticsData.channels['Paid Search']['ga:sessions'] ? getAnalyticsSection(analyticsData.channels['Paid Search']['ga:sessions']) : ''}
-											{analyticsData && analyticsData.channels_diff && analyticsData.channels['Paid Search'] && analyticsData.channels_diff['Paid Search']['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff['Paid Search']['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff['Paid Search'] && analyticsData.channels_diff['Paid Search']['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff['Paid Search']['ga:sessions']) : ''}
 										</div>
 									{/*</OwlCarousel>*/}
 									</div> 
