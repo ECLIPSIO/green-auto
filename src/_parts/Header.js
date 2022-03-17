@@ -65,21 +65,6 @@ export default function Header(props){
                                 <li>
                                     <NavLink exact="true" to="/reporting">Dashboard</NavLink>
                                 </li>
-                                <li>
-                                    <a href="#">Leads</a>
-                                </li>
-                                <li>
-                                    <a href="#">Tasks</a>
-                                </li>
-                                <li>
-                                    <a href="#">Tools</a>
-                                </li>
-                                <li>
-                                    <a href="#">Report</a>
-                                </li>
-                                <li>
-                                    <a href="#">Menu Item</a>
-                                </li>
                                 {!user && <li>
                                     <a href="#" onClick={() => toggleModal()}>Log In</a>
                                 </li>}

@@ -199,31 +199,31 @@ export default function Gmb({businessData}){
                         <div className="col">
                             <div className="custom-label text-uppercase text-center" data-tip="<h6># OF CLICKS</h6>The number of visits to your GMB account for current period" data-for="stat-12"># of Clicks</div>
 							<ReactTooltip id='stat-12' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-                            {businessData && businessData.massaged_metrics.ACTIONS_WEBSITE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_WEBSITE) : ''}
+                            {businessData && businessData.massaged_metrics.ACTIONS_WEBSITE  !== undefined? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_WEBSITE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_WEBSITE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_WEBSITE) : ''}
                         </div>
                         <div className="col">
                             <div className="custom-label text-uppercase text-center" data-tip="<h6># OF VIEWS</h6>The number of times your GMB listing was viewed (may or may not have been clicked)" data-for="stat-13"># of Views</div>
 							<ReactTooltip id='stat-13' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-                            {businessData && businessData.massaged_metrics.total_views ? getAnalyticsSection(businessData.massaged_metrics.total_views) : ''}
+                            {businessData && businessData.massaged_metrics.total_views !== undefined ? getAnalyticsSection(businessData.massaged_metrics.total_views) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.total_views ? getAnalyticsIndicator(businessData.metrics_diff.total_views) : ''}
                         </div>
                         <div className="col">
                             <div className="custom-label text-uppercase text-center" data-tip="<h6># OF CALLS</h6>The number of calls from your GMB account" data-for="stat-14"># of Calls</div>
 							<ReactTooltip id='stat-14' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-                            {businessData && businessData.massaged_metrics.ACTIONS_PHONE ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_PHONE) : ''}
+                            {businessData && businessData.massaged_metrics.ACTIONS_PHONE !== undefined ? getAnalyticsSection(businessData.massaged_metrics.ACTIONS_PHONE) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.ACTIONS_PHONE ? getAnalyticsIndicator(businessData.metrics_diff.ACTIONS_PHONE) : ''}
                         </div>
                         <div className="col">
                             <div className="custom-label text-uppercase text-center" data-tip="<h6>SEARCH VIEWS</h6>The amount of times you GMB listing was shown in search results" data-for="stat-15">Search Views</div>
 							<ReactTooltip id='stat-15' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-                            {businessData && businessData.massaged_metrics.VIEWS_SEARCH ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_SEARCH) : ''}
+                            {businessData && businessData.massaged_metrics.VIEWS_SEARCH !== undefined ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_SEARCH) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_SEARCH ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_SEARCH) : ''}
                         </div>
                         <div className="col">
                             <div className="custom-label text-uppercase text-center" data-tip="<h6>MAP VIEWS</h6>The number of times viewers saw your listing on Google Maps" data-for="stat-16">Map Views</div>
 							<ReactTooltip id='stat-16' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-                            {businessData && businessData.massaged_metrics.VIEWS_MAPS ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_MAPS) : ''}
+                            {businessData && businessData.massaged_metrics.VIEWS_MAPS !== undefined ? getAnalyticsSection(businessData.massaged_metrics.VIEWS_MAPS) : ''}
 							{businessData && businessData.metrics_diff && businessData.metrics_diff.VIEWS_MAPS ? getAnalyticsIndicator(businessData.metrics_diff.VIEWS_MAPS) : ''}
                         </div>
                     {/*</OwlCarousel>*/}
