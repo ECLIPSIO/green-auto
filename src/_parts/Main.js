@@ -260,7 +260,7 @@ export default function Main(){
 				//setLoading(false);
                 showLoader(false);
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period")				
+				if(!(gas_data && gas_data.has_history)) alert("No data for historical period")				
 
 				axios.get(buildUrl(search_url)).then(function (response) {
 					var gas_data = response.data;
@@ -270,7 +270,7 @@ export default function Main(){
 					setSearchData(gas_data);
 					//setSEOLoading(false);
 
-					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
+					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for historical period");
 				});
 
 				axios.get(buildUrl(business_url)).then(function (response) {
@@ -281,7 +281,7 @@ export default function Main(){
 					setBusinessData(gas_data);
 					//setGMBLoading(false);
 
-					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
+					if(!(gas_data && gas_data.has_history)) alert("No GMB data for historical period");
 
 				});
 			});
@@ -421,7 +421,7 @@ export default function Main(){
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											Power Rankings 
+											Traffic Quality
 											<span className="info-msg">
 												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>Traffic Quality</h6>The gauge the quality of traffic from each source we combine bounce rate, pages per session, avg time on site and other metrics to give an overall score.' data-for='pw-rank'/>
 												<ReactTooltip id='pw-rank' type='light' place='top' effect='solid' html={true}></ReactTooltip>
@@ -491,13 +491,13 @@ export default function Main(){
 											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center" data-tip="<h6>FORM FILLS</h6>Form fills." data-for="stat-7">Form Fills</div>
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>FORM FILLS</h6>The number of people that have submitted an inquiry on your website." data-for="stat-7">Form Fills</div>
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
 											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center" data-tip="<h6>Average CPC</h6>Average CPC." data-for="stat-7">Average CPC</div>
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7">Average CPC</div>
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.average_cpc !== undefined ? getAnalyticsSection(analyticsData.average_cpc,'currency') : ''}
 											{analyticsData && analyticsData.average_cpc_diff ? getAnalyticsIndicator(analyticsData.average_cpc_diff) : ''}
