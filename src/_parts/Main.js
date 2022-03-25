@@ -64,6 +64,8 @@ export default function Main(){
 			return (<div className="m-value">{timeFormatter(value)}</div>);
 		} else if(type == 'currency') {
 			return (<div className="m-value">{numberFormatter(Math.round(value),true)}</div>);
+		} else if(type == 'currency_precise') {
+			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100,true)}</div>);
 		} else if(type == 'percent') {
 			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
 		}
@@ -513,7 +515,7 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7">Average CPC</div>
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{adsData && adsData.campaign_totals && adsData.campaign_totals.average_cpc !== undefined ? getAnalyticsSection(adsData.campaign_totals.average_cpc,'currency') : ''}
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.average_cpc !== undefined ? getAnalyticsSection(adsData.campaign_totals.average_cpc,'currency_precise') : ''}
 											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.average_cpc !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.average_cpc) : ''}
 										</div>
 									{/*</OwlCarousel>*/}
