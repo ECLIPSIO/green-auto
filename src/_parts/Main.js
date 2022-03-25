@@ -136,6 +136,7 @@ export default function Main(){
 	const protocol = window.location.protocol;
 	const analytics_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_analytics.php";
 	const search_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_search.php"; 
+	const ads_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_ads.php"; 
 	const business_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_business.php"; 
 
 	//const [searchParams, setSearchParams] = useSearchParams();
@@ -145,6 +146,7 @@ export default function Main(){
 	//const [isGMBLoading, setGMBLoading] = useState(true);
 	const [analyticsData, setAnalyticsData] = useState(null);
 	const [searchData, setSearchData] = useState(null);
+	const [adsData, setAdsData] = useState(null);
 	const [businessData, setBusinessData] = useState(null);
 
 	const buildUrl = (url) => {
@@ -241,6 +243,7 @@ export default function Main(){
 			//setGMBLoading(true);
 			setAnalyticsData(null);
 			setSearchData(null);
+			setAdsData(null);
 			setBusinessData(null);
             showLoader(true);
 			console.log("getting data");
@@ -260,7 +263,18 @@ export default function Main(){
 				//setLoading(false);
                 showLoader(false);
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for historical period")				
+				if(!(gas_data && gas_data.has_history)) alert("No data for historical period")		
+
+				axios.get(buildUrl(ads_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got ads data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setAdsData(gas_data);
+					//setSEOLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No ads data for historical period");
+				});		
 
 				axios.get(buildUrl(search_url)).then(function (response) {
 					var gas_data = response.data;
@@ -463,8 +477,8 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>PHONE CALLS FROM ADS</h6>The amount of people that called your dealership from Google Ads" data-for="stat-9">Phone Calls from Ads</div>
 											<ReactTooltip id='stat-9' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.total_phone_calls !== undefined ? getAnalyticsSection(analyticsData.total_phone_calls) : ''}
-											{analyticsData && analyticsData.phone_calls_diff ? getAnalyticsIndicator(analyticsData.phone_calls_diff) : ''}
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.phone_calls !== undefined ? getAnalyticsSection(adsData.campaign_totals.phone_calls) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.phone_calls !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.phone_calls) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>AdWords Clicks to Site</h6>The number of visits to your site via AdWords" data-for="stat-11">AdWords Clicks to Site</div>
@@ -499,8 +513,8 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7">Average CPC</div>
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.average_cpc !== undefined ? getAnalyticsSection(analyticsData.average_cpc,'currency') : ''}
-											{analyticsData && analyticsData.average_cpc_diff ? getAnalyticsIndicator(analyticsData.average_cpc_diff) : ''}
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.average_cpc !== undefined ? getAnalyticsSection(adsData.campaign_totals.average_cpc) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.average_cpc !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.average_cpc) : ''}
 										</div>
 									{/*</OwlCarousel>*/}
 									</div> 
