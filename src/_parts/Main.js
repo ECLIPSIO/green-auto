@@ -416,15 +416,15 @@ export default function Main(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{analyticsData && <RaceChart graphData={analyticsData.race_chart}/>}
+									{analyticsData && analyticsData.race_chart && <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											Top Search Terms
+											Top Paid Search Terms
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>Top Search Terms</h6>The are the search terms that we most frequently used for visitors to arrive on your website from Google. ' data-for='lead-int'/>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>Top Paid Search Terms</h6>The are the search terms that we most frequently used for visitors to arrive on your website from Google Ads. ' data-for='lead-int'/>
 												<ReactTooltip id='lead-int' type='light' place='top' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
@@ -450,7 +450,7 @@ export default function Main(){
 											</div>
 										</div>
 									</div>									
-									{analyticsData && <BarChart graphData={analyticsData.bar_chart}/>}
+									{analyticsData && analyticsData.bar_chart && <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
