@@ -31,7 +31,7 @@ export default function Loading(props) {
             <h1 id="heading" className='text-center mb-3'>Loading</h1>
             <div id="fulldescription" tabIndex="0" role="document">
                 <div className="float-points">
-                    <div class="dot-collision"></div>
+                    <div className="dot-collision"></div>
                 </div>
                 <div className="cog-block">
                     <img src={cogs} alt="cogs" className="cog-image" />

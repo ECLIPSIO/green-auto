@@ -18,8 +18,7 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
-import SeoTable from './SeoTable';
-import ReferralTable from './ReferralTable';
+import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 window.jQuery = $;
 window.$ = $;
@@ -65,6 +64,8 @@ export default function Main(){
 			return (<div className="m-value">{timeFormatter(value)}</div>);
 		} else if(type == 'currency') {
 			return (<div className="m-value">{numberFormatter(Math.round(value),true)}</div>);
+		} else if(type == 'currency_precise') {
+			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100,true)}</div>);
 		} else if(type == 'percent') {
 			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
 		}
@@ -81,7 +82,7 @@ export default function Main(){
 		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
 	}
 
-	var tempDate = new Date();
+	var tempDate = new Date(); 
 	if(tempDate.getDate() >= 7) tempDate.setDate(1);
 	else {
 		tempDate.setMonth(tempDate.getMonth() - 1);
@@ -137,16 +138,18 @@ export default function Main(){
 	const protocol = window.location.protocol;
 	const analytics_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_analytics.php";
 	const search_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_search.php"; 
+	const ads_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_ads.php"; 
 	const business_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_business.php"; 
 
 	//const [searchParams, setSearchParams] = useSearchParams();
 
-	const [isLoading, setLoading] = useState(true);
-	const [isSEOLoading, setSEOLoading] = useState(true);
-	const [isGMBLoading, setGMBLoading] = useState(true);
-	const [analyticsData, setAnalyticsData] = useState();
-	const [searchData, setSearchData] = useState();
-	const [businessData, setBusinessData] = useState();
+	//const [isLoading, setLoading] = useState(true);
+	//const [isSEOLoading, setSEOLoading] = useState(true);
+	//const [isGMBLoading, setGMBLoading] = useState(true);
+	const [analyticsData, setAnalyticsData] = useState(null);
+	const [searchData, setSearchData] = useState(null);
+	const [adsData, setAdsData] = useState(null);
+	const [businessData, setBusinessData] = useState(null);
 
 	const buildUrl = (url) => {
 		console.table({
@@ -158,7 +161,7 @@ export default function Main(){
 
 		const queryParams = new URLSearchParams(window.location.search);
 
-		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=6" + "&dealership=" + user.dealership_id;
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=999" + "&dealership=" + user.dealership_id;
 
 		console.log(build_url);
 
@@ -176,15 +179,74 @@ export default function Main(){
 	const prevHistEnd = useRef(0);
 	const prevDealership = useRef(0);
 
-	useEffect(() => {
+	const usePrevious = (value, initialValue) => {
+		const ref = useRef(initialValue);
+		useEffect(() => {
+		  ref.current = value;
+		});
+		return ref.current;
+	};
+
+	const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
+		const previousDeps = usePrevious(dependencies, []);
+	  
+		const changedDeps = dependencies.reduce((accum, dependency, index) => {
+		  if (dependency !== previousDeps[index]) {
+			const keyName = dependencyNames[index] || index;
+			return {
+			  ...accum,
+			  [keyName]: {
+				before: previousDeps[index],
+				after: dependency
+			  }
+			};
+		  }
+	  
+		  return accum;
+		}, {});
+	  
+		if (Object.keys(changedDeps).length) {
+		  console.log('[use-effect-debugger] ', changedDeps);
+		}
+	  
+		useEffect(effectHook, dependencies);
+	};
+
+	useEffectDebugger(() => {
 
 		console.log("HomeTab.js useEffect");
+		/*console.table({
+			histS:histStartDate.getTime(),
+			histSPrev:prevHistStart.current,
+			histSComp:prevHistStart.current == histStartDate.getTime(),
+			histE:histEndDate.getTime(),
+			histEPrev:prevHistEnd.current,
+			histEComp:prevHistEnd.current == histEndDate.getTime(),
+			currS:currStartDate.getTime(),
+			currSPrev:prevCurrStart.current,
+			currSComp:prevCurrStart.current == currStartDate.getTime(),
+			currE:currEndDate.getTime(),
+			currEPrev:prevCurrEnd.current,
+			currEComp:prevCurrEnd.current == currEndDate.getTime(),
+			bool1:user,
+			bool2:user.dealership_id != prevDealership.current,
+			bool3:currStartDate && currEndDate && histStartDate && histEndDate,
+			bool4:!(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()),
+			bool4n:(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()),
+			bool5: currStartDate.getTime() <= currEndDate.getTime(),
+			bool6:histStartDate.getTime() <= histEndDate.getTime(),
+			bool7:user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))
+		});*/
 
-		if(user && (user.dealership_id != prevDealership || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
+		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
-			setLoading(true);
-			setSEOLoading(true);
-			setGMBLoading(true);
+			//setLoading(true);
+			//setSEOLoading(true);
+			//setGMBLoading(true);
+			setAnalyticsData(null);
+			setSearchData(null);
+			setAdsData(null);
+			setBusinessData(null);
             showLoader(true);
 			console.log("getting data");
 
@@ -200,12 +262,21 @@ export default function Main(){
 				console.log(gas_data);
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 				setAnalyticsData(gas_data);
-				setLoading(false);
-                // showLoader(false);
+				//setLoading(false);
+                showLoader(false);
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for current historical period");
+				if(!(gas_data && gas_data.has_history)) alert("No data for historical period")		
 
-				
+				axios.get(buildUrl(ads_url)).then(function (response) {
+					var gas_data = response.data;
+					console.log("got ads data");
+					console.log(gas_data);
+					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+					setAdsData(gas_data);
+					//setSEOLoading(false);
+
+					if(!(gas_data && gas_data.has_history)) alert("No ads data for historical period");
+				});		
 
 				axios.get(buildUrl(search_url)).then(function (response) {
 					var gas_data = response.data;
@@ -213,9 +284,9 @@ export default function Main(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setSearchData(gas_data);
-					setSEOLoading(false);
+					//setSEOLoading(false);
 
-					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for current historical period");
+					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for historical period");
 				});
 
 				axios.get(buildUrl(business_url)).then(function (response) {
@@ -224,16 +295,15 @@ export default function Main(){
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 					setBusinessData(gas_data);
-					setGMBLoading(false);
-                    showLoader(false);
+					//setGMBLoading(false);
 
-					if(!(gas_data && gas_data.has_history)) alert("No GMB data for current historical period");
+					if(!(gas_data && gas_data.has_history)) alert("No GMB data for historical period");
 
 				});
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
-	}, [currStartDate, currEndDate, histStartDate, histEndDate, user.dealership_id]);
+	}, [currStartDate.getTime(), currEndDate.getTime(), histStartDate.getTime(), histEndDate.getTime(), user.dealership_id]);
 
     return(
         <>
@@ -288,7 +358,7 @@ export default function Main(){
         <div className="custom-tabs">
 				<ul className="nav nav-tabs" id="myTab" role="tablist">
 				  	<li className="nav-item">
-				    	<a className="nav-link active" id="cs_1_tab" data-toggle="tab" href="#cs_1" role="tab" aria-controls="cs_1" aria-selected="true">Key Metrics</a>
+				    	<a className="nav-link active" onClick={resizeWindow} id="cs_1_tab" data-toggle="tab" href="#cs_1" role="tab" aria-controls="cs_1" aria-selected="true">Key Metrics</a>
 				  	</li>
 				  	<li className="nav-item">
 				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
@@ -304,28 +374,33 @@ export default function Main(){
 								<div className="l-gray-box mt-40">
 									<div className="d-flex">
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Current Spend</div>
-											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>Current Spend</h6>The total amount spent on AdWords during Current period" data-for="stat-1">Current Spend</div>
+											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost !== undefined ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
 											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Website Hits</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>WEBSITE HITS</h6>Number of visitors to your website during Current period." data-for="stat-2">Website Hits</div>
+											<ReactTooltip id='stat-2' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Time on Site</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>TIME ON SITE</h6>The average amount of time visitors spends on your site." data-for="stat-3">Time on Site</div>
+											<ReactTooltip id='stat-3' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:avgSessionDuration'],'time') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:avgSessionDuration'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:avgSessionDuration']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Pages / Session</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>PAGES PER SESSION</h6>The average amount of pages a visitor views when they visit your website." data-for="stat-4">Pages / Session</div>
+											<ReactTooltip id='stat-4' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Bounce Rate</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'] * 100,'percent') : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>BOUNCE RATE</h6>The percent of people that immediately leave after arriving to your website." data-for="stat-5">Bounce Rate</div>
+											<ReactTooltip id='stat-5' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'] * 100,'percent') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
 										</div>
 									</div>
@@ -334,64 +409,38 @@ export default function Main(){
 									<div className="m-title text-uppercase">
                                         Website Hits by Source
                                         <span className="info-msg">
-                                            <img className="ico_info" src={infoIcon} alt="info" data-tip="Hits By Source" data-for="web-hits"/>
-											<ReactTooltip id='web-hits' place='top' type='light' effect='solid'></ReactTooltip>
+                                            <img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>WEBSITE HITS BY SOURCE</h6>This is a breakdown of where visitors to your site came from during Current time period." data-for="web-hits"/>
+											<ReactTooltip id='web-hits' place='top' type='light' effect='solid' html={true}></ReactTooltip>
                                             <div>
                                             </div>
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{isLoading || analyticsData === null ? 'Loading' : <RaceChart graphData={analyticsData.race_chart}/>}
+									{analyticsData && analyticsData.race_chart && <RaceChart graphData={analyticsData.race_chart}/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											Leading Interceptions 
+											Top Paid Search Terms
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip='Leading Interceptions' data-for='lead-int'/>
-												<ReactTooltip id='lead-int' type='light' place='top' effect='solid'></ReactTooltip>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>Top Paid Search Terms</h6>The are the search terms that we most frequently used for visitors to arrive on your website from Google Ads. ' data-for='lead-int'/>
+												<ReactTooltip id='lead-int' type='light' place='top' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 										
 									</div>
 									<div className="cs-table-block">
-										<table className="table table-striped">
-										  	<thead>
-											    <tr>
-												    <th scope="col">Search Term</th>
-												    <th scope="col">Web Hits Current</th>
-												    <th scope="col">Web Hits Historic</th>
-												    <th scope="col">Cost</th>
-												    <th scope="col">Time on Site</th>
-												    <th scope="col">Pages / Session</th>
-												    <th scope="col">Bounce Rate</th>
-											    </tr>
-										  	</thead>
-										  	<tbody>
-												{analyticsData && analyticsData.top_queries && Object.keys(analyticsData.top_queries).map(function(index) {
-														return <tr key={index}>
-															<td>{index}</td>
-															<td>{analyticsData.top_queries[index]["ga:sessions"]}</td>
-															<td>{analyticsData.top_queries[index]["ga:sessions_hist"] ? analyticsData.top_queries[index]["ga:sessions_hist"] : "-"}</td>
-															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["cost"]),true)}</td>
-															<td>{timeFormatter(analyticsData.top_queries[index]["ga:avgSessionDuration"])}</td>
-															<td>{numberFormatter(analyticsData.top_queries[index]["ga:pageviewsPerSession"])}</td>
-															<td>{numberFormatter(Math.round(analyticsData.top_queries[index]["ga:bounceRate"] * 100))}%</td>
-														</tr>
-													})
-												}
-										  	</tbody>
-										</table>
+										{analyticsData && analyticsData.top_queries && <MoreTable tableData={Object.values(analyticsData.top_queries)} tableType="intercept"/>}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											Power Rankings 
+											Traffic Quality
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip='Power Rankings' data-for='pw-rank'/>
-												<ReactTooltip id='pw-rank' type='light' place='top' effect='solid'></ReactTooltip>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>Traffic Quality</h6>The gauge the quality of traffic from each source we combine bounce rate, pages per session, avg time on site and other metrics to give an overall score.' data-for='pw-rank'/>
+												<ReactTooltip id='pw-rank' type='light' place='top' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 										<div className="ml-auto">
@@ -401,7 +450,7 @@ export default function Main(){
 											</div>
 										</div>
 									</div>									
-									{isLoading || analyticsData === null ? 'Loading' : <BarChart graphData={analyticsData.bar_chart}/>}
+									{analyticsData && analyticsData.bar_chart && <BarChart graphData={analyticsData.bar_chart}/>}
 								</div>
 							</div>
 						</div>
@@ -413,35 +462,64 @@ export default function Main(){
 
 								{/* Data Slide Block */}
 								<div className="l-gray-box mt-40">
-									{/* <div className=""> */}
-									<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>
+									<div className="d-flex">
+									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Avg Search Position</div>
-											{searchData && searchData.search_data[0] && searchData.search_data[0].position ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>AVG SEARCH POSITION</h6>The average rank that your website listing appears on Google across all search terms" data-for="stat-6">Avg Search Position</div>
+											<ReactTooltip id='stat-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
 											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Mobile Device Usage</div>
-											{analyticsData && analyticsData.mobile_usage ? getAnalyticsSection(analyticsData.mobile_usage,'percent') : ''}
-											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">Conversion Rate</div>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>CONVERSION RATE</h6>This is the percent of website visitors that visit at least 1 VDP" data-for="stat-8">Conversion Rate</div>
+											<ReactTooltip id='stat-8' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Phone Calls from Ads</div>
-											{analyticsData && analyticsData.total_phone_calls ? getAnalyticsSection(analyticsData.total_phone_calls) : ''}
-											{analyticsData && analyticsData.phone_calls_diff ? getAnalyticsIndicator(analyticsData.phone_calls_diff) : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>PHONE CALLS FROM ADS</h6>The amount of people that called your dealership from Google Ads" data-for="stat-9">Phone Calls from Ads</div>
+											<ReactTooltip id='stat-9' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.phone_calls !== undefined ? getAnalyticsSection(adsData.campaign_totals.phone_calls) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.phone_calls !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.phone_calls) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center">Engagement Rate</div>
-											{analyticsData && analyticsData.engagement_rate ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>AdWords Clicks to Site</h6>The number of visits to your site via AdWords" data-for="stat-11">AdWords Clicks to Site</div>
+											<ReactTooltip id='stat-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels['Paid Search'] && analyticsData.channels['Paid Search']['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels['Paid Search']['ga:sessions']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff['Paid Search'] && analyticsData.channels_diff['Paid Search']['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff['Paid Search']['ga:sessions']) : ''}
+										</div>
+									{/*</OwlCarousel>*/}
+									</div> 
+								</div>
+								<div className="l-gray-box mt-40">
+									<div className="d-flex">
+									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">Engagement Rate</div>
+											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
 											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
 										</div>
-									</OwlCarousel>
-									{/* </div> */}
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">Mobile Device Usage</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage,'percent') : ''}
+											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>FORM FILLS</h6>The number of people that have submitted an inquiry on your website." data-for="stat-7">Form Fills</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7">Average CPC</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.average_cpc !== undefined ? getAnalyticsSection(adsData.campaign_totals.average_cpc,'currency_precise') : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.average_cpc !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.average_cpc) : ''}
+										</div>
+									{/*</OwlCarousel>*/}
+									</div> 
 								</div>
 											
 								{/* Seo Report */}
@@ -450,12 +528,13 @@ export default function Main(){
 										<div className="m-title text-uppercase mb-0">
 											SEO Report 
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip="SEO Report" data-for="seo-rep"/>
-												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid'></ReactTooltip>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>SEO REPORT</h6>This is a breakdown of website visitors by search term" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 									</div>
-									{!isSEOLoading && searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>}
+									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
+									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -464,8 +543,8 @@ export default function Main(){
 										<div className="m-title text-uppercase mb-0">
 											Top 5 Vehicle Detail Page Views
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip="Top 5 Vehicle" data-for="top-vs"/>
-												<ReactTooltip id='top-vs' place='top' type='light' effect='solid'></ReactTooltip>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>TOP 5 VDP VIEWS</h6>Ranking of your VDPs that have the most website visits." data-for="top-vs"/>
+												<ReactTooltip id='top-vs' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 									</div>
@@ -504,18 +583,19 @@ export default function Main(){
 										<div className="m-title text-uppercase mb-0">
 											Referral Traffic
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip="Referral Traffic" data-for="ref-tf"/>
-												<ReactTooltip id='ref-tf' place='top' type='light' effect='solid'></ReactTooltip>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>REFERRAL TRAFFIC</h6>Ranking of traffic sources to your website by last click attribution." data-for="ref-tf"/>
+												<ReactTooltip id='ref-tf' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 									</div>
-									{analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>}
+									{/*analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>*/}									
+									{analyticsData && analyticsData.sources && <MoreTable tableData={Object.values(analyticsData.sources)} tableType="referral"/>}
 								</div>
 							</div>
 						</div>
 				  	</div>
 				  	<div className="tab-pane fade" id="cs_3" role="tabpanel" aria-labelledby="cs_3_tab">
-					  	{!isGMBLoading && businessData && <Gmb businessData={businessData}/>}
+					  	{businessData && <Gmb businessData={businessData}/>}
 				  	</div>
 				</div>
 			</div>

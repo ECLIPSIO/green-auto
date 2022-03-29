@@ -337,6 +337,9 @@ body {
 .ico_info {
     display: block;
 }
+.ico_info_in {
+    display: inline;
+}
 .graph-block {
     margin-top: 0;
 }
@@ -560,19 +563,23 @@ text{
   }
 
    div.tooltip {	
-       display: block;
-    position: absolute;			
-    text-align: center;			
-    width: 100px;					
-    height: auto;					
-    padding: 5px;				
-    font: 14px sans-serif;		
-    background: white;	
-    border: 30px;		
-    border-radius: 2px;			
-    pointer-events: none;			
-} 
+        display: block;
+        position: absolute;			
+        text-align: center;			
+        width: 100px;					
+        height: auto;					
+        padding: 5px;				
+        font: 14px sans-serif;		
+        background: white;	
+        border: 30px;		
+        border-radius: 2px;			
+        pointer-events: none;			
+    } 
 
+    div.__react_component_tooltip h6 {
+        text-align:center;
+        text-transform: uppercase;
+    }
 
   div.tooltip:after {
     content: "";

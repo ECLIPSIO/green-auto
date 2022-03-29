@@ -1,22 +1,41 @@
 import React, { useState, useEffect } from "react";
 import RenderSeo from "./RenderSeo";
+import RenderReferral from "./RenderReferral";
+import RenderIntercept from "./RenderIntercept";
 
 const dataAtonce = 10;
-let dataStack = [];
+let moreTableDataStack = {
+    seo: [],
+    referral: [],
+    intercept: []
+};
 
-const SeoTable = ({seoData}) => {
-    const length = Object.keys(seoData).length;
+const components = {
+    seo: RenderSeo,
+    referral: RenderReferral,
+    intercept: RenderIntercept
+};
+
+export default function MoreTable(props) {
+    const length = Object.keys(props.tableData).length;
 
     const [dataToShow, setDataToShow] = useState([]);
     const [anchor, setAnchor] = useState(10);
 
     const collectNextData = (start, end) => {
-        const slicedData = seoData.slice(start, end);
-        dataStack = [...dataStack, ...slicedData];
-        setDataToShow(dataStack);
+        const slicedData = props.tableData.slice(start, end);
+        moreTableDataStack[props.tableType] = [...moreTableDataStack[props.tableType], ...slicedData];
+        setDataToShow(moreTableDataStack[props.tableType]);
     }
 
+    const SpecificTable = components[props.tableType];
+
+    console.log("called MoreTable");
+    console.log(props.tableData);
+
     useEffect(() => {
+        console.log("MoreTable useeffect");
+        moreTableDataStack[props.tableType] = [];
         collectNextData(0, dataAtonce);
     },[]);
 
@@ -32,7 +51,7 @@ const SeoTable = ({seoData}) => {
 
     return (
         <div className="cs-table-block">
-            <RenderSeo seoData={dataToShow}/>
+            <SpecificTable tableData={dataToShow}/>
             <div className="text-center mt-35">
                 <a href="#" className="green-small-btn" onClick={(e) => {e.preventDefault(); handleLoadMore();}}>Show 10 More</a>
             </div>
@@ -40,4 +59,3 @@ const SeoTable = ({seoData}) => {
     )
 }
 
-export default SeoTable;
