@@ -1002,6 +1002,225 @@ div#login_modal {
     color: #79BB30;
     animation: dotFloatingAfter 3s infinite cubic-bezier(0.4, 0, 1, 1);
   }
+
+  /* Review page html */
+.gmb-review-title {
+    color: #FFFFFF;
+  font-family: "Avenir Next";
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: -0.2px;
+  line-height: 38px;
+}
+.review-box {
+    border: 1px solid #3F454A;
+    padding: 30px 20px;
+    position: relative;
+}
+.review-box + .review-box {
+    margin-top: 25px;
+} 
+.reviewer-info {
+    padding-left: 18px;
+    width: calc(100% - 79px);
+}
+.reviewer-info .d-flex {
+    margin: 8px 0;
+}
+.reviewer-info p {
+    color: #FFFFFF;
+  font-family: "Avenir Next";
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  line-height: 22px;
+}
+.review-circle {
+    height: 64px;
+    width: 64px;
+    min-width: 64px;
+    line-height: 64px;
+    background-color: #353A40;
+    border-radius: 50%;
+    color: #FFFFFF;
+    font-family: "Avenir Next";
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.6px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.review-circle img {
+    max-width: 65%;
+    max-height: 65%;
+}
+.reviewer-name {
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.13px;
+    line-height: 25px;
+}
+.review-date {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.08px;
+    line-height: 16px;
+}
+.green-transparent-btn {
+    height: 34px;
+    width: 180px;
+    border: 2px solid #79BB30;
+    border-radius: 5px;
+    color: #79BB30;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-align: center;
+    display: inline-block;
+    line-height:32px;
+}
+.green-transparent-btn:hover {
+    color: #79BB30;
+    text-decoration: none;
+}
+.green-btn {
+    height: 34px;
+    width: 180px;
+    border: 2px solid #79BB30;
+    background: #79BB30;
+    border-radius: 5px;
+    color: #fff;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-align: center;
+    display: inline-block;
+    line-height:32px;
+    text-transform: uppercase;
+}
+.green-btn:hover {
+    color: #fff;
+    text-decoration: none;
+}
+.transparent-btn {
+    height: 34px;
+    width: 180px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    color: #79BB30;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-align: center;
+    display: inline-block;
+    line-height:32px;
+    text-transform: uppercase;
+}
+.transparent-btn:hover {
+    color: #79BB30;
+    text-decoration: none;
+}
+.mt-20 {
+    margin-top: 20px !important;
+}
+.plr-78 {
+    padding-left: 78px !important;
+    padding-right: 78px !important;
+}
+.reviewer-info-flex {
+    position: relative;
+}
+.reviewer-info-flex + .reviewer-info-flex:before {
+    content: "";
+    position: absolute;
+    left: 31px;
+    bottom: calc(100% - 50px);
+    width: 1px;
+    height: 50%;
+    background: #3B4146;
+    z-index: 0;
+}
+.reviewer-info-flex + .reviewer-info-flex {
+    padding-top: 40px;
+}
+.write-label {
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: -0.12px;
+    line-height: 22px;
+}
+.write-review-box textarea {
+    height: 110px;
+    width: 100%;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    resize: none;
+    padding: 10px;
+}
+.write-review-box textarea:focus {
+    border: 1px solid #CCCCCC;
+    outline: none;
+}
+.mt-15 {
+    margin-top: 15px !important;
+}
+.mt-8 {
+    margin-top: 8px !important;
+}
+.wr-info {
+    color: #fff;
+    font-family: Avenir;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: -0.11px;
+    line-height: 19px;
+}
+.wr-info a {
+    color: #79BB30;
+}
+.review-cross-icon {
+    height: 40px;
+    width: 40px;
+    background-color: #353A40;
+    display: inline-block;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 37px;
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    z-index: 2;
+}
+.replay-field-block {
+    display: none;
+}
+.review-box.d-active .replay-field-block {
+    display: block;
+}
+.review-cross-icon {
+    display: none;
+}
+.review-box.d-active .review-cross-icon {
+    display: block;
+}
+.f-right {
+    float: right;
+}
   
   @keyframes dotFloating {
     0% {
