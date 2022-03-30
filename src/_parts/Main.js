@@ -148,6 +148,11 @@ export default function Main(){
 	//const [isLoading, setLoading] = useState(true);
 	//const [isSEOLoading, setSEOLoading] = useState(true);
 	//const [isGMBLoading, setGMBLoading] = useState(true);
+	const isAnalyticsLoading = useRef(false);
+	const isSEOLoading = useRef(false);
+	const isGMBLoading = useRef(false);
+	const isAdsLoading = useRef(false);
+	const startChart = useRef(false);
 	const [analyticsData, setAnalyticsData] = useState(null);
 	const [searchData, setSearchData] = useState(null);
 	const [adsData, setAdsData] = useState(null);
@@ -242,9 +247,11 @@ export default function Main(){
 
 		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
-			//setLoading(true);
-			//setSEOLoading(true);
-			//setGMBLoading(true);
+			isAnalyticsLoading.current = true;
+			isAdsLoading.current = true;
+			isSEOLoading.current = true;
+			isGMBLoading.current = true;
+			startChart.current = false;
 			setAnalyticsData(null);
 			setSearchData(null);
 			setAdsData(null);
@@ -263,19 +270,23 @@ export default function Main(){
 				console.log("got analytics data");
 				console.log(gas_data);
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+
+				isAnalyticsLoading.current = false;
+				startChart.current = !(isAnalyticsLoading.current || isAdsLoading.current || isSEOLoading.current || isGMBLoading.current);
 				setAnalyticsData(gas_data);
-				//setLoading(false);
                 showLoader(false);
 
-				if(!(gas_data && gas_data.has_history)) alert("No data for historical period")		
+				if(!(gas_data && gas_data.has_history)) alert("No data for historical period");
 
 				axios.get(buildUrl(ads_url)).then(function (response) {
 					var gas_data = response.data;
 					console.log("got ads data");
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+
+					isAdsLoading.current = false;
+					startChart.current = !(isAnalyticsLoading.current || isAdsLoading.current || isSEOLoading.current || isGMBLoading.current);
 					setAdsData(gas_data);
-					//setSEOLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No ads data for historical period");
 				});		
@@ -285,8 +296,10 @@ export default function Main(){
 					console.log("got search data");
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+
+					isSEOLoading.current = false;
+					startChart.current = !(isAnalyticsLoading.current || isAdsLoading.current || isSEOLoading.current || isGMBLoading.current);
 					setSearchData(gas_data);
-					//setSEOLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No seo/ppc data for historical period");
 				});
@@ -296,8 +309,10 @@ export default function Main(){
 					console.log("got business data");
 					console.log(gas_data);
 					if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+
+					isGMBLoading.current = false;
+					startChart.current = !(isAnalyticsLoading.current || isAdsLoading.current || isSEOLoading.current || isGMBLoading.current);
 					setBusinessData(gas_data);
-					//setGMBLoading(false);
 
 					if(!(gas_data && gas_data.has_history)) alert("No GMB data for historical period");
 
@@ -368,9 +383,9 @@ export default function Main(){
 				  	<li className="nav-item">
 				    	<a className="nav-link" onClick={resizeWindow} id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
 				  	</li>
-					<li className="nav-item">
+					{/*<li className="nav-item">
 				    	<a className="nav-link" id="cs_4_tab" data-toggle="tab" href="#cs_4" role="tab" aria-controls="cs_4" aria-selected="false">GMB REVIEWS</a>
-					</li>
+					</li>*/}
 				</ul>
 				<div className="tab-content" id="myTabContent">
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
@@ -446,7 +461,7 @@ export default function Main(){
                                         </span>
                                     </div>
 									<div className="graph-block">
-									{analyticsData && analyticsData.race_chart && <RaceChart graphData={analyticsData.race_chart}/>}
+									{analyticsData && analyticsData.race_chart && <RaceChart graphData={analyticsData.race_chart} startChart={startChart.current} />}
 									</div>
 								</div>
 								<div className="transparent-box mt-40">

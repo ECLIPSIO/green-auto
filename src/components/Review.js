@@ -40,15 +40,15 @@ export default function Review({reviewData}) {
     const generatePage = () => {
         const elem = [];
         if(totalPages > 0){
-            elem.push(<li className={`${current == 1 ? 'page-item disabled' : 'page-item'}`}>
-            <a className="page-link" href="" onClick={e => {e.preventDefault(); prevPage();}} tabindex="-1" aria-disabled="true">Previous</a>
+            elem.push(<li className={`${current == 1 ? 'page-item disabled' : 'page-item'}`} key='page0'>
+            <a className="page-link" href="" onClick={e => {e.preventDefault(); prevPage();}} tabIndex="-1" aria-disabled="true">Previous</a>
             </li>);
 
             for (let i = 1; i <= totalPages; i++) {
                 elem.push(<li className={`${i==current ? 'page-item active' : 'page-item'}`} key={'page'+i}><a className="page-link" href="" onClick={(e) => {e.preventDefault(); selectPage(i)}}>{i}</a></li>);
             }
 
-            elem.push(<li className={`${current == totalPages ? 'page-item disabled' : 'page-item'}`}>
+            elem.push(<li className={`${current == totalPages ? 'page-item disabled' : 'page-item'}`} key={'page' + (totalPages + 1)}>
             <a className="page-link" href="" onClick={e => {e.preventDefault(); nextPage();}}>Next</a>
             </li>);
         }

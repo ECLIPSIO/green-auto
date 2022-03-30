@@ -29,7 +29,7 @@ const months = [
   'December'
 ];
 
-function BarChartRace(brandData){
+function BarChartRace(brandData,startChart){
 
     var max_year = 0;
 
@@ -37,7 +37,9 @@ function BarChartRace(brandData){
         max_year = d.year > max_year ? d.year : max_year;
     });
 
-    tickDuration = 3500 / max_year;
+    console.log(brandData);
+
+    tickDuration = startChart && max_year > 0 ? 3500 / max_year : 350000;
     
     const halo = function(text, strokeWidth) {
         text.select(function() { return this.parentNode.insertBefore(this.cloneNode(true), this); })
@@ -62,7 +64,6 @@ function BarChartRace(brandData){
         .attr("viewBox", "0 0 "+width+" 600")
         // Class to make it responsive.
         .classed("svg-content-responsive", true);
-    console.log('start')
     const svg = svgC //attr("width", width).attr("height", height);
 
     // Define the div for the tooltip
@@ -391,8 +392,10 @@ function getFormattedDate(date) {
   return date ? months[date.getMonth()] + " " + (date.getDate() + 1) + " " + date.getFullYear() : ""
 }
 
-export default function RaceChart({graphData}){
+export default function RaceChart({graphData, startChart}){
     useEffect(()=> {
+
+        console.log("race chart useEffect");
 
         graphData.map(function(values) {
           if(!firstYear) firstYear = values.year;
@@ -400,97 +403,10 @@ export default function RaceChart({graphData}){
           datesByYear[values.year] = new Date(values.date);
         });
 
-        BarChartRace(graphData);
-        /*d3.csv(data).then(csv_data => {
-            // console.log('Data Loaded');
-            console.log(csv_data);
-            BarChartRace(csv_data);
-        })
-        .catch(error => {
-            console.table(error);
-        });
+        BarChartRace(graphData,startChart);
 
-        data = graphData;
-
-        data.map(function(values) {
-          //console.log(new Date(+values.date));
-        });
-
-        console.log(data);
-
-        var names = new Set(data.map(d => d.name));
-
-        console.log(names);
-
-        var datevalues = Array.from(d3.rollup(data, ([d]) => d.value, d => d.date, d => d.name))
-          .map(([date, data]) => [new Date(date), data])
-          .sort(([a], [b]) => d3.ascending(a, b));
-
-        console.log(datevalues);
-
-        var n = 10;
-        var k = 1;
-
-        function rank(value) {
-            const data = Array.from(names, name => ({name, value: value(name)}));
-            data.sort((a, b) => d3.descending(a.value, b.value));
-            for (let i = 0; i < data.length; ++i) data[i].rank = Math.min(n, i);
-            return data;
-        }
-
-        var rankings = rank(name => datevalues[0][1].get(name));
-
-        console.log(rankings);
-
-        const keyframes = [];
-        let ka, a, kb, b;
-        for ([[ka, a], [kb, b]] of d3.pairs(datevalues)) {
-          for (let i = 0; i < k; ++i) {
-            const t = i / k;
-            keyframes.push([
-              new Date(ka * (1 - t) + kb * t),
-              rank(name => (a.get(name) || 0) * (1 - t) + (b.get(name) || 0) * t)
-            ]);
-          }
-        }
-        keyframes.push([new Date(kb), rank(name => b.get(name) || 0)]);
-
-        console.log(keyframes);
-
-        var nameframes = d3.groups(keyframes.flatMap(([, data]) => data), d => d.name);
-
-        console.log(nameframes);
-
-        var prev = new Map(nameframes.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a])));
-
-        console.log(prev);
-
-        var next = new Map(nameframes.flatMap(([, data]) => d3.pairs(data)));
-
-        console.log(next);
-
-      /*  keyframes = {
-            const keyframes = [];
-            let ka, a, kb, b;
-            for ([[ka, a], [kb, b]] of d3.pairs(datevalues)) {
-              for (let i = 0; i < k; ++i) {
-                const t = i / k;
-                keyframes.push([
-                  new Date(ka * (1 - t) + kb * t),
-                  rank(name => (a.get(name) || 0) * (1 - t) + (b.get(name) || 0) * t)
-                ]);
-              }
-            }
-            keyframes.push([new Date(kb), rank(name => b.get(name) || 0)]);
-            return keyframes;
-          };
-
-        console.log(keyframes);
-          
-        nameframes = d3.groups(keyframes.flatMap(([, data]) => data), d => d.name);
-        prev = new Map(nameframes.flatMap(([, data]) => d3.pairs(data, (a, b) => [b, a])));
-        next = new Map(nameframes.flatMap(([, data]) => d3.pairs(data)));*/
-
+        console.log("start chart");
+        console.log(startChart);
 
     });
 

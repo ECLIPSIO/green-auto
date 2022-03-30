@@ -24,8 +24,6 @@ const numberFormatter = (value, currency = false) => {
 }
 
 const RenderSeo = ({tableData}) => {
-    console.log("renderseo tableData");
-    console.log(tableData);
     return(
         <table className="table table-striped">
             <thead>

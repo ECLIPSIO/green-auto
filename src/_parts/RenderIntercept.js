@@ -30,7 +30,6 @@ const timeFormatter = (seconds, start = 14, length = 5) => {
 }
 
 const RenderIntercept = ({tableData}) => {
-    console.log(tableData);
     return(
         <table className="table table-striped">
             <thead>
