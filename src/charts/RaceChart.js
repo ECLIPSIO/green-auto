@@ -5,7 +5,7 @@ import './d3-multi-selection.min.js';
 import data from './data.csv';
 // require('./d3-multi-selection.min.js');
 
-let tickDuration = 1000;
+var tickDuration = 1000;
 let top_n = 10;
 let height = 300;
 let width = 600;
@@ -30,6 +30,15 @@ const months = [
 ];
 
 function BarChartRace(brandData){
+
+    var max_year = 0;
+
+    brandData.forEach(d => {
+        max_year = d.year > max_year ? d.year : max_year;
+    });
+
+    tickDuration = 3500 / max_year;
+    
     const halo = function(text, strokeWidth) {
         text.select(function() { return this.parentNode.insertBefore(this.cloneNode(true), this); })
         .styles({
@@ -379,7 +388,7 @@ function BarChartRace(brandData){
 }
 
 function getFormattedDate(date) {
-  return date ? months[date.getMonth()] + " " + date.getDate() + " " + date.getFullYear() : ""
+  return date ? months[date.getMonth()] + " " + (date.getDate() + 1) + " " + date.getFullYear() : ""
 }
 
 export default function RaceChart({graphData}){

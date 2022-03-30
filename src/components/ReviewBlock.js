@@ -14,7 +14,7 @@ export default function ReviewBlock({review}){
     }, [])
     return (
         <div className={`${reply ? 'review-box d-active' : 'review-box'}`}>
-            <a href="javascript:void(0);" className="review-cross-icon" onClick={e => {setReply(false)}}><img src={xIcon}/></a>
+            <a href="" className="review-cross-icon" onClick={e => {e.preventDefault(); setReply(false)}}><img src={xIcon}/></a>
             <div className="reviewer-info-flex d-flex">
                 <div className="review-circle">{fLetter(review.name)}</div>
                 <div className="reviewer-info">
@@ -25,7 +25,7 @@ export default function ReviewBlock({review}){
                     </div>
                     <p>{review.review}</p>
                     <div className="text-right mt-20">
-                        {!reply ? <a href="javascript:void(0);" className="green-transparent-btn jq_replay_btn" onClick={e => {setReply(true)}}>REPLY</a> : null}
+                        {!reply ? <a href="" className="green-transparent-btn jq_replay_btn" onClick={e => {e.preventDefault(); setReply(true)}}>REPLY</a> : null}
                         
                     </div>
                 </div>
@@ -41,8 +41,8 @@ export default function ReviewBlock({review}){
                             <div className="wr-info">Please note that your reply will be displayed publicly on google and must comply with the local content policies and <a href="">terms of service</a></div>
                         </div>
                         <div className="text-right mt-20">
-                            <a href="javascript:void(0)" className="transparent-btn" onClick={e => {setReply(false)}}>Cancel</a>
-                            <a href="javascript:void(0)" className="green-btn">Post Reply</a>
+                            <a href="" className="transparent-btn" onClick={e => {e.preventDefault(); setReply(false)}}>Cancel</a>
+                            <a href="" className="green-btn" onClick={e => {e.preventDefault();}}>Post Reply</a>
                         </div>
                     </div>
                 </div>
