@@ -550,8 +550,19 @@ export default function Main(){
 												</span>
 											</div>
 											<ReactTooltip id='stat-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.channels && analyticsData.channels['Paid Search'] && analyticsData.channels['Paid Search']['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels['Paid Search']['ga:sessions']) : ''}
-											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff['Paid Search'] && analyticsData.channels_diff['Paid Search']['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff['Paid Search']['ga:sessions']) : ''}
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.clicks !== undefined !== undefined ? getAnalyticsSection(adsData.campaign_totals.clicks) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.clicks !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.clicks) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												AdWords Impressions
+												<span className="info-msg" data-tip="<h6>AdWords Impressions</h6>This is the number of time your ad has been viewed in search results" data-for="stat-11">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.impressions !== undefined ? getAnalyticsSection(adsData.campaign_totals.impressions) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.impressions !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.impressions) : ''}
 										</div>
 									{/*</OwlCarousel>*/}
 									</div> 
@@ -591,6 +602,28 @@ export default function Main(){
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
 											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Organic Form Fills
+												<span className="info-msg" data-tip="<h6>Organic FORM FILLS</h6>The number of people that have submitted an inquiry on your website not from ads." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Ads Form Fills
+												<span className="info-msg" data-tip="<h6>Ads FORM FILLS</h6>The number of people that have submitted an inquiry on your website from a google ad." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.ads_form_fills !== undefined ? getAnalyticsSection(analyticsData.ads_form_fills) : ''}
+											{analyticsData && analyticsData.ads_form_fills_diff ? getAnalyticsIndicator(analyticsData.ads_form_fills_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" >
