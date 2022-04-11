@@ -395,14 +395,14 @@ export default function Main(){
 									<div className="d-flex">
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Current Spend
-												<span className="info-msg" data-tip="<h6>Current Spend</h6>The total amount spent on AdWords during Current period" data-for="stat-1">												
+												Mobile Device Usage
+												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
-											</div>											
-											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost !== undefined ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
-											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
+											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -572,6 +572,17 @@ export default function Main(){
 									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
+												Current Spend
+												<span className="info-msg" data-tip="<h6>Current Spend</h6>The total amount spent on AdWords during Current period" data-for="stat-1">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>											
+											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.cost_micros !== undefined ? getAnalyticsSection(adsData.campaign_totals.cost_micros,'currency') : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.cost_micros !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.cost_micros) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
 												Engagement Rate
 												<span className="info-msg" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">												
 													<img className="ico_info" src={infoIcon} alt="info" />
@@ -580,28 +591,6 @@ export default function Main(){
 											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
 											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Mobile Device Usage
-												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
-											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Form Fills
-												<span className="info-msg" data-tip="<h6>FORM FILLS</h6>The number of people that have submitted an inquiry on your website." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
-											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -624,6 +613,17 @@ export default function Main(){
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.ads_form_fills !== undefined ? getAnalyticsSection(analyticsData.ads_form_fills) : ''}
 											{analyticsData && analyticsData.ads_form_fills_diff ? getAnalyticsIndicator(analyticsData.ads_form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												GAS Form Fills
+												<span className="info-msg" data-tip="<h6>TG FORM FILLS</h6>The number of people that have submitted an inquiry on your website via trade gauge or a gas landing page." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.gas_form_fills !== undefined ? getAnalyticsSection(analyticsData.gas_form_fills) : ''}
+											{analyticsData && analyticsData.gas_form_fills_diff ? getAnalyticsIndicator(analyticsData.gas_form_fills_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" >
