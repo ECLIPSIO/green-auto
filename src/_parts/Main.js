@@ -22,6 +22,7 @@ import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 import Review from '../components/Review';
 import reviewData from '../data/review.json';
+import Form from '../components/Form';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -371,6 +372,9 @@ export default function Main(){
 					<li className="nav-item">
 				    	<a className="nav-link" id="cs_4_tab" data-toggle="tab" href="#cs_4" role="tab" aria-controls="cs_4" aria-selected="false">GMB REVIEWS</a>
 					</li>
+					<li className="nav-item">
+				    	<a className="nav-link" id="cs_5_tab" data-toggle="tab" href="#cs_5" role="tab" aria-controls="cs_5" aria-selected="false">GROW REVIEWS</a>
+					</li>
 				</ul>
 				<div className="tab-content" id="myTabContent">
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
@@ -672,6 +676,11 @@ export default function Main(){
 					<div className="tab-pane fade" id="cs_4" role="tabpanel" aria-labelledby="cs_4_tab">
 					  	{reviewData && <Review reviewData={reviewData}/>}
 				  	</div>
+					
+					{/* GROW REVIEWS */}
+					<div className="tab-pane fade" id="cs_5" role="tabpanel" aria-labelledby="cs_5_tab">
+						<Form />
+					</div>
 				</div>
 			</div>
         </>
