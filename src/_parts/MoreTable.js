@@ -30,9 +30,6 @@ export default function MoreTable(props) {
 
     const SpecificTable = components[props.tableType];
 
-    console.log("called MoreTable");
-    console.log(props.tableData);
-
     useEffect(() => {
         console.log("MoreTable useeffect");
         moreTableDataStack[props.tableType] = [];
