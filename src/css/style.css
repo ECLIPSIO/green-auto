@@ -1288,6 +1288,79 @@ div#login_modal {
     padding-left: 25px;
     padding-right: 25px;
 }
+
+/* Tab 5 */
+.review-form-box {
+    border: 1px solid #3F454A;
+    background-color: #1D1F22;
+    padding: 45px 80px;
+}
+.custom-form .form-group {
+    margin-bottom: 29px;
+}
+.custom-form label {
+    color: #FFFFFF;
+    font-family: "Avenir";
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: -0.08px;
+    line-height: 18px;
+    margin-bottom: 10px;
+}
+.custom-form .form-control {
+    height: 40px;
+    width: 100%;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    color: #666666;
+    font-family: "Avenir Next";
+    font-size: 13px;
+    letter-spacing: -0.08px;
+    line-height: 20px;
+}
+.custom-form textarea.form-control {
+    resize: none;
+    height: 344px;
+}
+.green-btn {
+    height: 34px;
+    line-height: 34px;
+    width: 180px;
+    border: 2px solid #79BB30;
+    border-radius: 5px;
+    background-color: #79BB30;
+    color: #FFFFFF;
+    font-family: "Avenir";
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-align: center;
+}
+.add-script {
+    color: #79BB30;
+    font-family: "Avenir";
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.add-script span {
+    font-size: 26px;
+    font-weight: 700;
+    vertical-align: -4px;
+    margin-right: 4px;
+}
+.add-script:hover {
+    text-decoration: none;
+    color: #79BB30;
+}
+.mb-15 {
+    margin-bottom: 15px !important;
+}
   
   @keyframes dotFloating {
     0% {
