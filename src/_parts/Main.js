@@ -71,6 +71,8 @@ export default function Main(){
 			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100,true)}</div>);
 		} else if(type == 'percent') {
 			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
+		} else if(type == 'percent_precise') {
+			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100)}%</div>);
 		}
 
 		return (<div className="m-value">{numberFormatter(value)}</div >);
@@ -387,11 +389,12 @@ export default function Main(){
 					{/*<li className="nav-item">
 				    	<a className="nav-link" id="cs_4_tab" data-toggle="tab" href="#cs_4" role="tab" aria-controls="cs_4" aria-selected="false">GMB REVIEWS</a>
 					</li>
-					*/}
+					
 
 					<li className="nav-item">
 				    	<a className="nav-link" id="cs_5_tab" data-toggle="tab" href="#cs_5" role="tab" aria-controls="cs_5" aria-selected="false">GROW REVIEWS</a>
 					</li>
+					*/}
 				</ul>
 				<div className="tab-content" id="myTabContent">
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
@@ -529,12 +532,12 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												Conversion Rate
-												<span className="info-msg" data-tip="<h6>CONVERSION RATE</h6>This is the percent of website visitors that visit at least 1 VDP" data-for="stat-8">												
+												<span className="info-msg" data-tip="<h6>CONVERSION RATE</h6>This is the percent of website visitors that submit a contact form or call" data-for="stat-8">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
 											<ReactTooltip id='stat-8' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent_precise') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
 										<div className="col">
