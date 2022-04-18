@@ -1,13 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 import ReviewBlock from './ReviewBlock';
 
+import {UserContext} from '../context/UserContext';
+
 export default function Review({reviewData}) {
+    const {user, changeUserDealership, logout} = useContext(UserContext); 
+
     const total = reviewData.length;
-    const perPage = 2;
+    const perPage = 10;
     const [current, setCurrent] = useState(1);
     const totalPages = total > 0 ? Math.ceil(total/perPage) : 0;
     const [currentData, setCurrentData] = useState([]);
@@ -64,7 +68,7 @@ export default function Review({reviewData}) {
         <div className="gray-box pl-0 pr-0">
 			<div className="container-fluid plr-78">
                 {currentData && currentData.map((r, i) => {
-                    return <ReviewBlock review={r} key={'1000'+i}/>
+                    return <ReviewBlock review={r} user={user} key={'1000'+i}/>
                 })}
                 <div className="text-center pagination-block">
                     <nav aria-label="Page navigation example" className="d-inline-block">
