@@ -1072,6 +1072,11 @@ div#login_modal {
     letter-spacing: -0.08px;
     line-height: 16px;
 }
+.review-response {
+    font-weight:bold;
+    color:#79BB30;
+    text-decoration: underline;
+}
 .green-transparent-btn {
     height: 34px;
     width: 180px;

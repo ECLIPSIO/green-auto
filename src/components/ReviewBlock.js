@@ -91,7 +91,7 @@ export default function ReviewBlock({review,user}){
                         <div className="review-date text-uppercase">{review.time}</div>
                     </div>
                     <p>{review.comment}</p>
-                    {review && review.reviewReply && review.reviewReply.comment !== undefined && <div><br/><p>Your Reply - {review.reviewReply.comment}</p></div>}
+                    {review && review.reviewReply && review.reviewReply.comment !== undefined && <div><br/><p><span className="review-response">Your Reply:</span> {review.reviewReply.comment}</p></div>}
                     <div className="text-right mt-20">
                         {review && review.reviewReply !== undefined && <a href="" className="green-transparent-btn jq_replay_btn" onClick={e => {e.preventDefault(); deleteReply(review.reviewId)}}>DELETE REPLY</a>}
                         {!reply && <a href="" className="green-transparent-btn jq_replay_btn" onClick={e => {e.preventDefault(); setReply(true)}}>{hasReply ? "UPDATE REPLY" : "REPLY"}</a>}                       
@@ -105,12 +105,12 @@ export default function ReviewBlock({review,user}){
                         <div className="reviewer-name mt-20">{user.dealership}</div>
                         <div className="write-label mt-15">Write your Reply</div>
                         <div className="write-review-box mt-8">
-                            <textarea className="write-review-control" id={review.reviewId} value={review && review.reviewReply && review.reviewReply.comment !== undefined ? review.reviewReply.comment : ""}></textarea>
+                            <textarea className="write-review-control" id={review.reviewId} defaultValue={review && review.reviewReply && review.reviewReply.comment !== undefined ? review.reviewReply.comment : ""}></textarea>
                             <div className="wr-info">Please note that your reply will be displayed publicly on google and must comply with the local content policies and <a href="https://support.google.com/business/answer/9292476?hl=en" target="_BLANK">terms of service</a></div>
                         </div>
                         <div className="text-right mt-20">
-                            <a href="" className="transparent-btn" onClick={e => {e.preventDefault(); setReply(false)}}>Cancel</a>
-                            <a href="" className="green-btn" onClick={e => {e.preventDefault(); replyToReview(review.reviewId,document.getElementById(review.reviewId).value)}}>Post Reply</a>
+                            <a href="" className="transparent-btn" onClick={e => {e.preventDefault(); setReply(false);}}>Cancel</a>
+                            <a href="" className="green-btn" onClick={e => {e.preventDefault(); replyToReview(review.reviewId,document.getElementById(review.reviewId).value);}}>Post Reply</a>
                         </div>
                     </div>
                 </div>
