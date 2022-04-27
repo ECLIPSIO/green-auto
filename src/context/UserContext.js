@@ -68,9 +68,11 @@ export const UserContextProvider = ({children}) => {
         }
     }
 
-    const changeUserDealership = (dealership_id,dealership) => {
+    const changeUserDealership = (dealership_id,dealership,twilio_number,gmaps_review_id) => {
         userData.dealership_id = dealership_id;
         userData.dealership = dealership;
+        userData.twilio_number = twilio_number;
+        userData.gmaps_review_id = gmaps_review_id;
 
         console.log(userData);
     }

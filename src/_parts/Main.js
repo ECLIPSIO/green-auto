@@ -20,7 +20,7 @@ import {UserContext} from '../context/UserContext';
 import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 import Review from '../components/Review';
-import Form from '../components/ReviewForm';
+import ReviewForm from '../components/ReviewForm';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -727,7 +727,7 @@ export default function Main(){
 					
 					{/* GROW REVIEWS */}
 					<div className="tab-pane fade" id="cs_5" role="tabpanel" aria-labelledby="cs_5_tab">
-						<Form />
+						<ReviewForm />
 					</div>
 				</div>
 			</div>

@@ -9,7 +9,7 @@ window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
-export default function Form(){
+export default function ReviewForm(){
 
     const {user} = useContext(UserContext); 
 
@@ -18,6 +18,7 @@ export default function Form(){
     scriptTexts.push("Hello name_value,\n\nWe are privileged to have your business at " + user.dealership + ".  If you have a minute, we'd love if you'd leave a review for us:\n\nreviewLink_value");
 
     const[scripts, setScripts] = useState(1);
+    const[reviewUrl, setReviewUrl] = useState(user ? "https://g.page/" + user.gmaps_review_id + "/review" : "");
 
     const[currentScript, setCurrentScript] = useState("");
     const addScripts = () => {
@@ -56,6 +57,7 @@ export default function Form(){
     }
 
     const updateScript = () => {
+        
         let reviewForm = document.getElementById('growReviewForm');
         const formData = new FormData(reviewForm);
 
@@ -70,10 +72,28 @@ export default function Form(){
         setCurrentScript(e.target.value);
     }
 
-    useEffect(() => {
-        //updateScript();
-    }, []);
+    const manualUrl = (e) => {
+        setReviewUrl(e.target.value);
 
+        updateScript();
+    }
+
+    useEffect(() => {
+        setReviewUrl(user ? "https://g.page/" + user.gmaps_review_id + "/review" : "");
+
+        scriptTexts = [];
+        scriptTexts.push("Hello name_value,\n\nWe are privileged to have your business at " + user.dealership + ".  If you have a minute, we'd love if you'd leave a review for us:\n\nreviewLink_value");
+
+        let reviewForm = document.getElementById('growReviewForm');
+        const formData = new FormData(reviewForm);
+
+        var thisScript = scriptTexts[0];
+        thisScript = thisScript.replace("name_value",formData.get("name"));
+        thisScript = thisScript.replace("reviewLink_value","https://g.page/" + user.gmaps_review_id + "/review");
+
+        setCurrentScript(thisScript);
+        
+    }, [user.dealership_id]);
 
     return (
         <>
@@ -96,7 +116,7 @@ export default function Form(){
                                 </div>
                                 <div className="form-group">
                                     <label>Google Review Link</label>
-                                    <input type="text" name="reviewLink" className="form-control" defaultValue={"https://g.page/" + user.gmaps_review_id + "/review"} onChange={updateScript} />
+                                    <input type="text" name="reviewLink" className="form-control" value={reviewUrl} onChange={(e) => {manualUrl(e)} } />
                                 </div>
                                 <div className="form-group mb-15" id='scripts-block'>
                                     <label>Script</label>

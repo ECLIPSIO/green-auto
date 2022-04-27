@@ -44,10 +44,10 @@ export default function Header(props){
         setShowModal(!showModal)
     }
 
-    const changeDealership = (dealership_id,dealership) => {
+    const changeDealership = (dealership_id,dealership,twilio_number,gmaps_review_id) => {
         console.log(dealership_id);
         console.log(dealership);
-        changeUserDealership(dealership_id,dealership);
+        changeUserDealership(dealership_id,dealership,twilio_number,gmaps_review_id);
         props.callBack(dealership_id);
     }
     return(
@@ -86,7 +86,7 @@ export default function Header(props){
                                 } 
                                 <div className="dropdown-menu dropdown-menu-right">
                                     {user && user.role == "admin" && Object.keys(user.all_dealerships).map(function(index) {
-                                        return <button  key={index} className="dropdown-item" type="button" onClick={() => changeDealership(user.all_dealerships[index]["dealership_id"],user.all_dealerships[index]["dealership"])}>{user.all_dealerships[index]["dealership"]}</button>
+                                        return <button  key={index} className="dropdown-item" type="button" onClick={() => changeDealership(user.all_dealerships[index]["dealership_id"],user.all_dealerships[index]["dealership"],user.all_dealerships[index]["twilio_number"],user.all_dealerships[index]["gmaps_review_id"])}>{user.all_dealerships[index]["dealership"]}</button>
                                     })}
                                     {user && <button className="dropdown-item" type="button" onClick={() => logout()}>Log Out</button>}
                                 </div>
