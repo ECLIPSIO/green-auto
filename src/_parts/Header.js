@@ -64,7 +64,13 @@ export default function Header(props){
                             <ul>
                                 <li>
                                     <NavLink exact="true" to="/reporting">Dashboard</NavLink>
-                                </li>
+                                </li>                                
+                                {
+                                    user && user.role == "admin" &&
+                                    <li>
+                                        <a href={"https://doubleclutch.com/appraise/gas-phone-leads.php?dealership=" + user.dealership_id} target="_blank">Twilio Calls</a>
+                                    </li>
+                                }
                                 {!user && <li>
                                     <a href="#" onClick={() => toggleModal()}>Log In</a>
                                 </li>}

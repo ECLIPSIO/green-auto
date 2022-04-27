@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import axios from 'axios'; 
 import infoIcon from '../img/ico-info.svg';
 
@@ -15,13 +15,12 @@ import $ from 'jquery';
 // import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
-import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
 import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 import Review from '../components/Review';
-import Form from '../components/Form';
+import Form from '../components/ReviewForm';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -388,12 +387,9 @@ export default function Main(){
 					<li className="nav-item">
 				    	<a className="nav-link" id="cs_4_tab" data-toggle="tab" href="#cs_4" role="tab" aria-controls="cs_4" aria-selected="false">GMB REVIEWS</a>
 					</li>
-					
-
-					{/*<li className="nav-item">
+					<li className="nav-item">
 				    	<a className="nav-link" id="cs_5_tab" data-toggle="tab" href="#cs_5" role="tab" aria-controls="cs_5" aria-selected="false">GROW REVIEWS</a>
 					</li>
-					*/}
 				</ul>
 				<div className="tab-content" id="myTabContent">
 				  	<div className="tab-pane fade show active" id="cs_1" role="tabpanel" aria-labelledby="cs_1_tab">
