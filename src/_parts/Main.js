@@ -85,32 +85,32 @@ export default function Main(){
 		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
 	}
 
-	var tempDate = new Date(); 
-	if(tempDate.getDate() >= 7) tempDate.setDate(1);
+	var tempStartDate = new Date(); 
+	if(tempStartDate.getDate() >= 7) tempStartDate.setDate(1);
 	else {
-		tempDate.setMonth(tempDate.getMonth() - 1);
-		tempDate.setDate(1);
+		tempStartDate.setMonth(tempStartDate.getMonth() - 1);
+		tempStartDate.setDate(1);
 	}
-	tempDate.setHours(0,0,0,0);
-	const [currStartDate, setCurrStartDate] = useState(tempDate);
+	tempStartDate.setHours(0,0,0,0);
+	const [currStartDate, setCurrStartDate] = useState(tempStartDate);
 
-	var tempDate = new Date();
-	if(tempDate.getDate() < 7) tempDate.setDate(0);
-	tempDate.setHours(0,0,0,0);
-	const [currEndDate, setCurrEndDate] = useState(tempDate);
+	var tempEndDate = new Date();
+	if(tempEndDate.getDate() < 7) tempEndDate.setDate(0);
+	tempEndDate.setHours(0,0,0,0);
+	const [currEndDate, setCurrEndDate] = useState(tempEndDate);
 
-	var tempDate = new Date(currStartDate.getTime());
-	tempDate.setMonth(tempDate.getMonth() - 1);
-	const [histStartDate, setHistStartDate] = useState(tempDate);
+	var tempHStartDate = new Date(tempStartDate.getTime());
+	tempHStartDate.setMonth(tempHStartDate.getMonth() - 1);
+	const [histStartDate, setHistStartDate] = useState(tempHStartDate);	
 
-	var tempDate = new Date(currEndDate.getTime());
-	tempDate.setMonth(tempDate.getMonth() - 1);
-	if(tempDate.getMonth() != histStartDate.getMonth()) {
-		tempDate = new Date(histStartDate.getTime());
-		tempDate.setMonth(tempDate.getMonth() + 1);
-		tempDate.setDate(0);
+	var tempHEndDate = new Date(currEndDate.getTime());
+	tempHEndDate.setMonth(tempHEndDate.getMonth() - 1);
+	if(tempHEndDate.getMonth() != tempHStartDate.getMonth()) {
+		tempHEndDate = new Date(tempHStartDate.getTime());
+		tempHEndDate.setMonth(tempHEndDate.getMonth() + 1);
+		tempHEndDate.setDate(0);
 	}
-	const [histEndDate, setHistEndDate] = useState(tempDate);
+	const [histEndDate, setHistEndDate] = useState(tempHEndDate);
 
 	const histDate = {
 		start : histStartDate,
@@ -129,13 +129,14 @@ export default function Main(){
 	};
 
 	
-	const histDateChanges = (...dates) =>{
+	const histDateChanges = (...dates) => {
 		setHistStartDate(dates[0]);
-		setHistEndDate(dates[1]);
+		setHistEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : histEndDate);
 	};
-	const currDateChanges = (...dates) =>{
+	const currDateChanges = (...dates) => {
+
 		setCurrStartDate(dates[0]);
-		setCurrEndDate(dates[1]);
+		setCurrEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
 	};
 	
 	const protocol = window.location.protocol;
