@@ -536,7 +536,7 @@ export default function Main(){
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent_precise') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
-										<div className="col">
+										{/*<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												Phone Calls from Ads
 												<span className="info-msg" data-tip="<h6>PHONE CALLS FROM ADS</h6>The amount of people that called your dealership from Google Ads" data-for="stat-9">												
@@ -546,7 +546,7 @@ export default function Main(){
 											<ReactTooltip id='stat-9' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{adsData && adsData.campaign_totals && adsData.campaign_totals.phone_calls !== undefined ? getAnalyticsSection(adsData.campaign_totals.phone_calls) : ''}
 											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.phone_calls !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.phone_calls) : ''}
-										</div>
+										</div>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												AdWords Clicks to Site
@@ -610,6 +610,17 @@ export default function Main(){
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
+												Gas/Ads Form Fills
+												<span className="info-msg" data-tip="<h6>Ads FORM FILLS</h6>The number of people that have submitted an inquiry on your website from a google ad." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.gas_ads_form_fills !== undefined ? getAnalyticsSection(analyticsData.gas_ads_form_fills) : ''}
+											{analyticsData && analyticsData.gas_ads_form_fills_diff ? getAnalyticsIndicator(analyticsData.gas_ads_form_fills_diff) : ''}
+										</div>
+										{/*<div className="col">
+											<div className="custom-label text-uppercase text-center">
 												Ads Form Fills
 												<span className="info-msg" data-tip="<h6>Ads FORM FILLS</h6>The number of people that have submitted an inquiry on your website from a google ad." data-for="stat-7">												
 													<img className="ico_info" src={infoIcon} alt="info" />
@@ -629,7 +640,7 @@ export default function Main(){
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.gas_form_fills !== undefined ? getAnalyticsSection(analyticsData.gas_form_fills) : ''}
 											{analyticsData && analyticsData.gas_form_fills_diff ? getAnalyticsIndicator(analyticsData.gas_form_fills_diff) : ''}
-										</div>
+										</div>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center" >
 												Average CPC
