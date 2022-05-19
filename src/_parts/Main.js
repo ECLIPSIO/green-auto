@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef, useContext} from 'react';
+import ReactDOM from "react-dom";
 import axios from 'axios'; 
 import infoIcon from '../img/ico-info.svg';
 
@@ -130,13 +131,28 @@ export default function Main(){
 
 	
 	const histDateChanges = (...dates) => {
-		setHistStartDate(dates[0]);
-		setHistEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : histEndDate);
+		ReactDOM.unstable_batchedUpdates(() => {
+			setHistStartDate(dates[0]);
+			setHistEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : histEndDate);
+		});
 	};
 	const currDateChanges = (...dates) => {
 
-		setCurrStartDate(dates[0]);
-		setCurrEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
+		ReactDOM.unstable_batchedUpdates(() => {
+
+			setCurrStartDate(dates[0]);
+			setCurrEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
+
+			var tempS = new Date(dates[0].getTime());
+			tempS.setMonth(tempS.getMonth() - 1);
+
+			var tempE = new Date(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
+			tempE.setMonth(tempE.getMonth() - 1);
+
+			setHistStartDate(tempS);
+			setHistEndDate(tempE);
+
+		});
 	};
 	
 	const protocol = window.location.protocol;
