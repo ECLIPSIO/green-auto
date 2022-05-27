@@ -3,7 +3,7 @@ import React from 'react';
 const numberFormatter = (value, currency = false) => {
     var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
     
-    var sign = value >= 0 ? "" : "-";
+    var sign = num>= 0 ? "" : "-";
     var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
     if(str.indexOf(".") > 0) {
         parts = str.split(".");

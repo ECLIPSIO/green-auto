@@ -29,12 +29,12 @@ const timeFormatter = (seconds, start = 14, length = 5) => {
     return new Date(seconds * 1000).toISOString().substr(start, length);
 }
 
-const RenderReferral = ({tableData}) => {
+const RenderTraffic = ({tableData}) => {
     return(
         <table className="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Source</th>
+                    <th scope="col">Page</th>
                     <th scope="col">Web Hits Current</th>
                     <th scope="col">Web Hits Historic</th>
                     <th scope="col">Time on Site</th>
@@ -43,14 +43,14 @@ const RenderReferral = ({tableData}) => {
                 </tr>
             </thead>
             <tbody>
-            {tableData.map((referral, index) => (
+            {tableData.map((traffic, index) => (
                 <tr key={index}>
-                    <td>{referral['source']}</td>
-                    <td>{referral['ga:sessions']}</td>
-                    <td>{referral['ga:sessions_hist']}</td>
-                    <td>{timeFormatter(referral['ga:avgSessionDuration'])}</td>
-                    <td>{numberFormatter(referral['ga:pageviewsPerSession'])}</td>
-                    <td>{numberFormatter(referral['ga:bounceRate'] * 100)}%</td>
+                    <td>{traffic['ga:pagePath']}</td>
+                    <td>{traffic['ga:pageViews']}</td>
+                    <td>{traffic['ga:pageViews_hist']}</td>
+                    <td>{timeFormatter(traffic['ga:avgSessionDuration'])}</td>
+                    <td>{numberFormatter(traffic['ga:pageviewsPerSession'])}</td>
+                    <td>{numberFormatter(traffic['ga:bounceRate'] * 100)}%</td>
                 </tr>
             ))}
             </tbody>
@@ -58,4 +58,4 @@ const RenderReferral = ({tableData}) => {
     )
 }
 
-export default RenderReferral;
+export default RenderTraffic;

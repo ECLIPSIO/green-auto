@@ -2,18 +2,24 @@ import React, { useState, useEffect } from "react";
 import RenderSeo from "./RenderSeo";
 import RenderReferral from "./RenderReferral";
 import RenderIntercept from "./RenderIntercept";
+import RenderTraffic from "./RenderTraffic";
+import RenderAdGroup from "./RenderAdGroup";
 
 const dataAtonce = 10;
 let moreTableDataStack = {
     seo: [],
     referral: [],
-    intercept: []
+    intercept: [],
+    traffic: [],
+    ad_group: []
 };
 
 const components = {
     seo: RenderSeo,
     referral: RenderReferral,
-    intercept: RenderIntercept
+    intercept: RenderIntercept,
+    traffic: RenderTraffic,
+    ad_group: RenderAdGroup
 };
 
 export default function MoreTable(props) {

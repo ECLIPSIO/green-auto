@@ -34,7 +34,7 @@ export default function Main(){
 	const numberFormatter = (value, currency = false) => {
 		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
 		
-		var sign = value >= 0 ? "" : "-";
+		var sign = num>= 0 ? "" : "-";
 		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
 		if(str.indexOf(".") > 0) {
 			parts = str.split(".");
@@ -396,7 +396,10 @@ export default function Main(){
 				    	<a className="nav-link active" onClick={resizeWindow} id="cs_1_tab" data-toggle="tab" href="#cs_1" role="tab" aria-controls="cs_1" aria-selected="true">Key Metrics</a>
 				  	</li>
 				  	<li className="nav-item">
-				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
+				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">PPC</a>
+				  	</li>
+				  	<li className="nav-item">
+				    	<a className="nav-link" id="cs_2s_tab" data-toggle="tab" href="#cs_2s" role="tab" aria-controls="cs_2s" aria-selected="false">SEO</a>
 				  	</li>
 				  	<li className="nav-item">
 				    	<a className="nav-link" onClick={resizeWindow} id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
@@ -416,25 +419,25 @@ export default function Main(){
 									<div className="d-flex">
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Mobile Device Usage
-												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
-											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Website Hits
-												<span className="info-msg" data-tip="<h6>WEBSITE HITS</h6>Number of visitors to your website during Current period." data-for="stat-2">												
+												Website Visits
+												<span className="info-msg" data-tip="<h6>WEBSITE Visits</h6>Number of visitors to your website during Current period." data-for="stat-2">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
 											<ReactTooltip id='stat-2' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Unique Visits
+												<span className="info-msg" data-tip="<h6>UNIQUE Visits</h6>This is the total amount of new people visiting your website." data-for="stat-2">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-2' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:users'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:users']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:users'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:users']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -552,6 +555,17 @@ export default function Main(){
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent_precise') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Engagement Rate
+												<span className="info-msg" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
+											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
+										</div>
 										{/*<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												Phone Calls from Ads
@@ -601,17 +615,6 @@ export default function Main(){
 											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{adsData && adsData.campaign_totals && adsData.campaign_totals.cost_micros !== undefined ? getAnalyticsSection(adsData.campaign_totals.cost_micros,'currency') : ''}
 											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.cost_micros !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.cost_micros) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Engagement Rate
-												<span className="info-msg" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
-											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -672,19 +675,19 @@ export default function Main(){
 									</div> 
 								</div>
 											
-								{/* Seo Report */}
+								{/* Ad Group Report */}
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											SEO Report 
+											Ad Group REPORT
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>SEO REPORT</h6>This is a breakdown of website visitors by search term" data-for="seo-rep"/>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>Ad Group REPORT</h6>These are the metrics for your most trafficked AdWords campaigns" data-for="seo-rep"/>
 												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 									</div>
 									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
-									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
+									{adsData && adsData.ad_groups && <MoreTable tableData={adsData.ad_groups} tableType="ad_group"/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -726,6 +729,69 @@ export default function Main(){
 										}
 									</div>
 								</div>
+							</div>
+						</div>
+				  	</div>
+					<div className="tab-pane fade" id="cs_2s" role="tabpanel" aria-labelledby="cs_2s_tab">
+						<div className="gray-box px-0">
+							<div className="container-fluid">
+								{/* Date Range Block */}
+
+								{/* Data Slide Block */}
+								<div className="l-gray-box mt-40">
+									<div className="d-flex">
+									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Avg Search Position
+												<span className="info-msg" data-tip="<h6>AVG SEARCH POSITION</h6>The average rank that your website listing appears on Google across all search terms" data-for="stat-6">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Organic Form Fills
+												<span className="info-msg" data-tip="<h6>Organic FORM FILLS</h6>The number of people that have submitted an inquiry on your website not from ads." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Mobile Device Usage
+												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
+											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
+										</div>
+									{/*</OwlCarousel>*/}
+									</div> 
+								</div>
+											
+								{/* Seo Report */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											SEO Report 
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>SEO REPORT</h6>This is a breakdown of website visitors by search term" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
+									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
+								</div>
 
 								{/* Traffic Block */}
 								<div className="transparent-box mt-40">
@@ -740,6 +806,20 @@ export default function Main(){
 									</div>
 									{/*analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>*/}									
 									{analyticsData && analyticsData.sources && <MoreTable tableData={Object.values(analyticsData.sources)} tableType="referral"/>}
+								</div>
+
+								{/* Page Traffic Report */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											MOST TRAFFICKED PAGES
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>MOST TRAFFICKED PAGES</h6>These pages receive the most overall traffic to your site" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									{analyticsData && analyticsData.page_views && analyticsData.page_views.all_pages_report && <MoreTable tableData={Object.values(analyticsData.page_views.all_pages_report)} tableType="traffic"/>}
 								</div>
 							</div>
 						</div>
