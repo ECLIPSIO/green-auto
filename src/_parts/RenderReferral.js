@@ -2,6 +2,8 @@ import React from 'react';
 	  
 const numberFormatter = (value, currency = false) => {
     var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+    if(currency && num >= 10) num = Math.round(num);
     
     var sign = num>= 0 ? "" : "-";
     var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
@@ -46,11 +48,11 @@ const RenderReferral = ({tableData}) => {
             {tableData.map((referral, index) => (
                 <tr key={index}>
                     <td>{referral['source']}</td>
-                    <td>{referral['ga:sessions']}</td>
-                    <td>{referral['ga:sessions_hist']}</td>
+                    <td>{numberFormatter(referral['ga:sessions'])}</td>
+                    <td>{numberFormatter(referral['ga:sessions_hist'])}</td>
                     <td>{timeFormatter(referral['ga:avgSessionDuration'])}</td>
-                    <td>{numberFormatter(referral['ga:pageviewsPerSession'])}</td>
-                    <td>{numberFormatter(referral['ga:bounceRate'] * 100)}%</td>
+                    <td>{numberFormatter(Math.round(referral['ga:pageviewsPerSession']*10)/10)}</td>
+                    <td>{numberFormatter(Math.round(referral['ga:bounceRate'] * 100))}%</td>
                 </tr>
             ))}
             </tbody>

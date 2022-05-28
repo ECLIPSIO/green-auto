@@ -2,6 +2,8 @@ import React from 'react';
 	  
 const numberFormatter = (value, currency = false) => {
     var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+    if(currency && num >= 10) num = Math.round(num);
     
     var sign = num>= 0 ? "" : "-";
     var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
@@ -49,7 +51,7 @@ const RenderAdGroup = ({tableData}) => {
                 <tr key={index}>
                     <td>{ad_group['adGroup']['campaign_name']} - {ad_group['adGroup']['name']}</td>
                     <td>{numberFormatter(ad_group['metrics']['calc_averageCpc'],'currency')}</td>
-                    <td>{ad_group['metrics']['clicks']}</td>
+                    <td>{numberFormatter(ad_group['metrics']['clicks'])}</td>
                     <td>{numberFormatter(Math.round(ad_group['metrics']['conversionsFromInteractionsRate']*100)/100)}</td>
                     <td>{numberFormatter(ad_group['metrics']['conversions'])}</td>
                     <td>{numberFormatter(ad_group['metrics']['calc_costMicros'],'currency')}</td>

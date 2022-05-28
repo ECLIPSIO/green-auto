@@ -2,6 +2,8 @@ import React from 'react';
 	  
 const numberFormatter = (value, currency = false) => {
     var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+    if(currency && num >= 10) num = Math.round(num);
     
     var sign = num>= 0 ? "" : "-";
     var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
@@ -46,11 +48,11 @@ const RenderTraffic = ({tableData}) => {
             {tableData.map((traffic, index) => (
                 <tr key={index}>
                     <td>{traffic['ga:pagePath']}</td>
-                    <td>{traffic['ga:pageViews']}</td>
-                    <td>{traffic['ga:pageViews_hist']}</td>
+                    <td>{numberFormatter(traffic['ga:pageViews'])}</td>
+                    <td>{numberFormatter(traffic['ga:pageViews_hist'])}</td>
                     <td>{timeFormatter(traffic['ga:avgSessionDuration'])}</td>
-                    <td>{numberFormatter(traffic['ga:pageviewsPerSession'])}</td>
-                    <td>{numberFormatter(traffic['ga:bounceRate'] * 100)}%</td>
+                    <td>{numberFormatter(Math.round(traffic['ga:pageviewsPerSession']*10)/10)}</td>
+                    <td>{numberFormatter(Math.round(traffic['ga:bounceRate'] * 100))}%</td>
                 </tr>
             ))}
             </tbody>
