@@ -315,3 +315,107 @@
 .pb-5 {
     padding-bottom: 5px !important;
 }
+
+/* */
+.pd-30 {
+    padding: 30px !important;
+}
+.black-box-border {
+    border: 1px solid #454B50 !important;
+}
+.mt-50 {
+    margin-top: 50px !important;
+}
+.wdm-table.cs-table-block table tr th {
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.08px;
+    line-height: 16px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+.wdm-table.cs-table-block table tr td {
+    color: #FFFFFF;
+    font-family: "Avenir Next";
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    line-height: 22px;
+    vertical-align: middle;
+}
+.wdm-table.cs-table-block table tr td.count-value {
+    font-size: 20px;
+}
+.wdm-table.cs-table-block table tr th.blank-col,
+.wdm-table.cs-table-block table tr td.blank-col {
+    background-color: #23262B !important;
+    width: 2px;
+    padding: 0;
+}
+.red-text {
+    color: #D4482A !important;
+}
+.white-text {
+    color: #fff !important;
+}
+.wdm-progress img {
+    margin-left: 11px;
+    vertical-align: 1px;
+}
+.transparent-btn img {
+    vertical-align: -4px;
+    margin-right: 7px;
+}
+.wdm-table.cs-table-block table tr.f-total td {
+    background-color: #565C64;
+}
+.ml-20 {
+    margin-left: 20px !important;
+}
+.wdm-table .green-transparent-btn {
+    background: transparent;
+    width: 60px;
+    height: 40px;
+    text-transform: uppercase;
+}
+.w-80 {
+    width: 80px !important;
+}
+.custom-white-dropdown .dropdown-toggle {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    background-color: #FFFFFF !important;
+    color: #9B9B9B !important;
+    max-width: 275px;
+    width: 100%;
+    text-align: left;
+    font-family: "Avenir Next";
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 26px;
+    position: relative;
+}
+.custom-white-dropdown .dropdown-toggle::after {
+    border: none;
+    background: url(./img/gray-icon-arrow-down.png) no-repeat center center;
+    background-size: 100%;
+    width: 16px;
+    height: 9px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+.custom-white-dropdown .custom-checkbox .styled-checkbox + label {
+    color: #9B9B9B !important;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 700;
+}
+.custom-white-dropdown .custom-checkbox .styled-checkbox + label:before {
+    vertical-align: -5px;
+}
+.mxw-126 {
+    max-width: 126px !important;
+}

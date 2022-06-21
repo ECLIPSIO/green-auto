@@ -26,6 +26,7 @@ import './js/bootstrap.min.js';
 // require('bootstrap');
 import { useEffect, useContext, useState } from 'react';
 import { UserContext } from './context/UserContext';
+import Stats from './Pages/Stats';
 
 function App() {
 	const { user, loggedInCheck } = useContext(UserContext);
@@ -58,6 +59,7 @@ function App() {
 					<>
 						<Route exact path='/reporting/' element={<Home />} />
 						<Route exact path='/specials' element={<Specials />} />
+						<Route exact path='/weekly-digital-marking-stats' element={<Stats />} />
 					</>
 				) : (
 					<Route exact path='/reporting/' />
