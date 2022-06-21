@@ -1,0 +1,317 @@
+
+.main-heading {
+    color: #FFFFFF;
+  font-family: 'Avenir Next';
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: -0.2px;
+  line-height: 38px;
+}
+.sub-heading {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: 'Avenir Next';
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    line-height: 22px;
+}
+.mnw-186 {
+    min-width: 186px;
+}
+.mso-box .custom-form .form-control {
+    color: #9B9B9B;
+    font-family: Roboto;
+    font-size: 12px;
+    letter-spacing: -0.07px;
+    line-height: 16px;
+}
+.item-count {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.13px;
+    line-height: 25px;
+}
+.ml-45 {
+    margin-left: 45px !important;
+}
+.mt-30 {
+    margin-top: 30px;
+}
+.border-box-block {
+    border: 10px solid #3F454A;
+    background-color: #1D1F22;
+    padding: 20px;
+}
+.mso-box-block .vehicle-box {
+    border: 1px solid #383C42;
+    background-color: #393C41;
+}
+.mso-box-block .vehicle-title {
+    color: #FFFFFF;
+    font-family: 'Avenir Next';
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.09px;
+    line-height: 18px;
+    text-align:left;
+    margin-bottom: 4px;
+}
+.mso-box-block .vehicle-sub-title {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: 'Avenir Next';
+    font-size: 13px;
+    letter-spacing: -0.09px;
+    line-height: 18px;
+    text-align:left;
+    margin-bottom: 30px;
+}
+.mso-box-block .vehicle-bottom {
+    padding: 20px 15px;
+}
+.mso-price {
+    color: #FFFFFF;
+    font-family: "Avenir Next";
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -0.11px;
+    line-height: 22px;
+}
+.mso-mi {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: "Avenir Next";
+    font-size: 13px;
+    letter-spacing: -0.09px;
+    line-height: 18px;
+    text-align: right;
+}
+.mso-box-block .vehicle-block-row {
+    margin: 0 -10px;
+}
+.mso-box-block .vehicle-block {
+    padding: 0 10px;
+    width: 25%;
+}
+.vehicle-block.selected .vehicle-box {
+    border-color: #79BB30;
+}
+.mso-box-block .vehicle-top {
+    position: relative;
+}
+.mso-box-block .custom-checkbox {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+.custom-checkbox .styled-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+.custom-checkbox .styled-checkbox + label {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+}
+.custom-checkbox .styled-checkbox + label:before {
+    content: "";
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    height: 18px;
+    width: 18px;
+    border: 1px solid #CCCCCC;
+    background-color: #FFFFFF;
+}
+.custom-checkbox .styled-checkbox:checked + label:before {
+    background: #79BB30;
+}
+.custom-checkbox .styled-checkbox:checked + label:after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    background: white;
+    width: 2px;
+    height: 2px;
+    box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+    transform: rotate(45deg);
+}
+.transparent-btn {
+    height: 34px;
+    width: 180px;
+    border: 2px solid transparent;
+    background: transparent;
+    border-radius: 5px;
+    color: #79BB30;
+    font-family: Avenir;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: -0.09px;
+    line-height: 16px;
+    text-align: center;
+}
+.green-transparent-btn:hover {
+    color: #79BB30;
+    text-decoration: none;
+}
+.mso-info {
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: -0.11px;
+    line-height: 19px;
+    text-align: right;
+}
+.green-text {
+    color: #79BB30;
+}
+.mso-info img {
+    vertical-align: -1px;
+    margin-right: 6px;
+}
+.mt-45 {
+    margin-top: 45px;
+}
+.mso-box-bottom {
+    border-radius: 0 0 5px 5px;
+    background-color: #565C64;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.5);
+    padding: 19px 85px;
+    margin-top: 35px;
+}
+.mso-box-bottom .green-btn {
+    padding: 19px 30px;
+    min-width: 244px;
+    text-align: center;
+    height: auto;
+}
+.no-vehicle-tag-line {
+    opacity: 0.5;
+    color: #FFFFFF;
+    font-family: "Avenir Next";
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.13px;
+    line-height: 25px;
+    text-align: center;
+}
+.mt-10 {
+    margin-top: 10px !important;
+}
+.no-data-box {
+    padding: 40px 30px 50px;
+}
+.fw-600 {
+    font-weight: 600 !important;
+}
+.custom-modal .modal-content {
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #4D5258 0%, #23262B 100%);
+}
+.custom-modal .modal-dialog {
+    max-width: 1280px;
+    width: 100%;
+}
+.custom-modal .modal-header {
+    border-radius: 5px 5px 0 0;
+    background-color: #545960;
+    border-bottom: none;
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.11px;
+    line-height: 25px;
+    text-transform: uppercase;
+}
+.custom-modal .modal-header .modal-title {
+    font-weight: bold;
+}
+.custom-modal .close {
+    color: #fff;
+    opacity: 1;
+}
+.custom-modal .modal-body {
+    padding: 25px 110px;
+}
+.custom-modal .date-filter-block .custom-label {
+    color: #FFFFFF;
+    font-family: Avenir;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: -0.08px;
+    line-height: 18px;
+}
+.custom-modal .form-control {
+    color: #9B9B9B;
+  font-family: Roboto;
+  font-size: 12px;
+  letter-spacing: -0.07px;
+  line-height: 16px;
+}
+.tag-box {
+    border-radius: 16px;
+    background-color: #5D6166;
+    display: inline-block;
+    padding: 0 15px;
+    color: #DADCE0;
+    font-family: "Avenir Next";
+    font-size: 12px;
+    letter-spacing: -0.07px;
+    line-height: 16px;
+    color: #FFFFFF;
+    display: inline-block;
+    min-width: 116px;
+    text-align: left;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+}
+.tag-box .cross {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 500;
+    position: absolute;
+    right: 10px;
+}
+.tag-box .cross:hover {
+    color: #fff;
+}
+.ml-10 {
+    margin-left: 10px;
+}
+.vehicle-block-modal {
+    margin-top: 40px;
+}
+.vehicle-block-modal .vehicle-block {
+    width: 25%;
+    padding: 10px;
+}
+.vehicle-block-modal .vehicle-box {
+    border: 1px solid #383C42;
+    background-color: #393C41;
+}
+.green-btn {
+    cursor: pointer;
+}
+.transparent-btn {
+    cursor: pointer;
+}
+.select-count {
+    color: #FFFFFF;
+  font-family: Avenir;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.13px;
+  line-height: 25px;
+}
+.pb-5 {
+    padding-bottom: 5px !important;
+}

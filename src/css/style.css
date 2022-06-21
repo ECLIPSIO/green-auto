@@ -1072,6 +1072,11 @@ div#login_modal {
     letter-spacing: -0.08px;
     line-height: 16px;
 }
+.review-response {
+    font-weight:bold;
+    color:#79BB30;
+    text-decoration: underline;
+}
 .green-transparent-btn {
     height: 34px;
     width: 180px;
@@ -1335,7 +1340,6 @@ div#login_modal {
     font-size: 12px;
     font-weight: 900;
     letter-spacing: -0.09px;
-    line-height: 16px;
     text-align: center;
 }
 .add-script {

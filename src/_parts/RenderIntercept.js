@@ -2,8 +2,10 @@ import React from 'react';
 	  
 const numberFormatter = (value, currency = false) => {
     var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+    if(currency && num >= 10) num = Math.round(num);
     
-    var sign = value >= 0 ? "" : "-";
+    var sign = num>= 0 ? "" : "-";
     var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
     if(str.indexOf(".") > 0) {
         parts = str.split(".");
@@ -47,11 +49,11 @@ const RenderIntercept = ({tableData}) => {
             {tableData.map((intercept, index) => (
                     <tr key={index}>
                         <td>{intercept["ga:keyword"]}</td>
-                        <td>{intercept["ga:sessions"]}</td>
-                        <td>{intercept["ga:sessions_hist"] ? intercept["ga:sessions_hist"] : "-"}</td>
+                        <td>{numberFormatter(intercept["ga:sessions"])}</td>
+                        <td>{intercept["ga:sessions_hist"] ? numberFormatter(intercept["ga:sessions_hist"]) : "-"}</td>
                         <td>{numberFormatter(Math.round(intercept["cost"]),true)}</td>
                         <td>{timeFormatter(intercept["ga:avgSessionDuration"])}</td>
-                        <td>{numberFormatter(intercept["ga:pageviewsPerSession"])}</td>
+                        <td>{numberFormatter(Math.round(intercept["ga:pageviewsPerSession"]*10)/10)}</td>
                         <td>{numberFormatter(Math.round(intercept["ga:bounceRate"] * 100))}%</td>
                     </tr>
              ))

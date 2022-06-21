@@ -31,28 +31,32 @@ const timeFormatter = (seconds, start = 14, length = 5) => {
     return new Date(seconds * 1000).toISOString().substr(start, length);
 }
 
-const RenderReferral = ({tableData}) => {
+const RenderAdGroup = ({tableData}) => {
     return(
         <table className="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Source</th>
-                    <th scope="col">Web Hits Current</th>
-                    <th scope="col">Web Hits Historic</th>
-                    <th scope="col">Time on Site</th>
-                    <th scope="col">Pages / Session</th>
-                    <th scope="col">Bounce Rate</th>
+                    <th scope="col">Ad Group</th>
+                    <th scope="col">AVG CPC</th>
+                    <th scope="col">CLICKS</th>
+                    <th scope="col">CONVERSION RATE</th>
+                    <th scope="col">CONVERSIONS</th>
+                    <th scope="col">COST</th>
+                    <th scope="col">COST/CONVERSION</th>
+                    <th scope="col">IMPRESSIONS</th>
                 </tr>
             </thead>
             <tbody>
-            {tableData.map((referral, index) => (
+            {tableData.map((ad_group, index) => (
                 <tr key={index}>
-                    <td>{referral['source']}</td>
-                    <td>{numberFormatter(referral['ga:sessions'])}</td>
-                    <td>{numberFormatter(referral['ga:sessions_hist'])}</td>
-                    <td>{timeFormatter(referral['ga:avgSessionDuration'])}</td>
-                    <td>{numberFormatter(Math.round(referral['ga:pageviewsPerSession']*10)/10)}</td>
-                    <td>{numberFormatter(Math.round(referral['ga:bounceRate'] * 100))}%</td>
+                    <td>{ad_group['adGroup']['campaign_name']} - {ad_group['adGroup']['name']}</td>
+                    <td>{numberFormatter(ad_group['metrics']['calc_averageCpc'],'currency')}</td>
+                    <td>{numberFormatter(ad_group['metrics']['clicks'])}</td>
+                    <td>{numberFormatter(Math.round(ad_group['metrics']['conversionsFromInteractionsRate']*100)/100)}</td>
+                    <td>{numberFormatter(ad_group['metrics']['conversions'])}</td>
+                    <td>{numberFormatter(ad_group['metrics']['calc_costMicros'],'currency')}</td>
+                    <td>{numberFormatter(ad_group['metrics']['calc_costPerConversion'],'currency')}</td>
+                    <td>{numberFormatter(ad_group['metrics']['impressions'])}</td>
                 </tr>
             ))}
             </tbody>
@@ -60,4 +64,4 @@ const RenderReferral = ({tableData}) => {
     )
 }
 
-export default RenderReferral;
+export default RenderAdGroup;

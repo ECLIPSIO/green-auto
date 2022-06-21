@@ -1,4 +1,5 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
+import ReactDOM from "react-dom";
 import axios from 'axios'; 
 import infoIcon from '../img/ico-info.svg';
 
@@ -15,14 +16,12 @@ import $ from 'jquery';
 // import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
-import {useContext} from 'react'
 import {UserContext} from '../context/UserContext';
 
 import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 import Review from '../components/Review';
-import reviewData from '../data/review.json';
-import Form from '../components/Form';
+import ReviewForm from '../components/ReviewForm';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -34,8 +33,10 @@ export default function Main(){
 	const[loader, showLoader] = useState(false);
 	const numberFormatter = (value, currency = false) => {
 		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+		if(currency && num >= 10) num = Math.round(num);
 		
-		var sign = value >= 0 ? "" : "-";
+		var sign = num>= 0 ? "" : "-";
 		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
 		if(str.indexOf(".") > 0) {
 			parts = str.split(".");
@@ -71,6 +72,8 @@ export default function Main(){
 			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100,true)}</div>);
 		} else if(type == 'percent') {
 			return (<div className="m-value">{numberFormatter(Math.round(value))}%</div>);
+		} else if(type == 'percent_precise') {
+			return (<div className="m-value">{numberFormatter(Math.round(value*100)/100)}%</div>);
 		}
 
 		return (<div className="m-value">{numberFormatter(value)}</div >);
@@ -78,39 +81,38 @@ export default function Main(){
 
 	const getAnalyticsIndicator = (value,reverseColor = false) => {
 
-		if(value >= 0) {
-			return (<div className="p-value green"><div className="up-arrow"></div> {numberFormatter(Math.round(value * 100))} %</div>);
-		} 
-
-		return (<div className="p-value red"><div className="down-arrow"></div> {numberFormatter(Math.round(value * 100))} % </div>);
+		if(value >= 0)
+			return (<div className={"p-value " + (reverseColor ? "red" : "green")}><div className={(reverseColor ? "red-" : "") + "up-arrow"}></div> {numberFormatter(Math.round(value * 100))} %</div>);
+		else 
+			return (<div className={"p-value " + (reverseColor ? "green" : "red")}><div className={(reverseColor ? "green-" : "") + "down-arrow"}></div> {numberFormatter(Math.round(value * 100))} % </div>);
 	}
 
-	var tempDate = new Date(); 
-	if(tempDate.getDate() >= 7) tempDate.setDate(1);
+	var tempStartDate = new Date(); 
+	if(tempStartDate.getDate() >= 7) tempStartDate.setDate(1);
 	else {
-		tempDate.setMonth(tempDate.getMonth() - 1);
-		tempDate.setDate(1);
+		tempStartDate.setMonth(tempStartDate.getMonth() - 1);
+		tempStartDate.setDate(1);
 	}
-	tempDate.setHours(0,0,0,0);
-	const [currStartDate, setCurrStartDate] = useState(tempDate);
+	tempStartDate.setHours(0,0,0,0);
+	const [currStartDate, setCurrStartDate] = useState(tempStartDate);
 
-	var tempDate = new Date();
-	if(tempDate.getDate() < 7) tempDate.setDate(0);
-	tempDate.setHours(0,0,0,0);
-	const [currEndDate, setCurrEndDate] = useState(tempDate);
+	var tempEndDate = new Date();
+	if(tempEndDate.getDate() < 7) tempEndDate.setDate(0);
+	tempEndDate.setHours(0,0,0,0);
+	const [currEndDate, setCurrEndDate] = useState(tempEndDate);
 
-	var tempDate = new Date(currStartDate.getTime());
-	tempDate.setMonth(tempDate.getMonth() - 1);
-	const [histStartDate, setHistStartDate] = useState(tempDate);
+	var tempHStartDate = new Date(tempStartDate.getTime());
+	tempHStartDate.setMonth(tempHStartDate.getMonth() - 1);
+	const [histStartDate, setHistStartDate] = useState(tempHStartDate);	
 
-	var tempDate = new Date(currEndDate.getTime());
-	tempDate.setMonth(tempDate.getMonth() - 1);
-	if(tempDate.getMonth() != histStartDate.getMonth()) {
-		tempDate = new Date(histStartDate.getTime());
-		tempDate.setMonth(tempDate.getMonth() + 1);
-		tempDate.setDate(0);
+	var tempHEndDate = new Date(currEndDate.getTime());
+	tempHEndDate.setMonth(tempHEndDate.getMonth() - 1);
+	if(tempHEndDate.getMonth() != tempHStartDate.getMonth()) {
+		tempHEndDate = new Date(tempHStartDate.getTime());
+		tempHEndDate.setMonth(tempHEndDate.getMonth() + 1);
+		tempHEndDate.setDate(0);
 	}
-	const [histEndDate, setHistEndDate] = useState(tempDate);
+	const [histEndDate, setHistEndDate] = useState(tempHEndDate);
 
 	const histDate = {
 		start : histStartDate,
@@ -129,13 +131,29 @@ export default function Main(){
 	};
 
 	
-	const histDateChanges = (...dates) =>{
-		setHistStartDate(dates[0]);
-		setHistEndDate(dates[1]);
+	const histDateChanges = (...dates) => {
+		ReactDOM.unstable_batchedUpdates(() => {
+			setHistStartDate(dates[0]);
+			setHistEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : histEndDate);
+		});
 	};
-	const currDateChanges = (...dates) =>{
-		setCurrStartDate(dates[0]);
-		setCurrEndDate(dates[1]);
+	const currDateChanges = (...dates) => {
+
+		ReactDOM.unstable_batchedUpdates(() => {
+
+			setCurrStartDate(dates[0]);
+			setCurrEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
+
+			var tempS = new Date(dates[0].getTime());
+			tempS.setMonth(tempS.getMonth() - 1);
+
+			var tempE = new Date(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
+			tempE.setMonth(tempE.getMonth() - 1);
+
+			setHistStartDate(tempS);
+			setHistEndDate(tempE);
+
+		});
 	};
 	
 	const protocol = window.location.protocol;
@@ -167,7 +185,7 @@ export default function Main(){
 			currE:currEndDate
 		});
 
-		const queryParams = new URLSearchParams(window.location.search);
+		//const queryParams = new URLSearchParams(window.location.search);
 
 		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=999" + "&dealership=" + user.dealership_id;
 
@@ -379,16 +397,17 @@ export default function Main(){
 				    	<a className="nav-link active" onClick={resizeWindow} id="cs_1_tab" data-toggle="tab" href="#cs_1" role="tab" aria-controls="cs_1" aria-selected="true">Key Metrics</a>
 				  	</li>
 				  	<li className="nav-item">
-				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">SEO / PPC</a>
+				    	<a className="nav-link" id="cs_2_tab" data-toggle="tab" href="#cs_2" role="tab" aria-controls="cs_2" aria-selected="false">PPC</a>
+				  	</li>
+				  	<li className="nav-item">
+				    	<a className="nav-link" id="cs_2s_tab" data-toggle="tab" href="#cs_2s" role="tab" aria-controls="cs_2s" aria-selected="false">SEO</a>
 				  	</li>
 				  	<li className="nav-item">
 				    	<a className="nav-link" onClick={resizeWindow} id="cs_3_tab" data-toggle="tab" href="#cs_3" role="tab" aria-controls="cs_3" aria-selected="false">GMB</a>
 				  	</li>
-					{/*<li className="nav-item">
+					<li className="nav-item">
 				    	<a className="nav-link" id="cs_4_tab" data-toggle="tab" href="#cs_4" role="tab" aria-controls="cs_4" aria-selected="false">GMB REVIEWS</a>
 					</li>
-					*/}
-
 					<li className="nav-item">
 				    	<a className="nav-link" id="cs_5_tab" data-toggle="tab" href="#cs_5" role="tab" aria-controls="cs_5" aria-selected="false">GROW REVIEWS</a>
 					</li>
@@ -401,25 +420,25 @@ export default function Main(){
 									<div className="d-flex">
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Current Spend
-												<span className="info-msg" data-tip="<h6>Current Spend</h6>The total amount spent on AdWords during Current period" data-for="stat-1">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>											
-											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.adCost_breakdown && analyticsData.adCost_breakdown.all_adCost !== undefined ? getAnalyticsSection(analyticsData.adCost_breakdown.all_adCost,'currency') : ''}
-											{analyticsData && analyticsData.adCost_diff ? getAnalyticsIndicator(analyticsData.adCost_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Website Hits
-												<span className="info-msg" data-tip="<h6>WEBSITE HITS</h6>Number of visitors to your website during Current period." data-for="stat-2">												
+												Website Visits
+												<span className="info-msg" data-tip="<h6>WEBSITE Visits</h6>Number of visitors to your website during Current period." data-for="stat-2">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
 											<ReactTooltip id='stat-2' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:sessions'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:sessions']) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:sessions'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:sessions']) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Unique Visits
+												<span className="info-msg" data-tip="<h6>UNIQUE Visits</h6>This is the total amount of new people visiting your website." data-for="stat-2b">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-2b' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:users'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:users']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:users'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:users']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -440,7 +459,7 @@ export default function Main(){
 												</span>
 											</div>
 											<ReactTooltip id='stat-4' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:pageviewsPerSession']) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] !== undefined ? getAnalyticsSection(Math.round(analyticsData.channels.all['ga:pageviewsPerSession']*10)/10) : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
@@ -452,7 +471,7 @@ export default function Main(){
 											</div>
 											<ReactTooltip id='stat-5' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:bounceRate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['ga:bounceRate'] * 100,'percent') : ''}
-											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate']) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:bounceRate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:bounceRate'],true) : ''}
 										</div>
 									</div>
 								</div>
@@ -517,27 +536,27 @@ export default function Main(){
 									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Avg Search Position
-												<span className="info-msg" data-tip="<h6>AVG SEARCH POSITION</h6>The average rank that your website listing appears on Google across all search terms" data-for="stat-6">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
-											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
 												Conversion Rate
-												<span className="info-msg" data-tip="<h6>CONVERSION RATE</h6>This is the percent of website visitors that visit at least 1 VDP" data-for="stat-8">												
+												<span className="info-msg" data-tip="<h6>CONVERSION RATE</h6>This is the percent of website visitors that submit a contact form or call" data-for="stat-8">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
 											<ReactTooltip id='stat-8' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent') : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['conversion_rate'] !== undefined ? getAnalyticsSection(analyticsData.channels.all['conversion_rate'] * 100,'percent_precise') : ''}
 											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['conversion_rate'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['conversion_rate']) : ''}
 										</div>
 										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Engagement Rate
+												<span className="info-msg" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
+											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
+										</div>
+										{/*<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												Phone Calls from Ads
 												<span className="info-msg" data-tip="<h6>PHONE CALLS FROM ADS</h6>The amount of people that called your dealership from Google Ads" data-for="stat-9">												
@@ -547,7 +566,7 @@ export default function Main(){
 											<ReactTooltip id='stat-9' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{adsData && adsData.campaign_totals && adsData.campaign_totals.phone_calls !== undefined ? getAnalyticsSection(adsData.campaign_totals.phone_calls) : ''}
 											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.phone_calls !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.phone_calls) : ''}
-										</div>
+										</div>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												AdWords Clicks to Site
@@ -562,11 +581,11 @@ export default function Main(){
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
 												AdWords Impressions
-												<span className="info-msg" data-tip="<h6>AdWords Impressions</h6>This is the number of time your ad has been viewed in search results" data-for="stat-11">												
+												<span className="info-msg" data-tip="<h6>AdWords Impressions</h6>This is the number of time your ad has been viewed in search results" data-for="stat-11b">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
-											<ReactTooltip id='stat-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											<ReactTooltip id='stat-11b' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{adsData && adsData.campaign_totals && adsData.campaign_totals.impressions !== undefined ? getAnalyticsSection(adsData.campaign_totals.impressions) : ''}
 											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.impressions !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.impressions) : ''}
 										</div>
@@ -578,87 +597,76 @@ export default function Main(){
 									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Engagement Rate
-												<span className="info-msg" data-tip="<h6>ENGAGEMENT RATE</h6>The percent of people that engage in your site after first visiting" data-for="stat-10">												
+												Current Spend
+												<span className="info-msg" data-tip="<h6>Current Spend</h6>The total amount spent on AdWords during Current period" data-for="stat-1">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
-											</div>
-											<ReactTooltip id='stat-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.engagement_rate !== undefined ? getAnalyticsSection(analyticsData.engagement_rate * 100,'percent') : ''}
-											{analyticsData && analyticsData.engagement_rate_diff ? getAnalyticsIndicator(analyticsData.engagement_rate_diff) : ''}
+											</div>											
+											<ReactTooltip id='stat-1' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{adsData && adsData.campaign_totals && adsData.campaign_totals.cost_micros !== undefined ? getAnalyticsSection(adsData.campaign_totals.cost_micros,'currency') : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.cost_micros !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.cost_micros,true) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
-												Mobile Device Usage
-												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
-											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Form Fills
-												<span className="info-msg" data-tip="<h6>FORM FILLS</h6>The number of people that have submitted an inquiry on your website." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
-											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Organic Form Fills
-												<span className="info-msg" data-tip="<h6>Organic FORM FILLS</h6>The number of people that have submitted an inquiry on your website not from ads." data-for="stat-7">												
-													<img className="ico_info" src={infoIcon} alt="info" />
-												</span>
-											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
-											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
-										</div>
-										<div className="col">
-											<div className="custom-label text-uppercase text-center">
-												Ads Form Fills
+												Gas/Ads Form Fills
 												<span className="info-msg" data-tip="<h6>Ads FORM FILLS</h6>The number of people that have submitted an inquiry on your website from a google ad." data-for="stat-7">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
 											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.gas_ads_form_fills !== undefined ? getAnalyticsSection(analyticsData.gas_ads_form_fills) : ''}
+											{analyticsData && analyticsData.gas_ads_form_fills_diff ? getAnalyticsIndicator(analyticsData.gas_ads_form_fills_diff) : ''}
+										</div>
+										{/*<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Ads Form Fills
+												<span className="info-msg" data-tip="<h6>Ads FORM FILLS</h6>The number of people that have submitted an inquiry on your website from a google ad." data-for="stat-7b">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7b' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{analyticsData && analyticsData.ads_form_fills !== undefined ? getAnalyticsSection(analyticsData.ads_form_fills) : ''}
 											{analyticsData && analyticsData.ads_form_fills_diff ? getAnalyticsIndicator(analyticsData.ads_form_fills_diff) : ''}
 										</div>
 										<div className="col">
-											<div className="custom-label text-uppercase text-center" >
-												Average CPC
-												<span className="info-msg" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7">												
+											<div className="custom-label text-uppercase text-center">
+												GAS Form Fills
+												<span className="info-msg" data-tip="<h6>TG FORM FILLS</h6>The number of people that have submitted an inquiry on your website via trade gauge or a gas landing page." data-for="stat-7c">												
 													<img className="ico_info" src={infoIcon} alt="info" />
 												</span>
 											</div>
-											<ReactTooltip id='stat-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											<ReactTooltip id='stat-7c' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.gas_form_fills !== undefined ? getAnalyticsSection(analyticsData.gas_form_fills) : ''}
+											{analyticsData && analyticsData.gas_form_fills_diff ? getAnalyticsIndicator(analyticsData.gas_form_fills_diff) : ''}
+										</div>*/}
+										<div className="col">
+											<div className="custom-label text-uppercase text-center" >
+												Average CPC
+												<span className="info-msg" data-tip="<h6>Average CPC</h6>The total number of paid clicks to your site, divided by the total amount spent for this time period.." data-for="stat-7d">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7d' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											{adsData && adsData.campaign_totals && adsData.campaign_totals.average_cpc !== undefined ? getAnalyticsSection(adsData.campaign_totals.average_cpc,'currency_precise') : ''}
-											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.average_cpc !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.average_cpc) : ''}
+											{adsData && adsData.campaign_totals_diff && adsData.campaign_totals_diff.average_cpc !== undefined ? getAnalyticsIndicator(adsData.campaign_totals_diff.average_cpc,true) : ''}
 										</div>
 									{/*</OwlCarousel>*/}
 									</div> 
 								</div>
 											
-								{/* Seo Report */}
+								{/* Ad Group Report */}
 								<div className="transparent-box mt-40">
 									<div className="d-flex align-items-center m-title-flex mb-30">
 										<div className="m-title text-uppercase mb-0">
-											SEO Report 
+											Ad Group REPORT
 											<span className="info-msg">
-												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>SEO REPORT</h6>This is a breakdown of website visitors by search term" data-for="seo-rep"/>
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>Ad Group REPORT</h6>These are the metrics for your most trafficked AdWords campaigns" data-for="seo-rep"/>
 												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
 											</span>
 										</div>
 									</div>
 									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
-									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
+									{adsData && adsData.ad_groups && <MoreTable tableData={adsData.ad_groups} tableType="ad_group"/>}
 								</div>
 
 								{/* Vehicles Block */}
@@ -700,6 +708,69 @@ export default function Main(){
 										}
 									</div>
 								</div>
+							</div>
+						</div>
+				  	</div>
+					<div className="tab-pane fade" id="cs_2s" role="tabpanel" aria-labelledby="cs_2s_tab">
+						<div className="gray-box px-0">
+							<div className="container-fluid">
+								{/* Date Range Block */}
+
+								{/* Data Slide Block */}
+								<div className="l-gray-box mt-40">
+									<div className="d-flex">
+									{/*<OwlCarousel className="dash-card-slider owl-carousel" items={5} slideBy={1} nav>*/}
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Avg Search Position
+												<span className="info-msg" data-tip="<h6>AVG SEARCH POSITION</h6>The average rank that your website listing appears on Google across all search terms" data-for="stat-6">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Organic Form Fills
+												<span className="info-msg" data-tip="<h6>Organic FORM FILLS</h6>The number of people that have submitted an inquiry on your website not from ads." data-for="stat-7e">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7e' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Mobile Device Usage
+												<span className="info-msg" data-tip="<h6>MOBILE DEVICE USAGE</h6>This is the percentage of mobile devices that access your website compared to desktop users." data-for="stat-7f">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='stat-7f' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{analyticsData && analyticsData.mobile_usage !== undefined ? getAnalyticsSection(analyticsData.mobile_usage * 100,'percent') : ''}
+											{analyticsData && analyticsData.mobile_usage_diff ? getAnalyticsIndicator(analyticsData.mobile_usage_diff) : ''}
+										</div>
+									{/*</OwlCarousel>*/}
+									</div> 
+								</div>
+											
+								{/* Seo Report */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											SEO Report 
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>SEO REPORT</h6>This is a breakdown of website visitors by search term" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									{/*searchData && searchData.search_data_by_query && <SeoTable seoData={searchData.search_data_by_query}/>*/}
+									{searchData && searchData.search_data_by_query && <MoreTable tableData={searchData.search_data_by_query} tableType="seo"/>}
+								</div>
 
 								{/* Traffic Block */}
 								<div className="transparent-box mt-40">
@@ -715,6 +786,20 @@ export default function Main(){
 									{/*analyticsData && analyticsData.sources && <ReferralTable referralData={analyticsData.sources}/>*/}									
 									{analyticsData && analyticsData.sources && <MoreTable tableData={Object.values(analyticsData.sources)} tableType="referral"/>}
 								</div>
+
+								{/* Page Traffic Report */}
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											MOST TRAFFICKED PAGES
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip="<h6>MOST TRAFFICKED PAGES</h6>These pages receive the most overall traffic to your site" data-for="seo-rep"/>
+												<ReactTooltip id='seo-rep' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											</span>
+										</div>
+									</div>
+									{analyticsData && analyticsData.page_views && analyticsData.page_views.all_pages_report && <MoreTable tableData={Object.values(analyticsData.page_views.all_pages_report)} tableType="traffic"/>}
+								</div>
 							</div>
 						</div>
 				  	</div>
@@ -724,12 +809,12 @@ export default function Main(){
 					
 					{/* GMB Review */}
 					<div className="tab-pane fade" id="cs_4" role="tabpanel" aria-labelledby="cs_4_tab">
-					  	{reviewData && <Review reviewData={reviewData}/>}
+					  	{businessData && businessData.reviews && businessData.reviews.reviews && <Review reviewData={businessData.reviews.reviews}/>}
 				  	</div>
 					
 					{/* GROW REVIEWS */}
 					<div className="tab-pane fade" id="cs_5" role="tabpanel" aria-labelledby="cs_5_tab">
-						<Form />
+						<ReviewForm />
 					</div>
 				</div>
 			</div>
