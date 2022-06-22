@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InfoIcon from '../img/ico-info.svg';
 import ShowPreview from '../img/icon-eye.png';
 import VehicleCard from '../components/VehicleCard';
 import WarningIcon from '../img/gray-warning.png';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+	GridContextProvider,
+	GridDropZone,
+	GridItem,
+	swap,
+} from 'react-grid-dnd';
 function MainSliderSection({
 	vehicles,
 	openModal,
@@ -15,6 +20,7 @@ function MainSliderSection({
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
 	});
+	let [update, setUpdate] = useState(false);
 
 	const getListStyle = isDraggingOver => ({
 		display: 'flex',
@@ -26,19 +32,22 @@ function MainSliderSection({
 
 		return result;
 	};
-	const onDragEnd = result => {
-		// dropped outside the list
-		if (!result.destination) {
-			return;
-		}
-
-		const items = reorder(
-			vehicles,
-			result.source.index,
-			result.destination.index
+	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+		const nextState = swap(vehicles, sourceIndex, targetIndex);
+		setVehicles(nextState);
+	};
+	useEffect(() => {
+		window.addEventListener('resize', () =>
+			setUpdate(prevState => !prevState)
 		);
-
-		setVehicles(items);
+		return () => {
+			window.removeEventListener('resize', () =>
+				setUpdate(prevState => !prevState)
+			);
+		};
+	}, []);
+	const getHeight = () => {
+		return innerWidth * 0.24;
 	};
 	return (
 		<>
@@ -116,8 +125,45 @@ function MainSliderSection({
 							</button>
 						</div>
 					) : (
-						<DragDropContext onDragEnd={onDragEnd}>
-							<Droppable
+						<GridContextProvider onChange={onChange}>
+							<div className='vehicle-block-row'>
+								<GridDropZone
+									id='items'
+									boxesPerRow={4}
+									rowHeight={getHeight()}
+									style={{
+										height:
+											getHeight() *
+											Math.ceil(vehicles.length / 4),
+									}}
+								>
+									{vehicles?.map((vehicle, idx) => (
+										<GridItem
+											key={vehicle.title + vehicle.id}
+											className={`vehicle-block ${
+												selectedVehicles.includes(
+													vehicle
+												)
+													? 'selected'
+													: ''
+											} ${idx > 3 ? 'mt-2' : ''}`}
+										>
+											<div>
+												<VehicleCard
+													selectedVehicles={
+														selectedVehicles
+													}
+													setSelectedVehicles={
+														setSelectedVehicles
+													}
+													data={vehicle}
+												/>
+											</div>
+										</GridItem>
+									))}
+								</GridDropZone>
+							</div>
+							{/* <Droppable
 								droppableId='droppable'
 								direction='horizontal'
 							>
@@ -128,12 +174,14 @@ function MainSliderSection({
 											snapshot.isDraggingOver
 										)}
 										{...provided.droppableProps}
-										className='vehicle-block-row'
+										className='vehicle-block-row flex-wrap'
 									>
 										{vehicles?.map((vehicle, idx) => (
 											<Draggable
-												key={vehicle.title}
-												draggableId={vehicle.title}
+												key={vehicle.title + vehicle.id}
+												draggableId={
+													vehicle.title + vehicle.id
+												}
 												index={idx}
 											>
 												{(provided, snapshot) => (
@@ -153,6 +201,10 @@ function MainSliderSection({
 															)
 																? 'selected'
 																: ''
+														} ${
+															idx > 3
+																? 'mt-4'
+																: ''
 														}`}
 													>
 														<VehicleCard
@@ -171,13 +223,13 @@ function MainSliderSection({
 										{provided.placeholder}
 									</div>
 								)}
-							</Droppable>
-						</DragDropContext>
+							</Droppable> */}
+						</GridContextProvider>
 					)}
 				</div>
 				<div className='mt-15 text-center'>
 					<div className='d-inline-flex align-items-center'>
-						<div className='mso-info green-text'>
+						<div className='mso-info green-text d-none'>
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>

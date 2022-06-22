@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InfoIcon from '../img/ico-info.svg';
 import ShowPreview from '../img/icon-eye.png';
 import WarningIcon from '../img/gray-warning.png';
 import VehicleCard from './VehicleCard';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+	GridContextProvider,
+	GridDropZone,
+	GridItem,
+	swap,
+} from 'react-grid-dnd';
 
 function CarouselSection({
 	carouselVehicles,
@@ -27,19 +32,25 @@ function CarouselSection({
 
 		return result;
 	};
-	const onDragEnd = result => {
-		// dropped outside the list
-		if (!result.destination) {
-			return;
-		}
-
-		const items = reorder(
-			carouselVehicles,
-			result.source.index,
-			result.destination.index
+	const getHeight = () => {
+		return innerWidth * 0.24;
+	};
+	let [update, setUpdate] = useState(false);
+	useEffect(() => {
+		window.addEventListener('resize', () =>
+			setUpdate(prevState => !prevState)
 		);
-
-		setCarouselVehicles(items);
+		return () => {
+			window.removeEventListener('resize', () =>
+				setUpdate(prevState => !prevState)
+			);
+		};
+	}, []);
+	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+		console.log({ sourceId, sourceIndex, targetIndex, targetId });
+		const nextState = swap(carouselVehicles, sourceIndex, targetIndex);
+		console.log({ nextState });
+		setCarouselVehicles(nextState);
 	};
 	return (
 		<>
@@ -113,8 +124,47 @@ function CarouselSection({
 							</button>
 						</div>
 					) : (
-						<DragDropContext onDragEnd={onDragEnd}>
-							<Droppable
+						<GridContextProvider onChange={onChange}>
+							<div className='vehicle-block-row'>
+								<GridDropZone
+									id='items'
+									boxesPerRow={4}
+									rowHeight={getHeight()}
+									style={{
+										height:
+											getHeight() *
+											Math.ceil(
+												carouselVehicles.length / 4
+											),
+									}}
+								>
+									{carouselVehicles?.map((vehicle, idx) => (
+										<GridItem
+											key={vehicle.title + vehicle.id}
+											className={`vehicle-block ${
+												selectedCarouselVehicles.includes(
+													vehicle
+												)
+													? 'selected'
+													: ''
+											} ${idx > 3 ? 'mt-2' : ''}`}
+										>
+											<div>
+												<VehicleCard
+													selectedVehicles={
+														selectedCarouselVehicles
+													}
+													setSelectedVehicles={
+														setSelectedCarouselVehicles
+													}
+													data={vehicle}
+												/>
+											</div>
+										</GridItem>
+									))}
+								</GridDropZone>
+							</div>
+							{/* <Droppable
 								droppableId='droppable'
 								direction='horizontal'
 							>
@@ -125,60 +175,62 @@ function CarouselSection({
 											snapshot.isDraggingOver
 										)}
 										{...provided.droppableProps}
-										className='vehicle-block-row'
+										className='vehicle-block-row flex-wrap'
 									>
-										{carouselVehicles?.map(
-											(vehicle, idx) => (
-												<Draggable
-													key={vehicle.title}
-													draggableId={vehicle.title}
-													index={idx}
-												>
-													{(provided, snapshot) => (
-														<div
-															ref={
-																provided.innerRef
+										{vehicles?.map((vehicle, idx) => (
+											<Draggable
+												key={vehicle.title + vehicle.id}
+												draggableId={
+													vehicle.title + vehicle.id
+												}
+												index={idx}
+											>
+												{(provided, snapshot) => (
+													<div
+														ref={provided.innerRef}
+														{...provided.draggableProps}
+														{...provided.dragHandleProps}
+														style={getItemStyle(
+															snapshot.isDragging,
+															provided
+																.draggableProps
+																.style
+														)}
+														className={`vehicle-block ${
+															selectedVehicles.includes(
+																vehicle
+															)
+																? 'selected'
+																: ''
+														} ${
+															idx > 3
+																? 'mt-4'
+																: ''
+														}`}
+													>
+														<VehicleCard
+															selectedVehicles={
+																selectedVehicles
 															}
-															{...provided.draggableProps}
-															{...provided.dragHandleProps}
-															style={getItemStyle(
-																snapshot.isDragging,
-																provided
-																	.draggableProps
-																	.style
-															)}
-															className={`vehicle-block ${
-																selectedCarouselVehicles.includes(
-																	vehicle
-																)
-																	? 'selected'
-																	: ''
-															}`}
-														>
-															<VehicleCard
-																selectedVehicles={
-																	selectedCarouselVehicles
-																}
-																setSelectedVehicles={
-																	setSelectedCarouselVehicles
-																}
-																data={vehicle}
-															/>
-														</div>
-													)}
-												</Draggable>
-											)
-										)}
+															setSelectedVehicles={
+																setSelectedVehicles
+															}
+															data={vehicle}
+														/>
+													</div>
+												)}
+											</Draggable>
+										))}
 										{provided.placeholder}
 									</div>
 								)}
-							</Droppable>
-						</DragDropContext>
+							</Droppable> */}
+						</GridContextProvider>
 					)}
 				</div>
 				<div className='mt-15 text-center'>
 					<div className='d-inline-flex align-items-center'>
-						<div className='mso-info green-text'>
+						<div className='mso-info green-text d-none'>
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>
