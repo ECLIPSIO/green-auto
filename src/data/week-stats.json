@@ -1,0 +1,44 @@
+[
+    {
+        "name": "Click From Ads",
+        "curr_qty": 587,
+        "old_qty": 523,
+        "change":28
+    },
+    {
+        "name": "Website Visits",
+        "curr_qty": 4000,
+        "old_qty": 5000,
+        "change":-20
+    },
+    {
+        "name": "GMB Calls",
+        "curr_qty": 30,
+        "old_qty": 25,
+        "change":20
+    },
+    {
+        "name": "Impressions",
+        "curr_qty": 10,
+        "old_qty": 15,
+        "change":-33
+    },
+    {
+        "name": "Spend",
+        "curr_qty": "$1000",
+        "old_qty": "$800",
+        "change":25
+    },
+    {
+        "name": "Direction Requests",
+        "curr_qty": 50,
+        "old_qty": 100,
+        "change":-50
+    },
+    {
+        "name": "Form Filled",
+        "curr_qty": 15,
+        "old_qty": 12,
+        "change":25
+    }
+]

@@ -13,7 +13,6 @@ export default function Home() {
             <div className="container-fluid">
             <Main />
             </div>
-
         </section>
         </>
     )
