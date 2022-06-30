@@ -8,21 +8,26 @@ import '../css/style.css';
 import '../css/new.css';
 import '../css/responsive.css';
 
+import axios from 'axios'; 
+
 import VehicleImage from '../img/car1.jpg';
 import VehicleImage2 from '../img/car2.jpg';
 import VehicleImage3 from '../img/car3.jpg';
 import VehicleImage4 from '../img/car4.jpg';
-import VehicleCard from '../components/VehicleCard';
-import MainSection from '../components/MainSection';
+import VehicleCard from '../components/specials/VehicleCard';
+import MainSection from '../components/specials/MainSection';
 import 'bootstrap/js/dist/modal';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
+
+import {UserContext} from '../context/UserContext';
 
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
 const Index = ({}) => {
+	const {user} = useContext(UserContext); 
+
 	// On Add Selected Items Popup
 	const [vehicles, setVehicles] = useState([]);
 	const [carouselVehicles, setCarouselVehicles] = useState([]);
@@ -32,6 +37,9 @@ const Index = ({}) => {
 	const [selectedCarouselVehicles, setSelectedCarouselVehicles] = useState(
 		[]
 	);
+
+	const protocol = window.location.protocol;
+	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
 
 	// For Dummy Data
 	const [selectCarouselVehicles, setSelectCarouselVehicles] = useState([
@@ -183,6 +191,80 @@ const Index = ({}) => {
 		},
 	]);
 
+	const usePrevious = (value, initialValue) => {
+		const ref = useRef(initialValue);
+		useEffect(() => {
+		  ref.current = value;
+		});
+		return ref.current;
+	};
+
+	const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
+		const previousDeps = usePrevious(dependencies, []);
+	  
+		const changedDeps = dependencies.reduce((accum, dependency, index) => {
+		  if (dependency !== previousDeps[index]) {
+			const keyName = dependencyNames[index] || index;
+			return {
+			  ...accum,
+			  [keyName]: {
+				before: previousDeps[index],
+				after: dependency
+			  }
+			};
+		  }
+	  
+		  return accum;
+		}, {});
+	  
+		if (Object.keys(changedDeps).length) {
+		  console.log('[use-effect-debugger] ', changedDeps);
+		}
+	  
+		useEffect(effectHook, dependencies);
+	};
+
+	useEffectDebugger(() => {
+
+		axios.get(inventory_url + "&action=get_inventory").then(function (response) {
+			var inventory_data = response.data;
+			console.log("got inventory data");
+			console.log(inventory_data);
+			
+			if(!(inventory_data && inventory_data.length)) alert("No inventory available");
+
+			var temp_vehicles = [];
+			var temp_vehicles_2 = [];
+
+			inventory_data.map(function(vehicle,i) {
+				temp_vehicles.push({
+					id: i,
+					src: vehicle['primary_image'],
+					title: vehicle['make'],
+					model: vehicle['year'],
+					tagline: vehicle['vehicle_name'],
+					price: vehicle['price'],
+					running: vehicle['mileage'],
+				});
+
+				temp_vehicles_2.push({
+					id: i + inventory_data.length,
+					src: vehicle['primary_image'],
+					title: vehicle['make'],
+					model: vehicle['year'],
+					tagline: vehicle['vehicle_name'],
+					price: vehicle['price'],
+					running: vehicle['mileage'],
+				})
+			});
+
+			setSelectCarouselVehicles(temp_vehicles);
+
+			setSelectVehicles(temp_vehicles_2);
+		});	
+
+	}, [user.dealership_id]);
+
 	// Two Open Modals
 	const openModal = () => {
 		$('#addVehiclesModal').modal('show');
@@ -191,14 +273,15 @@ const Index = ({}) => {
 		$('#addCarouselVehiclesModal').modal('show');
 	};
 
-	useEffect(() => {
+	/*useEffect(() => {
 		$('#addVehiclesModal').on('hidden.bs.modal', function (e) {
 			setSelectedVehicles([]);
 		});
 		$('#addCarouselVehiclesModal').on('hidden.bs.modal', function (e) {
 			setSelectedCarouselVehicles([]);
 		});
-	}, []);
+	}, []);*/
+
 	return (
 		<>
 			<MainSection
@@ -278,7 +361,7 @@ const Index = ({}) => {
 									<span className='tag-box'>
 										All{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -287,7 +370,7 @@ const Index = ({}) => {
 									<span className='tag-box ml-10'>
 										+30 Days{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -296,7 +379,7 @@ const Index = ({}) => {
 									<span className='tag-box ml-10'>
 										Under $40k{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -311,7 +394,7 @@ const Index = ({}) => {
 									)
 									.map((vehicle, idx) => {
 										return (
-											<div
+											<div key={idx}
 												className={`vehicle-block ${
 													selectedVehicles.includes(
 														vehicle
@@ -436,7 +519,7 @@ const Index = ({}) => {
 									<span className='tag-box'>
 										All{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -445,7 +528,7 @@ const Index = ({}) => {
 									<span className='tag-box ml-10'>
 										+30 Days{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -454,7 +537,7 @@ const Index = ({}) => {
 									<span className='tag-box ml-10'>
 										Under $40k{' '}
 										<a
-											href='javascript:void(0);'
+											onClick={(e) => {e.preventDefault();}}
 											className='cross'
 										>
 											x
@@ -470,7 +553,7 @@ const Index = ({}) => {
 									)
 									.map((vehicle, idx) => {
 										return (
-											<div
+											<div key={idx}
 												className={`vehicle-block ${
 													selectedCarouselVehicles.includes(
 														vehicle

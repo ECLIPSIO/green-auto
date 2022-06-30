@@ -76,12 +76,12 @@ export default function Header(props){
 										</NavLink>
 									</li>
 									<li>
-										<NavLink exact='true' to='/specials'>
+										<NavLink exact='true' to='/reporting/specials'>
 											Specials
 										</NavLink>
 									</li>
 									<li>
-										<NavLink exact='true' to='/weekly-digital-marking-stats'>
+										<NavLink exact='true' to='/reporting/weekly-digital-marking-stats'>
 											Weekly Stats
 										</NavLink>
 									</li>

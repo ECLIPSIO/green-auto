@@ -58,8 +58,8 @@ function App() {
 				{checkedLogin && user ? (
 					<>
 						<Route exact path='/reporting/' element={<Home />} />
-						<Route exact path='/specials' element={<Specials />} />
-						<Route exact path='/weekly-digital-marking-stats' element={<Stats />} />
+						<Route exact path='/reporting/specials' element={<Specials />} />
+						<Route exact path='/reporting/weekly-digital-marking-stats' element={<Stats />} />
 					</>
 				) : (
 					<Route exact path='/reporting/' />
