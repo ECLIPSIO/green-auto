@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import InfoIcon from '../../img/ico-info.svg';
 import ShowPreview from '../../img/icon-eye.png';
-import WarningIcon from '../../img/gray-warning.png';
 import VehicleCard from './VehicleCard';
+import WarningIcon from '../../img/gray-warning.png';
 import {
 	GridContextProvider,
 	GridDropZone,
 	GridItem,
 	swap,
 } from 'react-grid-dnd';
-
-function CarouselSection({
-	carouselVehicles,
-	openCarouselModal,
-	selectedCarouselVehicles,
-	setSelectedCarouselVehicles,
-	setCarouselVehicles,
-	selectCarouselVehicles,
+function SliderTop({
+	topVehicles,
+	openModal,
+	selectedTopVehicles,
+	setSelectedTopVehicles,
+	setTopVehicles,
+	allTopVehicles,
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
 	});
+	let [update, setUpdate] = useState(false);
 
 	const getListStyle = isDraggingOver => ({
 		display: 'flex',
@@ -32,10 +32,10 @@ function CarouselSection({
 
 		return result;
 	};
-	const getHeight = () => {
-		return innerWidth * 0.24;
+	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+		const nextState = swap(topVehicles, sourceIndex, targetIndex);
+		setTopVehicles(nextState);
 	};
-	let [update, setUpdate] = useState(false);
 	useEffect(() => {
 		window.addEventListener('resize', () =>
 			setUpdate(prevState => !prevState)
@@ -46,49 +46,49 @@ function CarouselSection({
 			);
 		};
 	}, []);
-	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
-		console.log({ sourceId, sourceIndex, targetIndex, targetId });
-		const nextState = swap(carouselVehicles, sourceIndex, targetIndex);
-		console.log({ nextState });
-		setCarouselVehicles(nextState);
+	const getHeight = () => {
+		return innerWidth * 0.24;
 	};
 	return (
 		<>
-			<div className='gray-box-block mt-45'>
-				<div className='d-flex align-items-center m-title-flex mb-30'>
+			<div className='gray-box-block'>
+				<div className='main-heading'>MANAGE SPECIAL OFFERS PAGE</div>
+				<div className='sub-heading'>
+					Choose the vehicles you want to promote on your specials
+					page. 
+				</div>
+				<div className='d-flex align-items-center m-title-flex mb-30 mt-30'>
 					<div className='m-title text-uppercase mb-0 fw-600'>
-						Carousel
+						Main Slider
 						<span className='info-msg'>
 							<img className='ico_info' src={InfoIcon} /> <div />
 						</span>
 					</div>
 					<div className='item-count ml-45'>
-						{carouselVehicles?.length} of{' '}
-						{selectCarouselVehicles?.length}
+						{topVehicles?.length} of {allTopVehicles?.length}
 					</div>
-					{carouselVehicles?.length > 0 && (
+					{topVehicles?.length > 0 && (
 						<div className='ml-45 custom-form'>
 							<select className='form-control mnw-186'>
-								<option>Oldest Vehicles</option>
+								<option>Select Fallback</option>
 							</select>
 						</div>
 					)}
-
 					<div className='ml-auto'>
-						{selectedCarouselVehicles?.length > 0 && (
+						{selectedTopVehicles?.length > 0 && (
 							<button
 								className='transparent-btn'
 								onClick={() => {
 									let arr = [];
-									arr = carouselVehicles.filter(
+									arr = topVehicles.filter(
 										vehicle =>
-											!selectedCarouselVehicles.find(
+											!selectedTopVehicles.find(
 												selected =>
 													selected.id == vehicle.id
 											)
 									);
-									setCarouselVehicles(arr);
-									setSelectedCarouselVehicles([]);
+									setTopVehicles(arr);
+									setSelectedTopVehicles([]);
 								}}
 							>
 								Remove Selected
@@ -97,15 +97,15 @@ function CarouselSection({
 						<button
 							className='green-btn'
 							data-toggle='modal'
-							data-target='#addCarouselVehiclesModal'
-							onClick={openCarouselModal}
+							data-target='#addTopVehiclesModal'
+							onClick={openModal}
 						>
 							Add Vehicles
 						</button>
 					</div>
 				</div>
 				<div className='border-box-block mso-box-block'>
-					{carouselVehicles?.length == 0 ? (
+					{topVehicles.length == 0 ? (
 						<div className='text-center no-data-box'>
 							<div>
 								<img src={WarningIcon} />
@@ -117,8 +117,8 @@ function CarouselSection({
 								className='transparent-btn mt-10'
 								type='button'
 								data-toggle='modal'
-								data-target='#addCarouselVehiclesModal'
-								onClick={openCarouselModal}
+								data-target='#addTopVehiclesModal'
+								onClick={openModal}
 							>
 								Add Vehicles
 							</button>
@@ -133,16 +133,14 @@ function CarouselSection({
 									style={{
 										height:
 											getHeight() *
-											Math.ceil(
-												carouselVehicles.length / 4
-											),
+											Math.ceil(topVehicles.length / 4),
 									}}
 								>
-									{carouselVehicles?.map((vehicle, idx) => (
+									{topVehicles?.map((vehicle, idx) => (
 										<GridItem
 											key={vehicle.title + vehicle.id}
 											className={`vehicle-block ${
-												selectedCarouselVehicles.includes(
+												selectedTopVehicles.includes(
 													vehicle
 												)
 													? 'selected'
@@ -151,11 +149,11 @@ function CarouselSection({
 										>
 											<div>
 												<VehicleCard
-													selectedVehicles={
-														selectedCarouselVehicles
+													cardVehicles={
+														selectedTopVehicles
 													}
-													setSelectedVehicles={
-														setSelectedCarouselVehicles
+													setCardVehicles={
+														setSelectedTopVehicles
 													}
 													data={vehicle}
 												/>
@@ -177,7 +175,7 @@ function CarouselSection({
 										{...provided.droppableProps}
 										className='vehicle-block-row flex-wrap'
 									>
-										{vehicles?.map((vehicle, idx) => (
+										{topVehicles?.map((vehicle, idx) => (
 											<Draggable
 												key={vehicle.title + vehicle.id}
 												draggableId={
@@ -197,7 +195,7 @@ function CarouselSection({
 																.style
 														)}
 														className={`vehicle-block ${
-															selectedVehicles.includes(
+															selectedTopVehicles.includes(
 																vehicle
 															)
 																? 'selected'
@@ -209,11 +207,11 @@ function CarouselSection({
 														}`}
 													>
 														<VehicleCard
-															selectedVehicles={
-																selectedVehicles
+															selectedTopVehicles={
+																selectedTopVehicles
 															}
-															setSelectedVehicles={
-																setSelectedVehicles
+															setSelectedTopVehicles={
+																setSelectedTopVehicles
 															}
 															data={vehicle}
 														/>
@@ -234,9 +232,8 @@ function CarouselSection({
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>
-							Select from {carouselVehicles.length} -{' '}
-							{selectCarouselVehicles.length} vehicles to showcase
-							on this section
+							Select from 2 - {allTopVehicles.length} vehicles to showcase on this
+							section
 						</div>
 					</div>
 				</div>
@@ -245,4 +242,4 @@ function CarouselSection({
 	);
 }
 
-export default CarouselSection;
+export default SliderTop;

@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import InfoIcon from '../../img/ico-info.svg';
 import ShowPreview from '../../img/icon-eye.png';
-import VehicleCard from './VehicleCard';
 import WarningIcon from '../../img/gray-warning.png';
+import VehicleCard from './VehicleCard';
 import {
 	GridContextProvider,
 	GridDropZone,
 	GridItem,
 	swap,
 } from 'react-grid-dnd';
-function MainSliderSection({
-	vehicles,
-	openModal,
-	selectedVehicles,
-	setSelectedVehicles,
-	setVehicles,
-	selectVehicles,
+
+function SliderBottom({
+	bottomVehicles,
+	openCarouselModal,
+	selectedBottomVehicles,
+	setSelectedBottomVehicles,
+	setBottomVehicles,
+	allBottomVehicles,
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
 	});
-	let [update, setUpdate] = useState(false);
 
 	const getListStyle = isDraggingOver => ({
 		display: 'flex',
@@ -32,10 +32,10 @@ function MainSliderSection({
 
 		return result;
 	};
-	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
-		const nextState = swap(vehicles, sourceIndex, targetIndex);
-		setVehicles(nextState);
+	const getHeight = () => {
+		return innerWidth * 0.24;
 	};
+	let [update, setUpdate] = useState(false);
 	useEffect(() => {
 		window.addEventListener('resize', () =>
 			setUpdate(prevState => !prevState)
@@ -46,49 +46,49 @@ function MainSliderSection({
 			);
 		};
 	}, []);
-	const getHeight = () => {
-		return innerWidth * 0.24;
+	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+		console.log({ sourceId, sourceIndex, targetIndex, targetId });
+		const nextState = swap(bottomVehicles, sourceIndex, targetIndex);
+		console.log({ nextState });
+		setBottomVehicles(nextState);
 	};
 	return (
 		<>
-			<div className='gray-box-block'>
-				<div className='main-heading'>MANAGE SPECIAL OFFERS PAGE</div>
-				<div className='sub-heading'>
-					Choose the vehicles you want to promote on your specials
-					page. 
-				</div>
-				<div className='d-flex align-items-center m-title-flex mb-30 mt-30'>
+			<div className='gray-box-block mt-45'>
+				<div className='d-flex align-items-center m-title-flex mb-30'>
 					<div className='m-title text-uppercase mb-0 fw-600'>
-						Main Slider
+						Carousel
 						<span className='info-msg'>
 							<img className='ico_info' src={InfoIcon} /> <div />
 						</span>
 					</div>
 					<div className='item-count ml-45'>
-						{vehicles?.length} of {selectVehicles?.length}
+						{bottomVehicles?.length} of{' '}
+						{allBottomVehicles?.length}
 					</div>
-					{vehicles?.length > 0 && (
+					{bottomVehicles?.length > 0 && (
 						<div className='ml-45 custom-form'>
 							<select className='form-control mnw-186'>
-								<option>Select Fallback</option>
+								<option>Oldest Vehicles</option>
 							</select>
 						</div>
 					)}
+
 					<div className='ml-auto'>
-						{selectedVehicles?.length > 0 && (
+						{selectedBottomVehicles?.length > 0 && (
 							<button
 								className='transparent-btn'
 								onClick={() => {
 									let arr = [];
-									arr = vehicles.filter(
+									arr = bottomVehicles.filter(
 										vehicle =>
-											!selectedVehicles.find(
+											!selectedBottomVehicles.find(
 												selected =>
 													selected.id == vehicle.id
 											)
 									);
-									setVehicles(arr);
-									setSelectedVehicles([]);
+									setBottomVehicles(arr);
+									setSelectedBottomVehicles([]);
 								}}
 							>
 								Remove Selected
@@ -97,15 +97,15 @@ function MainSliderSection({
 						<button
 							className='green-btn'
 							data-toggle='modal'
-							data-target='#addVehiclesModal'
-							onClick={openModal}
+							data-target='#addBottomVehiclesModal'
+							onClick={openCarouselModal}
 						>
 							Add Vehicles
 						</button>
 					</div>
 				</div>
 				<div className='border-box-block mso-box-block'>
-					{vehicles.length == 0 ? (
+					{bottomVehicles?.length == 0 ? (
 						<div className='text-center no-data-box'>
 							<div>
 								<img src={WarningIcon} />
@@ -117,8 +117,8 @@ function MainSliderSection({
 								className='transparent-btn mt-10'
 								type='button'
 								data-toggle='modal'
-								data-target='#addVehiclesModal'
-								onClick={openModal}
+								data-target='#addBottomVehiclesModal'
+								onClick={openCarouselModal}
 							>
 								Add Vehicles
 							</button>
@@ -133,14 +133,16 @@ function MainSliderSection({
 									style={{
 										height:
 											getHeight() *
-											Math.ceil(vehicles.length / 4),
+											Math.ceil(
+												bottomVehicles.length / 4
+											),
 									}}
 								>
-									{vehicles?.map((vehicle, idx) => (
+									{bottomVehicles?.map((vehicle, idx) => (
 										<GridItem
 											key={vehicle.title + vehicle.id}
 											className={`vehicle-block ${
-												selectedVehicles.includes(
+												selectedBottomVehicles.includes(
 													vehicle
 												)
 													? 'selected'
@@ -149,11 +151,11 @@ function MainSliderSection({
 										>
 											<div>
 												<VehicleCard
-													selectedVehicles={
-														selectedVehicles
+													cardVehicles={
+														selectedBottomVehicles
 													}
-													setSelectedVehicles={
-														setSelectedVehicles
+													setCardVehicles={
+														setSelectedBottomVehicles
 													}
 													data={vehicle}
 												/>
@@ -175,7 +177,7 @@ function MainSliderSection({
 										{...provided.droppableProps}
 										className='vehicle-block-row flex-wrap'
 									>
-										{vehicles?.map((vehicle, idx) => (
+										{topVehicles?.map((vehicle, idx) => (
 											<Draggable
 												key={vehicle.title + vehicle.id}
 												draggableId={
@@ -195,7 +197,7 @@ function MainSliderSection({
 																.style
 														)}
 														className={`vehicle-block ${
-															selectedVehicles.includes(
+															selectedTopVehicles.includes(
 																vehicle
 															)
 																? 'selected'
@@ -207,11 +209,11 @@ function MainSliderSection({
 														}`}
 													>
 														<VehicleCard
-															selectedVehicles={
-																selectedVehicles
+															cardVehicles={
+																selectedTopVehicles
 															}
-															setSelectedVehicles={
-																setSelectedVehicles
+															setCardVehicles={
+																setSelectedTopVehicles
 															}
 															data={vehicle}
 														/>
@@ -232,9 +234,8 @@ function MainSliderSection({
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>
-							Select from {vehicles.length} -{' '}
-							{selectVehicles.length} vehicles to showcase on this
-							section
+							Select from 4 - {allBottomVehicles.length} vehicles to showcase
+							on this section
 						</div>
 					</div>
 				</div>
@@ -243,4 +244,4 @@ function MainSliderSection({
 	);
 }
 
-export default MainSliderSection;
+export default SliderBottom;

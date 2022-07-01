@@ -10,10 +10,6 @@ import '../css/responsive.css';
 
 import axios from 'axios'; 
 
-import VehicleImage from '../img/car1.jpg';
-import VehicleImage2 from '../img/car2.jpg';
-import VehicleImage3 from '../img/car3.jpg';
-import VehicleImage4 from '../img/car4.jpg';
 import VehicleCard from '../components/specials/VehicleCard';
 import MainSection from '../components/specials/MainSection';
 import 'bootstrap/js/dist/modal';
@@ -29,167 +25,49 @@ const Index = ({}) => {
 	const {user} = useContext(UserContext); 
 
 	// On Add Selected Items Popup
-	const [vehicles, setVehicles] = useState([]);
-	const [carouselVehicles, setCarouselVehicles] = useState([]);
+	const [topVehicles, setTopVehicles] = useState([]);
+	const [bottomVehicles, setBottomVehicles] = useState([]);
 
 	// On Check Items Popup
-	const [selectedVehicles, setSelectedVehicles] = useState([]);
-	const [selectedCarouselVehicles, setSelectedCarouselVehicles] = useState(
-		[]
-	);
+	const [selectedTopVehicles, setSelectedTopVehicles] = useState([]);
+	const [selectedBottomVehicles, setSelectedBottomVehicles] = useState([]);
+
+	const [allMakes, setAllMakes] = useState(null);
+	const [allPriceRanges, setAllPriceRanges] = useState(null);
+	const [allDOLRanges, setAllDOLRanges] = useState(null);
+
 
 	const protocol = window.location.protocol;
 	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
 
-	// For Dummy Data
-	const [selectCarouselVehicles, setSelectCarouselVehicles] = useState([
-		{
-			id: 9,
-			src: VehicleImage,
-			title: 'Ferrari',
-			model: 2015,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$275,000',
-			running: '12,000 mi',
-		},
-		{
-			id: 10,
-			src: VehicleImage2,
-			title: 'Monster Truck',
-			model: 2012,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$375,000',
-			running: '1,000 mi',
-		},
-		{
-			id: 11,
-			src: VehicleImage3,
-			title: 'Bike',
-			model: 2020,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$75,000',
-			running: '500 mi',
-		},
-		{
-			id: 12,
-			src: VehicleImage4,
-			title: 'GTR',
-			model: 2022,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$475,000',
-			running: '2,000 mi',
-		},
-		{
-			id: 13,
-			src: VehicleImage,
-			title: 'Ferrari',
-			model: 2015,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$275,000',
-			running: '12,000 mi',
-		},
-		{
-			id: 14,
-			src: VehicleImage2,
-			title: 'Monster Truck',
-			model: 2012,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$375,000',
-			running: '1,000 mi',
-		},
-		{
-			id: 15,
-			src: VehicleImage3,
-			title: 'Bike',
-			model: 2020,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$75,000',
-			running: '500 mi',
-		},
-		{
-			id: 16,
-			src: VehicleImage4,
-			title: 'GTR',
-			model: 2022,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$475,000',
-			running: '2,000 mi',
-		},
-	]);
-	const [selectVehicles, setSelectVehicles] = useState([
-		{
-			id: 1,
-			src: VehicleImage,
-			title: 'Ferrari',
-			model: 2015,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$275,000',
-			running: '12,000 mi',
-		},
-		{
-			id: 2,
-			src: VehicleImage2,
-			title: 'Monster Truck',
-			model: 2012,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$375,000',
-			running: '1,000 mi',
-		},
-		{
-			id: 3,
-			src: VehicleImage3,
-			title: 'Bike',
-			model: 2020,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$75,000',
-			running: '500 mi',
-		},
-		{
-			id: 4,
-			src: VehicleImage4,
-			title: 'GTR',
-			model: 2022,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$475,000',
-			running: '2,000 mi',
-		},
-		{
-			id: 5,
-			src: VehicleImage,
-			title: 'Ferrari',
-			model: 2015,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$275,000',
-			running: '12,000 mi',
-		},
-		{
-			id: 6,
-			src: VehicleImage2,
-			title: 'Monster Truck',
-			model: 2012,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$375,000',
-			running: '1,000 mi',
-		},
-		{
-			id: 7,
-			src: VehicleImage3,
-			title: 'Bike',
-			model: 2020,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$75,000',
-			running: '500 mi',
-		},
-		{
-			id: 8,
-			src: VehicleImage4,
-			title: 'GTR',
-			model: 2022,
-			tagline: '458 Italia Spider Deluxe Edition',
-			price: '$475,000',
-			running: '2,000 mi',
-		},
-	]);
+	// Full Vehicle Data
+	const [allBottomVehicles, setAllBottomVehicles] = useState([]);
+	const [allTopVehicles, setAllTopVehicles] = useState([]);
+
+	const numberFormatter = (value, currency = false) => {
+		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+	
+		if(currency && num >= 10) num = Math.round(num);
+		
+		var sign = num>= 0 ? "" : "-";
+		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+		if(str.indexOf(".") > 0) {
+			parts = str.split(".");
+			str = parts[0];
+		}
+		str = str.split("").reverse();
+		for(var j = 0, len = str.length; j < len; j++) {
+			if(str[j] != ",") {
+				output.push(str[j]);
+				if(i%3 == 0 && j < (len - 1)) {
+					output.push(",");
+				}
+				i++;
+			}
+		}
+		formatted = output.reverse().join("");
+		return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+	}
 
 	const usePrevious = (value, initialValue) => {
 		const ref = useRef(initialValue);
@@ -224,8 +102,7 @@ const Index = ({}) => {
 		useEffect(effectHook, dependencies);
 	};
 
-	useEffectDebugger(() => {
-
+	const getInventory = () => {
 		axios.get(inventory_url + "&action=get_inventory").then(function (response) {
 			var inventory_data = response.data;
 			console.log("got inventory data");
@@ -236,74 +113,154 @@ const Index = ({}) => {
 			var temp_vehicles = [];
 			var temp_vehicles_2 = [];
 
+			var temp_top_vehicles = [];
+			var temp_bottom_vehicles = [];
+
+			var all_makes = [];
+			var all_prices = [];
+			var all_dols = [];
+
 			inventory_data.map(function(vehicle,i) {
+				if(!all_makes.includes(vehicle['make'])) all_makes.push(vehicle['make']);
+
+				all_prices.push(vehicle['price']);
+				all_dols.push(vehicle['tol']);
+
 				temp_vehicles.push({
 					id: i,
 					src: vehicle['primary_image'],
-					title: vehicle['make'],
-					model: vehicle['year'],
+					title: vehicle['vehicle_name'],
 					tagline: vehicle['vehicle_name'],
 					price: vehicle['price'],
-					running: vehicle['mileage'],
+					mileage: vehicle['mileage'],
+					vin: vehicle['vin'],
+					stockno: vehicle['stockno'],
+					make: vehicle['make'],
+					dol: vehicle['tol']
 				});
 
 				temp_vehicles_2.push({
-					id: i + inventory_data.length,
+					id: i + inventory_data.length, 
 					src: vehicle['primary_image'],
-					title: vehicle['make'],
-					model: vehicle['year'],
+					title: vehicle['vehicle_name'],
 					tagline: vehicle['vehicle_name'],
 					price: vehicle['price'],
-					running: vehicle['mileage'],
-				})
+					mileage: vehicle['mileage'],
+					vin: vehicle['vin'],
+					stockno: vehicle['stockno'],
+					make: vehicle['make'],
+					dol: vehicle['tol']
+				});
+
+				if(vehicle.slider_order == 0) temp_top_vehicles.push(temp_vehicles[temp_vehicles.length - 1]);
+				if(vehicle.slider_order == 1) temp_bottom_vehicles.push(temp_vehicles[temp_vehicles_2.length - 1]);
 			});
 
-			setSelectCarouselVehicles(temp_vehicles);
+			var min_price = Math.min(...all_prices);
+			var max_price = Math.max(...all_prices);
 
-			setSelectVehicles(temp_vehicles_2);
-		});	
+			var min_dol = Math.min(...all_dols);
+			var max_dol = Math.max(...all_dols);
 
+			var price_ranges = [];
+			var price_range_step = 10000;
+
+			for(var i = Math.floor(min_price/price_range_step)*price_range_step; i < max_price; i = i + price_range_step)
+				price_ranges.push({'ceiling':i + price_range_step,'text':numberFormatter(i,true) + " - " + numberFormatter(i + price_range_step,true)});
+
+
+			var dol_ranges = [];
+			var dol_step = 10;			
+
+			for(var i = Math.floor(min_dol/dol_step)*dol_step; i < max_dol; i = i + dol_step)
+				dol_ranges.push({'ceiling':i + dol_step,'text':numberFormatter(i) + " - " + numberFormatter(i + dol_step)});
+			
+			setAllDOLRanges(dol_ranges);
+			setAllPriceRanges(price_ranges);
+			setAllMakes(all_makes);
+
+			setAllTopVehicles(temp_vehicles);
+			setAllBottomVehicles(temp_vehicles_2);
+
+			setTopVehicles(temp_top_vehicles);
+			setBottomVehicles(temp_bottom_vehicles);
+		}).catch(e => {
+			console.log(e);
+		});
+	}
+
+	useEffectDebugger(() => {
+		getInventory();
 	}, [user.dealership_id]);
 
 	// Two Open Modals
 	const openModal = () => {
-		$('#addVehiclesModal').modal('show');
+		$('#addTopVehiclesModal').modal('show');
 	};
 	const openCarouselModal = () => {
-		$('#addCarouselVehiclesModal').modal('show');
+		$('#addBottomVehiclesModal').modal('show');
 	};
 
-	/*useEffect(() => {
-		$('#addVehiclesModal').on('hidden.bs.modal', function (e) {
-			setSelectedVehicles([]);
+	$(document).on('hidden.bs.modal','#addTopVehiclesModal', function (e) {
+		setSelectedTopVehicles([]);
+	});
+
+
+	$(document).on('hidden.bs.modal','#addBottomVehiclesModal', function (e) {
+		setSelectedBottomVehicles([]);
+	});
+
+	const handleFilterChange = e  => {
+		console.log(e.target.name);
+		console.log(e.target.value);
+	}
+
+	const saveSettings = () => {
+		var inventory_settings = new FormData();
+
+		topVehicles.map(function(vehicle,i) {
+			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 0}))
 		});
-		$('#addCarouselVehiclesModal').on('hidden.bs.modal', function (e) {
-			setSelectedCarouselVehicles([]);
+
+		bottomVehicles.map(function(vehicle,i) {
+			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 1}))
 		});
-	}, []);*/
+
+		console.log(inventory_settings);
+
+		axios.post(inventory_url + "&action=save_inventory", inventory_settings).then(function (response) {
+			console.log("set inventory data");
+			console.log(response.data);
+
+			getInventory();
+		}).catch(e => {
+			console.log(e);
+		});
+	}
 
 	return (
 		<>
 			<MainSection
-				vehicles={vehicles}
+				topVehicles={topVehicles}
 				openModal={openModal}
-				selectedVehicles={selectedVehicles}
-				setSelectedVehicles={setSelectedVehicles}
-				setVehicles={setVehicles}
-				carouselVehicles={carouselVehicles}
+				selectedTopVehicles={selectedTopVehicles}
+				setSelectedTopVehicles={setSelectedTopVehicles}
+				setTopVehicles={setTopVehicles}
+				bottomVehicles={bottomVehicles}
 				openCarouselModal={openCarouselModal}
-				selectedCarouselVehicles={selectedCarouselVehicles}
-				setSelectedCarouselVehicles={setSelectedCarouselVehicles}
-				setCarouselVehicles={setCarouselVehicles}
-				selectCarouselVehicles={selectCarouselVehicles}
-				selectVehicles={selectVehicles}
+				selectedBottomVehicles={selectedBottomVehicles}
+				setSelectedBottomVehicles={setSelectedBottomVehicles}
+				setBottomVehicles={setBottomVehicles}
+				allBottomVehicles={allBottomVehicles}
+				allTopVehicles={allTopVehicles}
+				saveSettings={saveSettings}
 			/>
 			<div
 				className='modal fade custom-modal'
-				id='addVehiclesModal'
+				id='addTopVehiclesModal'
 				tabIndex={-1}
 				role='dialog'
-				aria-labelledby='addVehiclesModalTitle'
+				aria-labelledby='addTopVehiclesModalTitle'
 				aria-hidden='true'
 			>
 				<div
@@ -314,7 +271,7 @@ const Index = ({}) => {
 						<div className='modal-header'>
 							<h5
 								className='modal-title'
-								id='addVehiclesModalTitle'
+								id='addTopVehiclesModalTitle'
 							>
 								Select Inventory
 							</h5>
@@ -335,24 +292,36 @@ const Index = ({}) => {
 											<label className='custom-label'>
 												Make
 											</label>
-											<select className='form-control'>
-												<option>All</option>
+											<select className='form-control' name="topMakeSelect" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allMakes && allMakes.map((make, i) => { 
+													return (<option key={i} value={make}>{make}</option>
+													);
+												})}
 											</select>
 										</div>
 										<div className='col'>
 											<label className='custom-label'>
 												Days in lot
 											</label>
-											<select className='form-control'>
-												<option>30+ Days</option>
+											<select className='form-control' name="topDOL" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allDOLRanges && allDOLRanges.map((range, i) => { 
+													return (<option key={i} value={range.ceiling}>{range.text}</option>
+													);
+												})}
 											</select>
 										</div>
 										<div className='col'>
 											<label className='custom-label'>
 												Price
 											</label>
-											<select className='form-control'>
-												<option>Under $40k</option>
+											<select className='form-control' name="topPrice" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allPriceRanges && allPriceRanges.map((range, i) => { 
+													return (<option key={i} value={range.ceiling}>{range.text}</option>
+													);
+												})}
 											</select>
 										</div>
 									</div>
@@ -388,15 +357,15 @@ const Index = ({}) => {
 								</div>
 							</div>
 							<div className='vehicle-block-row mso-box-block vehicle-block-modal d-flex flex-wrap'>
-								{selectVehicles
+								{allTopVehicles.length && allTopVehicles
 									?.filter(
-										vehicle => !vehicles.includes(vehicle)
+										vehicle => !topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) && !bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin)
 									)
 									.map((vehicle, idx) => {
 										return (
 											<div key={idx}
 												className={`vehicle-block ${
-													selectedVehicles.includes(
+													selectedTopVehicles.includes(
 														vehicle
 													)
 														? 'selected'
@@ -405,11 +374,11 @@ const Index = ({}) => {
 											>
 												<VehicleCard
 													data={vehicle}
-													selectedVehicles={
-														selectedVehicles
+													cardVehicles={
+														selectedTopVehicles
 													}
-													setSelectedVehicles={
-														setSelectedVehicles
+													setCardVehicles={
+														setSelectedTopVehicles
 													}
 												/>
 											</div>
@@ -421,15 +390,15 @@ const Index = ({}) => {
 							<div>
 								<span className='select-count text-uppercase'>
 									<span className='green-text'>
-										{selectedVehicles?.length}
+										{selectedTopVehicles?.length}
 									</span>{' '}
 									Selected
 								</span>
-								{selectedVehicles?.length > 0 && (
+								{selectedTopVehicles?.length > 0 && (
 									<button
 										className='transparent-btn'
 										onClick={e => {
-											setSelectedVehicles([]);
+											setSelectedTopVehicles([]);
 										}}
 									>
 										Remove Selected
@@ -440,14 +409,14 @@ const Index = ({}) => {
 								<button
 									className='green-btn'
 									onClick={() => {
-										setVehicles([
-											...vehicles,
-											...selectedVehicles,
+										setTopVehicles([
+											...topVehicles,
+											...selectedTopVehicles,
 										]);
-										setSelectedVehicles([]);
-										$('#addVehiclesModal').modal('hide');
+										setSelectedTopVehicles([]);
+										$('#addTopVehiclesModal').modal('hide');
 									}}
-									disabled={selectedVehicles.length == 0}
+									disabled={selectedTopVehicles.length == 0}
 								>
 									Add Selected Vehicles
 								</button>
@@ -458,10 +427,10 @@ const Index = ({}) => {
 			</div>
 			<div
 				className='modal fade custom-modal'
-				id='addCarouselVehiclesModal'
+				id='addBottomVehiclesModal'
 				tabIndex={-1}
 				role='dialog'
-				aria-labelledby='addCarouselVehiclesModalTitle'
+				aria-labelledby='addBottomVehiclesModalTitle'
 				aria-hidden='true'
 			>
 				<div
@@ -472,7 +441,7 @@ const Index = ({}) => {
 						<div className='modal-header'>
 							<h5
 								className='modal-title'
-								id='addCarouselVehiclesModalTitle'
+								id='addBottomVehiclesModalTitle'
 							>
 								Select Inventory
 							</h5>
@@ -493,24 +462,36 @@ const Index = ({}) => {
 											<label className='custom-label'>
 												Make
 											</label>
-											<select className='form-control'>
-												<option>All</option>
+											<select className='form-control' name="bottomMakeSelect" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allMakes && allMakes.map((make, i) => { 
+													return (<option key={i} value={make}>{make}</option>
+													);
+												})}
 											</select>
 										</div>
 										<div className='col'>
 											<label className='custom-label'>
 												Days in lot
 											</label>
-											<select className='form-control'>
-												<option>30+ Days</option>
+											<select className='form-control' name="bottomDOL" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allDOLRanges && allDOLRanges.map((range, i) => { 
+													return (<option key={i} value={range.ceiling}>{range.text}</option>
+													);
+												})}
 											</select>
 										</div>
 										<div className='col'>
 											<label className='custom-label'>
 												Price
 											</label>
-											<select className='form-control'>
-												<option>Under $40k</option>
+											<select className='form-control' name="bottomPrice" onChange={handleFilterChange}>
+												<option value="all">All</option>
+												{allPriceRanges && allPriceRanges.map((range, i) => { 
+													return (<option key={i} value={range.ceiling}>{range.text}</option>
+													);
+												})}
 											</select>
 										</div>
 									</div>
@@ -546,16 +527,15 @@ const Index = ({}) => {
 								</div>
 							</div>
 							<div className='vehicle-block-row mso-box-block vehicle-block-modal d-flex flex-wrap'>
-								{selectCarouselVehicles
+								{allBottomVehicles.length && allBottomVehicles
 									?.filter(
-										vehicle =>
-											!carouselVehicles.includes(vehicle)
+										vehicle => !topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) && !bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin)
 									)
 									.map((vehicle, idx) => {
 										return (
 											<div key={idx}
 												className={`vehicle-block ${
-													selectedCarouselVehicles.includes(
+													selectedBottomVehicles.includes(
 														vehicle
 													)
 														? 'selected'
@@ -564,11 +544,11 @@ const Index = ({}) => {
 											>
 												<VehicleCard
 													data={vehicle}
-													selectedVehicles={
-														selectedCarouselVehicles
+													cardVehicles={
+														selectedBottomVehicles
 													}
-													setSelectedVehicles={
-														setSelectedCarouselVehicles
+													setCardVehicles={
+														setSelectedBottomVehicles
 													}
 												/>
 											</div>
@@ -580,15 +560,15 @@ const Index = ({}) => {
 							<div>
 								<span className='select-count text-uppercase'>
 									<span className='green-text'>
-										{selectedCarouselVehicles?.length}
+										{selectedBottomVehicles?.length}
 									</span>{' '}
 									Selected
 								</span>
-								{selectedCarouselVehicles?.length > 0 && (
+								{selectedBottomVehicles?.length > 0 && (
 									<button
 										className='transparent-btn'
 										onClick={e => {
-											setSelectedCarouselVehicles([]);
+											setSelectedBottomVehicles([]);
 										}}
 									>
 										Remove Selected
@@ -599,18 +579,14 @@ const Index = ({}) => {
 								<button
 									className='green-btn'
 									onClick={() => {
-										setCarouselVehicles([
-											...carouselVehicles,
-											...selectedCarouselVehicles,
+										setBottomVehicles([
+											...bottomVehicles,
+											...selectedBottomVehicles,
 										]);
-										setSelectedCarouselVehicles([]);
-										$('#addCarouselVehiclesModal').modal(
-											'hide'
-										);
+										setSelectedBottomVehicles([]);
+										$('#addBottomVehiclesModal').modal('hide');
 									}}
-									disabled={
-										selectedCarouselVehicles.length == 0
-									}
+									disabled={selectedBottomVehicles.length == 0}
 								>
 									Add Selected Vehicles
 								</button>
