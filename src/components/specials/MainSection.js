@@ -13,7 +13,9 @@ const MainSection = ({
 	setBottomVehicles,
 	allTopVehicles,
 	allBottomVehicles,
-	saveSettings
+	saveSettings,
+	fallbackConfig,
+	setFallbackConfig
 }) => {
 	return (
 		<section className='main-block'>
@@ -27,6 +29,8 @@ const MainSection = ({
 							setSelectedTopVehicles={setSelectedTopVehicles}
 							setTopVehicles={setTopVehicles}
 							allTopVehicles={allTopVehicles}
+							fallbackConfig={fallbackConfig}
+							setFallbackConfig={setFallbackConfig}
 						/>
 						<SliderBottom
 							bottomVehicles={bottomVehicles}
@@ -41,7 +45,7 @@ const MainSection = ({
 					</div>
 					<div className='mso-box-bottom text-right'>
 						<div className='ml-auto'>
-							<button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings($('select[name="fallback_query"]').val());}}>Save Changes</button>
+							<button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings();}}>Save Changes</button>
 						</div>
 					</div>
 				</div>

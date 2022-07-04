@@ -38,6 +38,8 @@ const Index = ({}) => {
 
 	const [filterValues, setFilterValues] = useState([]);
 
+	const [fallbackConfig, setFallbackConfig] = useState(null);
+
 	const protocol = window.location.protocol;
 	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
 
@@ -108,7 +110,7 @@ const Index = ({}) => {
 
 	const getInventory = () => {
 		axios.get(inventory_url + "&action=get_inventory").then(function (response) {
-			var inventory_data = response.data;
+			var inventory_data = response.data.vehicles;
 			console.log("got inventory data");
 			console.log(inventory_data);
 			
@@ -193,6 +195,8 @@ const Index = ({}) => {
 
 			setTopVehicles(temp_top_vehicles);
 			setBottomVehicles(temp_bottom_vehicles);
+
+			setFallbackConfig(response.data.fallback);
 		}).catch(e => {
 			console.log(e);
 		});
@@ -321,7 +325,7 @@ const Index = ({}) => {
 		filterChange(this_filter,"all");
 	}
 
-	const saveSettings = (fallback_query) => {
+	const saveSettings = () => {
 		var inventory_settings = new FormData();
 
 		topVehicles.map(function(vehicle,i) {
@@ -332,9 +336,7 @@ const Index = ({}) => {
 			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 1}))
 		});
 
-		inventory_settings.append('fallback_query',fallback_query);
-
-		console.log(inventory_settings);
+		inventory_settings.append('fallback_query',fallbackConfig);
 
 		axios.post(inventory_url + "&action=save_inventory", inventory_settings).then(function (response) {
 			console.log("set inventory data");
@@ -362,6 +364,8 @@ const Index = ({}) => {
 				allBottomVehicles={allBottomVehicles}
 				allTopVehicles={allTopVehicles}
 				saveSettings={saveSettings}
+				fallbackConfig={fallbackConfig}
+				setFallbackConfig={setFallbackConfig}
 			/>
 			<div
 				className='modal fade custom-modal'

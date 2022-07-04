@@ -16,6 +16,8 @@ function SliderTop({
 	setSelectedTopVehicles,
 	setTopVehicles,
 	allTopVehicles,
+	fallbackConfig,
+	setFallbackConfig
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
@@ -67,19 +69,17 @@ function SliderTop({
 					<div className='item-count ml-45'>
 						{topVehicles?.length} of {allTopVehicles?.length}
 					</div>
-					{topVehicles?.length > 0 && (
-						<div className='ml-45 custom-form'>
-							<select className='form-control mnw-186' name="fallback_query">
-								<option value="">Select Fallback</option>
-								<option value="oldest_12_used_query">Oldest 12 Used</option>
-								<option value="oldest_8_new_query">Oldest 8 new</option>
-								<option value="newest_8_query">Newest 8</option>
-								<option value="newest_10_query">Newest 10</option>
-								<option value="lowest_8_price">Lowest 8 by Price</option>
-								<option value="highest_8_price">Highest 8 by Price</option>
-							</select>
-						</div>
-					)}
+					<div className='ml-45 custom-form'>
+						<select className='form-control mnw-186' name="fallback_query" value={fallbackConfig} onChange={e => setFallbackConfig(e.target.value)}>
+							<option value="">Select Fallback</option>
+							<option value="oldest_12_used_query">Oldest 12 Used</option>
+							<option value="oldest_8_new_query">Oldest 8 new</option>
+							<option value="newest_8_query">Newest 8</option>
+							<option value="newest_10_query">Newest 10</option>
+							<option value="lowest_8_price">Lowest 8 by Price</option>
+							<option value="highest_8_price">Highest 8 by Price</option>
+						</select>
+					</div>
 					<div className='ml-auto'>
 						{selectedTopVehicles?.length > 0 && (
 							<button
