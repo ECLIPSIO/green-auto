@@ -36,6 +36,7 @@ const Index = ({}) => {
 	const [allPriceRanges, setAllPriceRanges] = useState(null);
 	const [allDOLRanges, setAllDOLRanges] = useState(null);
 
+	const [filterValues, setFilterValues] = useState([]);
 
 	const protocol = window.location.protocol;
 	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
@@ -101,6 +102,9 @@ const Index = ({}) => {
 	  
 		useEffect(effectHook, dependencies);
 	};
+	
+	var price_range_step = 10000;
+	var dol_step = 30;	
 
 	const getInventory = () => {
 		axios.get(inventory_url + "&action=get_inventory").then(function (response) {
@@ -136,7 +140,8 @@ const Index = ({}) => {
 					vin: vehicle['vin'],
 					stockno: vehicle['stockno'],
 					make: vehicle['make'],
-					dol: vehicle['tol']
+					dol: vehicle['tol'],
+					filtered: false
 				});
 
 				temp_vehicles_2.push({
@@ -149,7 +154,8 @@ const Index = ({}) => {
 					vin: vehicle['vin'],
 					stockno: vehicle['stockno'],
 					make: vehicle['make'],
-					dol: vehicle['tol']
+					dol: vehicle['tol'],
+					filtered: false
 				});
 
 				if(vehicle.slider_order == 0) temp_top_vehicles.push(temp_vehicles[temp_vehicles.length - 1]);
@@ -163,17 +169,20 @@ const Index = ({}) => {
 			var max_dol = Math.max(...all_dols);
 
 			var price_ranges = [];
-			var price_range_step = 10000;
 
 			for(var i = Math.floor(min_price/price_range_step)*price_range_step; i < max_price; i = i + price_range_step)
 				price_ranges.push({'ceiling':i + price_range_step,'text':numberFormatter(i,true) + " - " + numberFormatter(i + price_range_step,true)});
 
-
-			var dol_ranges = [];
-			var dol_step = 10;			
+			var dol_ranges = [];		
 
 			for(var i = Math.floor(min_dol/dol_step)*dol_step; i < max_dol; i = i + dol_step)
 				dol_ranges.push({'ceiling':i + dol_step,'text':numberFormatter(i) + " - " + numberFormatter(i + dol_step)});
+
+			all_makes.sort(function(a, b){
+				if(a < b) { return -1; }
+				if(a > b) { return 1; }
+				return 0;
+			});
 			
 			setAllDOLRanges(dol_ranges);
 			setAllPriceRanges(price_ranges);
@@ -211,11 +220,108 @@ const Index = ({}) => {
 	});
 
 	const handleFilterChange = e  => {
-		console.log(e.target.name);
-		console.log(e.target.value);
+		var filter_name = e.target.name;
+		var filter_value = e.target.value;
+		
+		filterChange(filter_name,filter_value);
 	}
 
-	const saveSettings = () => {
+	const filterChange = (filter_name,filter_value) => {
+		var temp_top_vehicles = [];
+		var temp_bottom_vehicles = [];
+		
+		var temp_filters = filterValues.filter((item) => item.filter !== filter_name);
+
+		if(filter_value != "all") {
+			switch(filter_name) {
+				case "topMakeSelect": 
+					temp_filters.push({'filter':filter_name,'section':'top','value':filter_value,'filter_text':filter_value});  
+					break;
+				case "bottomMakeSelect": 
+					temp_filters.push({'filter':filter_name,'section':'bottom','value':filter_value,'filter_text':filter_value}); 
+					break;
+				case "topDOL": 
+					filter_value = parseInt(filter_value);
+					temp_filters.push({'filter':filter_name,'section':'top','value':filter_value,'filter_text':(filter_value - dol_step) + " - " + filter_value + " Days"}); 
+					break;
+				case "bottomDOL": 
+					filter_value = parseInt(filter_value);
+					temp_filters.push({'filter':filter_name,'section':'bottom','value':filter_value,'filter_text':(filter_value - dol_step) + " - " + filter_value + " Days"}); 
+					break;
+				case "topPrice": 
+					filter_value = parseInt(filter_value);
+					temp_filters.push({'filter':filter_name,'section':'top','value':filter_value,'filter_text':numberFormatter(filter_value - price_range_step,true) + " - " + numberFormatter(filter_value,true)}); 
+					break;
+				case "bottomPrice": 
+					filter_value = parseInt(filter_value);
+					temp_filters.push({'filter':filter_name,'section':'bottom','value':filter_value,'filter_text':numberFormatter(filter_value - price_range_step,true) + " - " + numberFormatter(filter_value,true)});
+					break;
+				default: break;
+			}
+		}
+
+		console.log("checking these filters");
+		console.log(temp_filters);
+
+		allTopVehicles.map(function(vehicle) { 
+
+			vehicle['filtered'] = false;
+			
+			temp_filters.map((function(this_filter) {
+				if(vehicle['filtered']) return;
+
+				switch(this_filter['filter']) {
+					case "topMakeSelect": 
+						vehicle['filtered'] = vehicle['make'] != this_filter['value'];
+						break;
+					case "topDOL": 
+						vehicle['filtered'] = !((vehicle['dol'] >= this_filter['value'] - dol_step && vehicle['dol'] <= this_filter['value']));
+						break;
+					case "topPrice": 
+						vehicle['filtered'] = !((vehicle['price'] >= this_filter['value'] - price_range_step && vehicle['price'] <= this_filter['value']));
+						break;
+					default: break;
+				}
+			}));
+
+			temp_top_vehicles.push(vehicle);
+		});
+
+		allBottomVehicles.map(function(vehicle) { 
+
+			vehicle['filtered'] = false;
+			
+			temp_filters.map((function(this_filter) {
+				if(vehicle['filtered']) return;
+
+				switch(this_filter['filter']) {
+					case "bottomMakeSelect": 
+						vehicle['filtered'] = vehicle['make'] != this_filter['value'];
+						break;
+					case "bottomDOL": 
+						vehicle['filtered'] = !((vehicle['dol'] >= this_filter['value'] - dol_step && vehicle['dol'] <= this_filter['value']));
+						break;
+					case "bottomPrice": 
+						vehicle['filtered'] = !((vehicle['dol'] >= this_filter['price'] - price_range_step && vehicle['price'] <= this_filter['value']));
+						break;
+					default: break;
+				}
+			}));
+
+			temp_bottom_vehicles.push(vehicle);
+		});
+		
+		setFilterValues(temp_filters);
+		setAllTopVehicles(temp_top_vehicles);
+		setAllBottomVehicles(temp_bottom_vehicles);
+	}
+
+	const removeFilter = (this_filter) => {
+		
+		filterChange(this_filter,"all");
+	}
+
+	const saveSettings = (fallback_query) => {
 		var inventory_settings = new FormData();
 
 		topVehicles.map(function(vehicle,i) {
@@ -225,6 +331,8 @@ const Index = ({}) => {
 		bottomVehicles.map(function(vehicle,i) {
 			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 1}))
 		});
+
+		inventory_settings.append('fallback_query',fallback_query);
 
 		console.log(inventory_settings);
 
@@ -295,8 +403,7 @@ const Index = ({}) => {
 											<select className='form-control' name="topMakeSelect" onChange={handleFilterChange}>
 												<option value="all">All</option>
 												{allMakes && allMakes.map((make, i) => { 
-													return (<option key={i} value={make}>{make}</option>
-													);
+													return (<option key={i} value={make}>{make}</option>);
 												})}
 											</select>
 										</div>
@@ -307,8 +414,7 @@ const Index = ({}) => {
 											<select className='form-control' name="topDOL" onChange={handleFilterChange}>
 												<option value="all">All</option>
 												{allDOLRanges && allDOLRanges.map((range, i) => { 
-													return (<option key={i} value={range.ceiling}>{range.text}</option>
-													);
+													return (<option key={i} value={range.ceiling}>{range.text}</option>);
 												})}
 											</select>
 										</div>
@@ -319,47 +425,25 @@ const Index = ({}) => {
 											<select className='form-control' name="topPrice" onChange={handleFilterChange}>
 												<option value="all">All</option>
 												{allPriceRanges && allPriceRanges.map((range, i) => { 
-													return (<option key={i} value={range.ceiling}>{range.text}</option>
-													);
+													return (<option key={i} value={range.ceiling}>{range.text}</option>);
 												})}
 											</select>
 										</div>
 									</div>
 								</div>
 								<div className='col-md-7 text-right pb-5'>
-									<span className='tag-box'>
-										All{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
-									<span className='tag-box ml-10'>
-										+30 Days{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
-									<span className='tag-box ml-10'>
-										Under $40k{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
+									{filterValues && filterValues.map((this_filter, i) => { 
+										return (this_filter['section'] == "top" ? 
+											<span key={i} className='tag-box ml-10'>{this_filter['filter_text']}<a onClick={(e) => {e.preventDefault(); removeFilter(this_filter['filter']); $('select[name="' + this_filter['filter'] + '"').val("all");}} className='cross' >x</a></span> 
+											: ''
+											);
+									})}
 								</div>
 							</div>
 							<div className='vehicle-block-row mso-box-block vehicle-block-modal d-flex flex-wrap'>
 								{allTopVehicles.length && allTopVehicles
 									?.filter(
-										vehicle => !topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) && !bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin)
+										vehicle => !(vehicle.filtered || topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) || bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin))
 									)
 									.map((vehicle, idx) => {
 										return (
@@ -497,39 +581,18 @@ const Index = ({}) => {
 									</div>
 								</div>
 								<div className='col-md-7 text-right pb-5'>
-									<span className='tag-box'>
-										All{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
-									<span className='tag-box ml-10'>
-										+30 Days{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
-									<span className='tag-box ml-10'>
-										Under $40k{' '}
-										<a
-											onClick={(e) => {e.preventDefault();}}
-											className='cross'
-										>
-											x
-										</a>
-									</span>
+									{filterValues && filterValues.map((this_filter, i) => { 
+										return (this_filter['section'] == "bottom" ? 
+											<span key={i} className='tag-box ml-10'>{this_filter['filter_text']}<a onClick={(e) => {e.preventDefault(); removeFilter(this_filter['filter']);}} className='cross' >x</a></span> 
+											: ''
+											);
+									})}
 								</div>
 							</div>
 							<div className='vehicle-block-row mso-box-block vehicle-block-modal d-flex flex-wrap'>
 								{allBottomVehicles.length && allBottomVehicles
 									?.filter(
-										vehicle => !topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) && !bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin)
+										vehicle => !(vehicle.filtered || topVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin) || bottomVehicles.map(vehicle => vehicle.vin).includes(vehicle.vin))
 									)
 									.map((vehicle, idx) => {
 										return (

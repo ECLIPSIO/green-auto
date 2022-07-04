@@ -66,13 +66,6 @@ function SliderBottom({
 						{bottomVehicles?.length} of{' '}
 						{allBottomVehicles?.length}
 					</div>
-					{bottomVehicles?.length > 0 && (
-						<div className='ml-45 custom-form'>
-							<select className='form-control mnw-186'>
-								<option>Oldest Vehicles</option>
-							</select>
-						</div>
-					)}
 
 					<div className='ml-auto'>
 						{selectedBottomVehicles?.length > 0 && (
