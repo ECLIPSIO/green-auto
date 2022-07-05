@@ -15,7 +15,8 @@ const MainSection = ({
 	allBottomVehicles,
 	saveSettings,
 	fallbackConfig,
-	setFallbackConfig
+	setFallbackConfig,
+	settingsSaving
 }) => {
 	return (
 		<section className='main-block'>
@@ -45,7 +46,7 @@ const MainSection = ({
 					</div>
 					<div className='mso-box-bottom text-right'>
 						<div className='ml-auto'>
-							<button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings();}}>Save Changes</button>
+							{!settingsSaving && <button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings();}}>Save Changes</button>}
 						</div>
 					</div>
 				</div>

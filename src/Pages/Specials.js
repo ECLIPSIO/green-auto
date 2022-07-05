@@ -40,6 +40,8 @@ const Index = ({}) => {
 
 	const [fallbackConfig, setFallbackConfig] = useState(null);
 
+	const [settingsSaving, setSettingsSaving] = useState(null);
+
 	const protocol = window.location.protocol;
 	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
 
@@ -326,6 +328,8 @@ const Index = ({}) => {
 	}
 
 	const saveSettings = () => {
+		setSettingsSaving(true);
+
 		var inventory_settings = new FormData();
 
 		topVehicles.map(function(vehicle,i) {
@@ -343,6 +347,8 @@ const Index = ({}) => {
 			console.log(response.data);
 
 			getInventory();
+
+			setSettingsSaving(null);
 		}).catch(e => {
 			console.log(e);
 		});
@@ -366,6 +372,7 @@ const Index = ({}) => {
 				saveSettings={saveSettings}
 				fallbackConfig={fallbackConfig}
 				setFallbackConfig={setFallbackConfig}
+				settingsSaving={settingsSaving}
 			/>
 			<div
 				className='modal fade custom-modal'
