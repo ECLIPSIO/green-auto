@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import InfoIcon from '../img/ico-info.svg';
-import ShowPreview from '../img/icon-eye.png';
-import VehicleCard from '../components/VehicleCard';
-import WarningIcon from '../img/gray-warning.png';
+import InfoIcon from '../../img/ico-info.svg';
+import ShowPreview from '../../img/icon-eye.png';
+import VehicleCard from './VehicleCard';
+import WarningIcon from '../../img/gray-warning.png';
 import {
 	GridContextProvider,
 	GridDropZone,
 	GridItem,
 	swap,
 } from 'react-grid-dnd';
-function MainSliderSection({
-	vehicles,
+function SliderTop({
+	topVehicles,
 	openModal,
-	selectedVehicles,
-	setSelectedVehicles,
-	setVehicles,
-	selectVehicles,
+	selectedTopVehicles,
+	setSelectedTopVehicles,
+	setTopVehicles,
+	allTopVehicles,
+	fallbackConfig,
+	setFallbackConfig
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
@@ -33,8 +35,8 @@ function MainSliderSection({
 		return result;
 	};
 	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
-		const nextState = swap(vehicles, sourceIndex, targetIndex);
-		setVehicles(nextState);
+		const nextState = swap(topVehicles, sourceIndex, targetIndex);
+		setTopVehicles(nextState);
 	};
 	useEffect(() => {
 		window.addEventListener('resize', () =>
@@ -55,8 +57,7 @@ function MainSliderSection({
 				<div className='main-heading'>MANAGE SPECIAL OFFERS PAGE</div>
 				<div className='sub-heading'>
 					Choose the vehicles you want to promote on your specials
-					page. Lorem ipsum dolor sit amet, consectetur adipisicing
-					elit.
+					page. 
 				</div>
 				<div className='d-flex align-items-center m-title-flex mb-30 mt-30'>
 					<div className='m-title text-uppercase mb-0 fw-600'>
@@ -66,30 +67,34 @@ function MainSliderSection({
 						</span>
 					</div>
 					<div className='item-count ml-45'>
-						{vehicles?.length} of {selectVehicles?.length}
+						{topVehicles?.length} of {allTopVehicles?.length}
 					</div>
-					{vehicles?.length > 0 && (
-						<div className='ml-45 custom-form'>
-							<select className='form-control mnw-186'>
-								<option>Select Fallback</option>
-							</select>
-						</div>
-					)}
+					<div className='ml-45 custom-form'>
+						<select className='form-control mnw-186' name="fallback_query" value={fallbackConfig} onChange={e => setFallbackConfig(e.target.value)}>
+							<option value="">Select Fallback</option>
+							<option value="oldest_12_used_query">Oldest 12 Used</option>
+							<option value="oldest_8_new_query">Oldest 8 new</option>
+							<option value="newest_8_query">Newest 8</option>
+							<option value="newest_10_query">Newest 10</option>
+							<option value="lowest_8_price">Lowest 8 by Price</option>
+							<option value="highest_8_price">Highest 8 by Price</option>
+						</select>
+					</div>
 					<div className='ml-auto'>
-						{selectedVehicles?.length > 0 && (
+						{selectedTopVehicles?.length > 0 && (
 							<button
 								className='transparent-btn'
 								onClick={() => {
 									let arr = [];
-									arr = vehicles.filter(
+									arr = topVehicles.filter(
 										vehicle =>
-											!selectedVehicles.find(
+											!selectedTopVehicles.find(
 												selected =>
 													selected.id == vehicle.id
 											)
 									);
-									setVehicles(arr);
-									setSelectedVehicles([]);
+									setTopVehicles(arr);
+									setSelectedTopVehicles([]);
 								}}
 							>
 								Remove Selected
@@ -98,7 +103,7 @@ function MainSliderSection({
 						<button
 							className='green-btn'
 							data-toggle='modal'
-							data-target='#addVehiclesModal'
+							data-target='#addTopVehiclesModal'
 							onClick={openModal}
 						>
 							Add Vehicles
@@ -106,19 +111,19 @@ function MainSliderSection({
 					</div>
 				</div>
 				<div className='border-box-block mso-box-block'>
-					{vehicles.length == 0 ? (
-						<div class='text-center no-data-box'>
+					{topVehicles.length == 0 ? (
+						<div className='text-center no-data-box'>
 							<div>
 								<img src={WarningIcon} />
 							</div>
-							<div class='no-vehicle-tag-line mt-10'>
+							<div className='no-vehicle-tag-line mt-10'>
 								No Vehicles Added
 							</div>
 							<button
-								class='transparent-btn mt-10'
+								className='transparent-btn mt-10'
 								type='button'
 								data-toggle='modal'
-								data-target='#addVehiclesModal'
+								data-target='#addTopVehiclesModal'
 								onClick={openModal}
 							>
 								Add Vehicles
@@ -134,14 +139,14 @@ function MainSliderSection({
 									style={{
 										height:
 											getHeight() *
-											Math.ceil(vehicles.length / 4),
+											Math.ceil(topVehicles.length / 4),
 									}}
 								>
-									{vehicles?.map((vehicle, idx) => (
+									{topVehicles?.map((vehicle, idx) => (
 										<GridItem
 											key={vehicle.title + vehicle.id}
 											className={`vehicle-block ${
-												selectedVehicles.includes(
+												selectedTopVehicles.includes(
 													vehicle
 												)
 													? 'selected'
@@ -150,11 +155,11 @@ function MainSliderSection({
 										>
 											<div>
 												<VehicleCard
-													selectedVehicles={
-														selectedVehicles
+													cardVehicles={
+														selectedTopVehicles
 													}
-													setSelectedVehicles={
-														setSelectedVehicles
+													setCardVehicles={
+														setSelectedTopVehicles
 													}
 													data={vehicle}
 												/>
@@ -176,7 +181,7 @@ function MainSliderSection({
 										{...provided.droppableProps}
 										className='vehicle-block-row flex-wrap'
 									>
-										{vehicles?.map((vehicle, idx) => (
+										{topVehicles?.map((vehicle, idx) => (
 											<Draggable
 												key={vehicle.title + vehicle.id}
 												draggableId={
@@ -196,7 +201,7 @@ function MainSliderSection({
 																.style
 														)}
 														className={`vehicle-block ${
-															selectedVehicles.includes(
+															selectedTopVehicles.includes(
 																vehicle
 															)
 																? 'selected'
@@ -208,11 +213,11 @@ function MainSliderSection({
 														}`}
 													>
 														<VehicleCard
-															selectedVehicles={
-																selectedVehicles
+															selectedTopVehicles={
+																selectedTopVehicles
 															}
-															setSelectedVehicles={
-																setSelectedVehicles
+															setSelectedTopVehicles={
+																setSelectedTopVehicles
 															}
 															data={vehicle}
 														/>
@@ -233,8 +238,7 @@ function MainSliderSection({
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>
-							Select from {vehicles.length} -{' '}
-							{selectVehicles.length} vehicles to showcase on this
+							Select from 2 - {allTopVehicles.length} vehicles to showcase on this
 							section
 						</div>
 					</div>
@@ -244,4 +248,4 @@ function MainSliderSection({
 	);
 }
 
-export default MainSliderSection;
+export default SliderTop;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import InfoIcon from '../img/ico-info.svg';
-import ShowPreview from '../img/icon-eye.png';
-import WarningIcon from '../img/gray-warning.png';
+import InfoIcon from '../../img/ico-info.svg';
+import ShowPreview from '../../img/icon-eye.png';
+import WarningIcon from '../../img/gray-warning.png';
 import VehicleCard from './VehicleCard';
 import {
 	GridContextProvider,
@@ -10,13 +10,13 @@ import {
 	swap,
 } from 'react-grid-dnd';
 
-function CarouselSection({
-	carouselVehicles,
+function SliderBottom({
+	bottomVehicles,
 	openCarouselModal,
-	selectedCarouselVehicles,
-	setSelectedCarouselVehicles,
-	setCarouselVehicles,
-	selectCarouselVehicles,
+	selectedBottomVehicles,
+	setSelectedBottomVehicles,
+	setBottomVehicles,
+	allBottomVehicles,
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
@@ -48,9 +48,9 @@ function CarouselSection({
 	}, []);
 	const onChange = (sourceId, sourceIndex, targetIndex, targetId) => {
 		console.log({ sourceId, sourceIndex, targetIndex, targetId });
-		const nextState = swap(carouselVehicles, sourceIndex, targetIndex);
+		const nextState = swap(bottomVehicles, sourceIndex, targetIndex);
 		console.log({ nextState });
-		setCarouselVehicles(nextState);
+		setBottomVehicles(nextState);
 	};
 	return (
 		<>
@@ -63,32 +63,25 @@ function CarouselSection({
 						</span>
 					</div>
 					<div className='item-count ml-45'>
-						{carouselVehicles?.length} of{' '}
-						{selectCarouselVehicles?.length}
+						{bottomVehicles?.length} of{' '}
+						{allBottomVehicles?.length}
 					</div>
-					{carouselVehicles?.length > 0 && (
-						<div className='ml-45 custom-form'>
-							<select className='form-control mnw-186'>
-								<option>Oldest Vehicles</option>
-							</select>
-						</div>
-					)}
 
 					<div className='ml-auto'>
-						{selectedCarouselVehicles?.length > 0 && (
+						{selectedBottomVehicles?.length > 0 && (
 							<button
 								className='transparent-btn'
 								onClick={() => {
 									let arr = [];
-									arr = carouselVehicles.filter(
+									arr = bottomVehicles.filter(
 										vehicle =>
-											!selectedCarouselVehicles.find(
+											!selectedBottomVehicles.find(
 												selected =>
 													selected.id == vehicle.id
 											)
 									);
-									setCarouselVehicles(arr);
-									setSelectedCarouselVehicles([]);
+									setBottomVehicles(arr);
+									setSelectedBottomVehicles([]);
 								}}
 							>
 								Remove Selected
@@ -97,7 +90,7 @@ function CarouselSection({
 						<button
 							className='green-btn'
 							data-toggle='modal'
-							data-target='#addCarouselVehiclesModal'
+							data-target='#addBottomVehiclesModal'
 							onClick={openCarouselModal}
 						>
 							Add Vehicles
@@ -105,19 +98,19 @@ function CarouselSection({
 					</div>
 				</div>
 				<div className='border-box-block mso-box-block'>
-					{carouselVehicles?.length == 0 ? (
-						<div class='text-center no-data-box'>
+					{bottomVehicles?.length == 0 ? (
+						<div className='text-center no-data-box'>
 							<div>
 								<img src={WarningIcon} />
 							</div>
-							<div class='no-vehicle-tag-line mt-10'>
+							<div className='no-vehicle-tag-line mt-10'>
 								No Vehicles Added
 							</div>
 							<button
-								class='transparent-btn mt-10'
+								className='transparent-btn mt-10'
 								type='button'
 								data-toggle='modal'
-								data-target='#addCarouselVehiclesModal'
+								data-target='#addBottomVehiclesModal'
 								onClick={openCarouselModal}
 							>
 								Add Vehicles
@@ -134,15 +127,15 @@ function CarouselSection({
 										height:
 											getHeight() *
 											Math.ceil(
-												carouselVehicles.length / 4
+												bottomVehicles.length / 4
 											),
 									}}
 								>
-									{carouselVehicles?.map((vehicle, idx) => (
+									{bottomVehicles?.map((vehicle, idx) => (
 										<GridItem
 											key={vehicle.title + vehicle.id}
 											className={`vehicle-block ${
-												selectedCarouselVehicles.includes(
+												selectedBottomVehicles.includes(
 													vehicle
 												)
 													? 'selected'
@@ -151,11 +144,11 @@ function CarouselSection({
 										>
 											<div>
 												<VehicleCard
-													selectedVehicles={
-														selectedCarouselVehicles
+													cardVehicles={
+														selectedBottomVehicles
 													}
-													setSelectedVehicles={
-														setSelectedCarouselVehicles
+													setCardVehicles={
+														setSelectedBottomVehicles
 													}
 													data={vehicle}
 												/>
@@ -177,7 +170,7 @@ function CarouselSection({
 										{...provided.droppableProps}
 										className='vehicle-block-row flex-wrap'
 									>
-										{vehicles?.map((vehicle, idx) => (
+										{topVehicles?.map((vehicle, idx) => (
 											<Draggable
 												key={vehicle.title + vehicle.id}
 												draggableId={
@@ -197,7 +190,7 @@ function CarouselSection({
 																.style
 														)}
 														className={`vehicle-block ${
-															selectedVehicles.includes(
+															selectedTopVehicles.includes(
 																vehicle
 															)
 																? 'selected'
@@ -209,11 +202,11 @@ function CarouselSection({
 														}`}
 													>
 														<VehicleCard
-															selectedVehicles={
-																selectedVehicles
+															cardVehicles={
+																selectedTopVehicles
 															}
-															setSelectedVehicles={
-																setSelectedVehicles
+															setCardVehicles={
+																setSelectedTopVehicles
 															}
 															data={vehicle}
 														/>
@@ -234,8 +227,7 @@ function CarouselSection({
 							<img src={ShowPreview} /> Show Preview
 						</div>
 						<div className='mso-info ml-40'>
-							Select from {carouselVehicles.length} -{' '}
-							{selectCarouselVehicles.length} vehicles to showcase
+							Select from 4 - {allBottomVehicles.length} vehicles to showcase
 							on this section
 						</div>
 					</div>
@@ -245,4 +237,4 @@ function CarouselSection({
 	);
 }
 
-export default CarouselSection;
+export default SliderBottom;
