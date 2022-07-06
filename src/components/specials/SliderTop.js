@@ -17,7 +17,9 @@ function SliderTop({
 	setTopVehicles,
 	allTopVehicles,
 	fallbackConfig,
-	setFallbackConfig
+	setFallbackConfig,
+	ownedConfig,
+	setOwnedConfig
 }) {
 	const getItemStyle = (isDragging, draggableStyle) => ({
 		...draggableStyle,
@@ -78,6 +80,13 @@ function SliderTop({
 							<option value="newest_10_query">Newest 10</option>
 							<option value="lowest_8_price">Lowest 8 by Price</option>
 							<option value="highest_8_price">Highest 8 by Price</option>
+						</select>
+					</div>
+					<div className='ml-45 custom-form'>
+						<select className='form-control mnw-186' name='owned' value={ownedConfig} onChange={e => setOwnedConfig(e.target.value)}>
+							<option value={''}>Owned</option>
+							<option value={'new'}>New</option>
+							<option value={'pre_owned'}>Pre-Owned</option>
 						</select>
 					</div>
 					<div className='ml-auto'>

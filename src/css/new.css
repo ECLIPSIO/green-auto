@@ -59,6 +59,13 @@
     line-height: 18px;
     text-align:left;
     margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+.mso-box-block .vehicle-title:hover{
+    white-space: normal;
 }
 .mso-box-block .vehicle-sub-title {
     opacity: 0.5;
@@ -186,7 +193,7 @@
     margin-top: 35px;
 }
 .mso-box-bottom .green-btn {
-    padding: 19px 30px;
+    padding: 13px 30px;
     min-width: 244px;
     text-align: center;
     height: auto;
@@ -259,17 +266,15 @@
 .tag-box {
     border-radius: 16px;
     background-color: #5D6166;
-    display: inline-block;
     padding: 0 15px;
     color: #DADCE0;
     font-family: "Avenir Next";
     font-size: 12px;
     letter-spacing: -0.07px;
-    line-height: 16px;
     color: #FFFFFF;
     display: inline-block;
     min-width: 116px;
-    text-align: left;
+    text-align: center;
     height: 24px;
     line-height: 24px;
     position: relative;
@@ -278,8 +283,9 @@
     font-size: 18px;
     color: #fff;
     font-weight: 500;
-    position: absolute;
-    right: 10px;
+    /* position: absolute; */
+    /* right: 10px; */
+    margin: inherit;
 }
 .tag-box .cross:hover {
     color: #fff;
@@ -418,4 +424,18 @@
 }
 .mxw-126 {
     max-width: 126px !important;
+}
+
+/* For loading button */
+
+button.green-btn.disabled {
+    padding: 30px 0px;
+    background-color: #565c64;
+    position: relative;
+}
+
+button.green-btn.disabled .float-points {
+    position: absolute;
+    top: 47%;
+    left: 47%;
 }

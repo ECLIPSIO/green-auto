@@ -16,7 +16,9 @@ const MainSection = ({
 	saveSettings,
 	fallbackConfig,
 	setFallbackConfig,
-	settingsSaving
+	settingsSaving,
+	ownedConfig,
+	setOwnedConfig
 }) => {
 	return (
 		<section className='main-block'>
@@ -32,6 +34,8 @@ const MainSection = ({
 							allTopVehicles={allTopVehicles}
 							fallbackConfig={fallbackConfig}
 							setFallbackConfig={setFallbackConfig}
+							ownedConfig={ownedConfig}
+							setOwnedConfig={setOwnedConfig}
 						/>
 						<SliderBottom
 							bottomVehicles={bottomVehicles}
@@ -46,7 +50,16 @@ const MainSection = ({
 					</div>
 					<div className='mso-box-bottom text-right'>
 						<div className='ml-auto'>
-							{!settingsSaving && <button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings();}}>Save Changes</button>}
+							{settingsSaving ? <>
+								<button className='green-btn disabled' disabled={true}>
+									<div className="float-points">
+										<div className="dot-collision"></div>
+									</div>
+								</button>
+							</> : <>
+								<button className='green-btn' onClick={(e) => {e.preventDefault(); saveSettings();}}>Save Changes</button>
+							</>}
+							{/* {!settingsSaving && } */}
 						</div>
 					</div>
 				</div>

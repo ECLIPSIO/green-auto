@@ -40,7 +40,11 @@ const Index = ({}) => {
 
 	const [fallbackConfig, setFallbackConfig] = useState(null);
 
-	const [settingsSaving, setSettingsSaving] = useState(null);
+	const [settingsSaving, setSettingsSaving] = useState(false);
+
+	// For Owned Drop Down
+	const [ownedConfig, setOwnedConfig] = useState(null);
+	
 
 	const protocol = window.location.protocol;
 	const inventory_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/inventory.php?gas_dealership=" + user.dealership_id;	
@@ -348,7 +352,7 @@ const Index = ({}) => {
 
 			getInventory();
 
-			setSettingsSaving(null);
+			setSettingsSaving(false);
 		}).catch(e => {
 			console.log(e);
 		});
@@ -373,6 +377,8 @@ const Index = ({}) => {
 				fallbackConfig={fallbackConfig}
 				setFallbackConfig={setFallbackConfig}
 				settingsSaving={settingsSaving}
+				ownedConfig={ownedConfig}
+				setOwnedConfig={setOwnedConfig}
 			/>
 			<div
 				className='modal fade custom-modal'
@@ -406,7 +412,7 @@ const Index = ({}) => {
 						<div className='modal-body'>
 							<div className='row align-items-end'>
 								<div className='col-md-5'>
-									<div className='row d-flex date-filter-block'>
+									<div className='row d-flex'>
 										<div className='col'>
 											<label className='custom-label'>
 												Make
