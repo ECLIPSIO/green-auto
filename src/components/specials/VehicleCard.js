@@ -43,9 +43,19 @@ const VehicleCard = ({
 		}
 	};
 	return (
-		<div className='vehicle-box' data-make={data.make} data-price={data.price} data-dol={data.dol}>
+		<div 
+		className='vehicle-box' 
+		data-make={data.make} 
+		data-price={data.price} 
+		data-dol={data.dol}
+		onClick={() => {
+			let e = { target: {} };
+			e.target.checked = !cardVehicles.includes(data);
+			handleChange(e);
+		}}
+		>
 			<div className='vehicle-top'>
-				<img src={data.src} />
+				<img onDragStart={e => e.preventDefault()} src={data.src} />
 				<div className='custom-checkbox'>
 					<input
 						className='styled-checkbox'

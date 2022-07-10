@@ -11,8 +11,9 @@ import "react-google-flight-datepicker/dist/main.css";
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
-export default function WeekStats({statData}){
+export default function WeekStats({statData, setStatData}){
     const[metrics, setMetrics] = useState(0);
+    let [addNew, setAddNew] = useState(false);
     const ttl = statData.length;
     const hideShowRow = (i) => {
         const t = $('input#metCheckbox-'+i);
@@ -65,7 +66,12 @@ export default function WeekStats({statData}){
 		tempHEndDate.setDate(0);
 	}
 	const [histEndDate, setHistEndDate] = useState(tempHEndDate);
-
+    const [data, setData] = useState({
+		name: 'Leads',
+		curr_qty: 110,
+		change: 10,
+		old_qty: 110,
+	});
 	const histDate = {
 		start : histStartDate,
 		end   : histEndDate,
@@ -192,37 +198,236 @@ export default function WeekStats({statData}){
                                         )
                                     })}
                                         
-                                        <tr className="f-total">
-                                            <td>
-                                                <div className="dropdown show custom-white-dropdown">
-                                                    <a className="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        Leads
-                                                    </a>
-                                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                        <a className="dropdown-item" href="#">Action</a>
-                                                        <a className="dropdown-item" href="#">Another action</a>
-                                                        <a className="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                <div className="d-inline-flex">
-                                                    <input type="text" className="form-control w-80 text-center" value="110"/>
-                                                </div>
-                                            </td>
-                                            <td><span className="white-text wdm-progress">10% <img src={greenUp}/></span></td>
-                                            <td className="blank-col"></td>
-                                            <td className="count-value">
-                                                <div className="d-inline-flex">
-                                                    <input type="text" className="form-control w-80 text-center" value="110"/>
-                                                    <button className="green-transparent-btn ml-20">Save</button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        {addNew && (
+											<tr className='f-total'>
+												<td>
+													<div className='dropdown show custom-white-dropdown'>
+														<a
+															className='btn btn-secondary dropdown-toggle'
+															href='#'
+															role='button'
+															id='dropdownMenuLink'
+															data-toggle='dropdown'
+															aria-haspopup='true'
+															aria-expanded='false'
+														>
+															{data.name}
+														</a>
+														<div
+															className='dropdown-menu'
+															aria-labelledby='dropdownMenuLink'
+														>
+															<a
+																className='dropdown-item'
+																href='#'
+																onClick={e => {
+																	e.preventDefault();
+																	setData(
+																		prevState => {
+																			prevState.name =
+																				'Leads';
+																			return {
+																				...prevState,
+																			};
+																		}
+																	);
+																}}
+															>
+																Leads
+															</a>
+															<a
+																className='dropdown-item'
+																href='#'
+																onClick={e => {
+																	e.preventDefault();
+																	setData(
+																		prevState => {
+																			prevState.name =
+																				'Action';
+																			return {
+																				...prevState,
+																			};
+																		}
+																	);
+																}}
+															>
+																Action
+															</a>
+															<a
+																className='dropdown-item'
+																href='#'
+																onClick={e => {
+																	e.preventDefault();
+																	setData(
+																		prevState => {
+																			prevState.name =
+																				'Another action';
+																			return {
+																				...prevState,
+																			};
+																		}
+																	);
+																}}
+															>
+																Another action
+															</a>
+															<a
+																className='dropdown-item'
+																href='#'
+																onClick={e => {
+																	e.preventDefault();
+																	setData(
+																		prevState => {
+																			prevState.name =
+																				'Something else here';
+																			return {
+																				...prevState,
+																			};
+																		}
+																	);
+																}}
+															>
+																Something else
+																here
+															</a>
+														</div>
+													</div>
+												</td>
+												<td className='text-center'>
+													<div className='d-inline-flex'>
+														<input
+															type='text'
+															className='form-control w-80 text-center'
+															value={
+																data.curr_qty
+															}
+															onChange={e => {
+																setData(
+																	prevState => {
+																		prevState.curr_qty =
+																			e.target.value;
+																		return {
+																			...prevState,
+																		};
+																	}
+																);
+															}}
+														/>
+													</div>
+												</td>
+												<td>
+													<span className='white-text wdm-progress'>
+														10%{' '}
+														<img src={greenUp} />
+													</span>
+												</td>
+												<td className='blank-col'></td>
+												<td className='count-value'>
+													<div className='d-inline-flex align-items-center'>
+														<input
+															type='text'
+															className='form-control w-80 text-center'
+															value={data.old_qty}
+															onChange={e => {
+																setData(
+																	prevState => {
+																		prevState.old_qty =
+																			e.target.value;
+																		return {
+																			...prevState,
+																		};
+																	}
+																);
+															}}
+														/>
+														<button
+															className='green-transparent-btn ml-20'
+															style={{
+																cursor: 'pointer',
+															}}
+															onClick={() => {
+																setStatData(
+																	prevState => [
+																		...prevState,
+																		{
+																			...data,
+																		},
+																	]
+																);
+																setData({
+																	name: 'Leads',
+																	curr_qty: 110,
+																	change: 10,
+																	old_qty: 110,
+																});
+																setAddNew(
+																	false
+																);
+															}}
+														>
+															Save
+														</button>
+														<svg
+															xmlns='http://www.w3.org/2000/svg'
+															xmlnsXlink='http://www.w3.org/1999/xlink'
+															width='16px'
+															height='16px'
+															viewBox='0 0 16 16'
+															version='1.1'
+															style={{
+																cursor: 'pointer',
+															}}
+															onClick={() =>
+																setAddNew(false)
+															}
+															className='ml-3'
+														>
+															<title>
+																AEC7A704-2258-4B84-91C4-20654970657E
+															</title>
+															<g
+																id='Page-1'
+																stroke='none'
+																strokeWidth={1}
+																fill='none'
+																fillRule='evenodd'
+															>
+																<g
+																	id='DT-Gas-Tab-4'
+																	transform='translate(-1232.000000, -624.000000)'
+																	fill='#FFFFFF'
+																	fillRule='nonzero'
+																>
+																	<g
+																		id='Group-4-Copy-2'
+																		transform='translate(119.000000, 580.000000)'
+																	>
+																		<path
+																			d='M1128.01863,60 C1128.29193,60 1128.52381,59.9047619 1128.71429,59.7142857 C1128.90476,59.5238095 1129,59.2919255 1129,59.0186335 C1129,58.7453416 1128.90062,58.5175983 1128.70186,58.3354037 L1122.3913,52 L1128.70186,45.6645963 C1128.90062,45.4824017 1129,45.2546584 1129,44.9813665 C1129,44.7080745 1128.90476,44.4761905 1128.71429,44.2857143 C1128.52381,44.0952381 1128.29193,44 1128.01863,44 C1127.74534,44 1127.5176,44.0993789 1127.3354,44.2981366 L1121,50.6086957 L1114.6646,44.2981366 C1114.4824,44.0993789 1114.25466,44 1113.98137,44 C1113.70807,44 1113.47619,44.0952381 1113.28571,44.2857143 C1113.09524,44.4761905 1113,44.7080745 1113,44.9813665 C1113,45.2546584 1113.09938,45.4824017 1113.29814,45.6645963 L1119.6087,52 L1113.29814,58.3354037 C1113.09938,58.5175983 1113,58.7453416 1113,59.0186335 C1113,59.2919255 1113.09524,59.5238095 1113.28571,59.7142857 C1113.47619,59.9047619 1113.70807,60 1113.98137,60 C1114.25466,60 1114.4824,59.9006211 1114.6646,59.7018634 L1121,53.3664596 L1127.3354,59.7018634 C1127.5176,59.9006211 1127.74534,60 1128.01863,60 Z'
+																			id='icon-x'
+																		/>
+																	</g>
+																</g>
+															</g>
+														</svg>
+													</div>
+												</td>
+											</tr>
+										)}
+
                                     </tbody>
                                 </table>
                                 <div className="text-center mt-35">
-                                    <a href="#" className="transparent-btn"><img src={greenAdd}/> Add Another Row</a>
+                                    <a 
+                                    href="#" 
+                                    className="transparent-btn"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        setAddNew(true);
+                                    }}
+                                    >
+                                        <img src={greenAdd}/> Add Another Row
+                                    </a>
                                 </div>
                             </div>
                         </div>
