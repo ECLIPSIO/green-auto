@@ -426,6 +426,9 @@ body {
 .graph-block img {
 	width: 100%;
 }
+.pdf-background {
+	background: #23262b;
+}
 .cs-table-block table tr th,
 .cs-table-block table tr td {
 	border: none;

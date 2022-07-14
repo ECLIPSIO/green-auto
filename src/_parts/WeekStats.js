@@ -4,17 +4,53 @@ import closeIcon from '../img/ico-close.svg';
 import greenUp from '../img/green-arrow-up.svg';
 import greenAdd from '../img/green_add_circle.svg';
 import redDown from '../img/red-arrow-down.png';
-import { useState } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import {RangeDatePicker} from "react-google-flight-datepicker";
 import "react-google-flight-datepicker/dist/main.css";
+import axios from 'axios'; 
+import Loading from '../_parts/Loading';
+import Moment from 'moment';
+
+import {UserContext} from '../context/UserContext';
+
+import React from "react";
+import ReactDOM from "react-dom";
+import ReactToPdfMatt from '../tools/reacttopdf'
 
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 export default function WeekStats({statData, setStatData}){
-    const[metrics, setMetrics] = useState(0);
+    const {user} = useContext(UserContext); 
+
+	Moment.locale('en');
+
+	const numberFormatter = (value, currency = false) => {
+		var num = value ? value.toString().replace(/[^0-9\.]+/g,"") : 0;
+
+		if(currency && num >= 10) num = Math.round(num);
+		
+		var sign = num>= 0 ? "" : "-";
+		var str = num.toString().replace("$", ""), parts = false, output = [], i = 1, formatted = null;
+		if(str.indexOf(".") > 0) {
+			parts = str.split(".");
+			str = parts[0];
+		}
+		str = str.split("").reverse();
+		for(var j = 0, len = str.length; j < len; j++) {
+			if(str[j] != ",") {
+				output.push(str[j]);
+				if(i%3 == 0 && j < (len - 1)) {
+					output.push(",");
+				}
+				i++;
+			}
+		}
+		formatted = output.reverse().join("");
+		return((currency ? "$" : "") + sign + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
+	}
+
     let [addNew, setAddNew] = useState(false);
-    const ttl = statData.length;
     const hideShowRow = (i) => {
         const t = $('input#metCheckbox-'+i);
         console.log('t', i);
@@ -28,44 +64,59 @@ export default function WeekStats({statData, setStatData}){
     }
     const generateHideOptions = () => {
         let elem = [];
-        console.log('len', ttl);
-        for(let i=1; i<=ttl; i++){
+
+        statData.map((stat, i) => {
             elem.push(<div className="dropdown-item">
                 <div className="custom-checkbox">
                     <input className="styled-checkbox" id={"metCheckbox-"+i} type="checkbox" value={i} onChange={(e) => {hideShowRow(e.target.value)}}/>
-                    <label htmlFor={"metCheckbox-"+i}>Metric {i}</label>
+                    <label htmlFor={"metCheckbox-"+i}>{stat['name']}</label>
                 </div>
             </div>);
-        }
+        });
         return elem;
     }
+	
+	const protocol = window.location.protocol;
+	const data_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_combined.php";
+
+	const buildUrl = (url) => {
+		console.table({
+			histS:histStartDate,
+			histE:histEndDate,
+			currS:currStartDate,
+			currE:currEndDate
+		});
+
+		//const queryParams = new URLSearchParams(window.location.search);
+
+		var build_url = url + "?hist_begin_date=" + Math.round(histStartDate.getTime()/1000) + "&hist_end_date=" + Math.round(histEndDate.getTime()/1000) + "&begin_date=" + Math.round(currStartDate.getTime()/1000) +"&end_date=" + Math.round(currEndDate.getTime()/1000) + "&query_count=999" + "&dealership=" + user.dealership_id;
+
+		console.log(build_url);
+
+		return build_url;
+	}
 
     var tempStartDate = new Date(); 
-	if(tempStartDate.getDate() >= 7) tempStartDate.setDate(1);
-	else {
-		tempStartDate.setMonth(tempStartDate.getMonth() - 1);
-		tempStartDate.setDate(1);
-	}
+
+	// set to Monday of this week
+	tempStartDate.setDate(tempStartDate.getDate() - (tempStartDate.getDay() + 6) % 7);
+	// set to previous Monday
+	tempStartDate.setDate(tempStartDate.getDate() - 7);
 	tempStartDate.setHours(0,0,0,0);
 	const [currStartDate, setCurrStartDate] = useState(tempStartDate);
 
-	var tempEndDate = new Date();
-	if(tempEndDate.getDate() < 7) tempEndDate.setDate(0);
-	tempEndDate.setHours(0,0,0,0);
+	var tempEndDate = new Date(tempStartDate.getTime());
+	tempEndDate.setDate(tempEndDate.getDate() + 6);
 	const [currEndDate, setCurrEndDate] = useState(tempEndDate);
 
 	var tempHStartDate = new Date(tempStartDate.getTime());
-	tempHStartDate.setMonth(tempHStartDate.getMonth() - 1);
+	tempHStartDate.setDate(tempStartDate.getDate() - 7);
 	const [histStartDate, setHistStartDate] = useState(tempHStartDate);	
 
-	var tempHEndDate = new Date(currEndDate.getTime());
-	tempHEndDate.setMonth(tempHEndDate.getMonth() - 1);
-	if(tempHEndDate.getMonth() != tempHStartDate.getMonth()) {
-		tempHEndDate = new Date(tempHStartDate.getTime());
-		tempHEndDate.setMonth(tempHEndDate.getMonth() + 1);
-		tempHEndDate.setDate(0);
-	}
+	var tempHEndDate = new Date(tempEndDate.getTime());
+	tempHEndDate.setDate(tempHEndDate.getDate() - 7);
 	const [histEndDate, setHistEndDate] = useState(tempHEndDate);
+
     const [data, setData] = useState({
 		name: 'Leads',
 		curr_qty: 110,
@@ -103,18 +154,105 @@ export default function WeekStats({statData, setStatData}){
 			setCurrEndDate(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
 
 			var tempS = new Date(dates[0].getTime());
-			tempS.setMonth(tempS.getMonth() - 1);
+			tempS.setDate(tempS.getDate() - 7);
 
 			var tempE = new Date(typeof dates[1] !== 'undefined' && dates[1] ? dates[1] : currEndDate);
-			tempE.setMonth(tempE.getMonth() - 1);
+			tempE.setDate(tempE.getDate() - 7);
 
 			setHistStartDate(tempS);
 			setHistEndDate(tempE);
 
 		});
 	};
+
+	const prevCurrStart = useRef(0);
+	const prevCurrEnd = useRef(0);
+	const prevHistStart = useRef(0);
+	const prevHistEnd = useRef(0);
+	const prevDealership = useRef(0);
+
+	const isGoogleLoading = useRef(false);
+	const [googleData, setGoogleData] = useState(null);
+	const[loader, showLoader] = useState(false);
+
+	const usePrevious = (value, initialValue) => {
+		const ref = useRef(initialValue);
+		useEffect(() => {
+		  ref.current = value;
+		});
+		return ref.current;
+	};
+
+	const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
+		const previousDeps = usePrevious(dependencies, []);
+	  
+		const changedDeps = dependencies.reduce((accum, dependency, index) => {
+		  if (dependency !== previousDeps[index]) {
+			const keyName = dependencyNames[index] || index;
+			return {
+			  ...accum,
+			  [keyName]: {
+				before: previousDeps[index],
+				after: dependency
+			  }
+			};
+		  }
+	  
+		  return accum;
+		}, {});
+	  
+		if (Object.keys(changedDeps).length) {
+		  console.log('[use-effect-debugger] ', changedDeps);
+		}
+	  
+		useEffect(effectHook, dependencies);
+	};
+
+	useEffectDebugger(() => {
+
+		console.log("HomeTab.js useEffect");
+
+		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
+
+			isGoogleLoading.current = true;
+			setGoogleData(null);
+            showLoader(true);
+			console.log("getting data");
+
+			prevCurrStart.current = currStartDate.getTime();
+			prevCurrEnd.current = currEndDate.getTime();
+			prevHistStart.current = histStartDate.getTime();
+			prevHistEnd.current = histEndDate.getTime();
+			prevDealership.current = user.dealership_id;
+
+			axios.get(buildUrl(data_url)).then(function (response) {
+				var gas_data = response.data;
+				console.log("got analytics data");
+				console.log(gas_data);
+				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
+
+				isGoogleLoading.current = false;
+				setGoogleData(gas_data);
+                showLoader(false);
+
+				//if(!(gas_data && gas_data.analytics_data.has_history)) alert("No data for historical period");
+
+				setStatData(gas_data);
+
+			});
+		} else 
+			console.log("all dates not set, or dates not changed");
+	}, [currStartDate.getTime(), currEndDate.getTime(), histStartDate.getTime(), histEndDate.getTime(), user.dealership_id]);
+
+    const PDFref = React.createRef();
+
+    const PDFoptions = {
+        orientation: 'portrait'
+    };
+
     return(
         <>
+		<Loading isOpen={loader} />
         <div className="gray-box pl-0 pr-0 pb-0 mso-box">
                 <div className="container-fluid">
                     <div className="gray-box-block custom-form">
@@ -124,7 +262,11 @@ export default function WeekStats({statData, setStatData}){
                                 <div className="sub-heading">Instructional copy here lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
                             </div>
                             <div className="ml-auto">
-                                <button className="green-btn">Generate Report</button>
+                                <ReactToPdfMatt targetRef={PDFref} filename={user.dealership + ".pdf"} options={PDFoptions} x={0} y={0} scale={1} backgroundColor={"#23262b"} currentDealership={user.dealership} currDateString={Moment(currStartDate).format('MMMM D, YYYY,') + " to " + Moment(currEndDate).format('MMMM D, YYYY,')} histDateString={Moment(histStartDate).format('MMMM D, YYYY,') + " to " + Moment(histEndDate).format('MMMM D, YYYY,')}>
+                                    {({toPdf, PDFref}) =>  (
+                                        <button className="green-btn" onClick={toPdf}>Generate Report</button>
+                                    )}
+                                </ReactToPdfMatt>
                             </div>
                         </div>
                         <div className="gray-box-block black-box-border pd-30 mt-50">
@@ -136,7 +278,7 @@ export default function WeekStats({statData, setStatData}){
                                             Select Row
                                         </a>
                                         <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                            {generateHideOptions()}
+                                            {statData && generateHideOptions()}
                                         </div>
                                     </div>
                                 </div>
@@ -173,8 +315,8 @@ export default function WeekStats({statData, setStatData}){
                                     />
                                 </div>
                             </div>
-                            <div className="cs-table-block wdm-table mt-40">
-                                <table className="table table-striped">
+                            <div className="cs-table-block wdm-table mt-40" ref={PDFref}>
+                                <table className="table table-striped pdf-background">
                                     <thead>
                                         <tr>
                                             <th scope="col">Metric</th>
@@ -187,13 +329,13 @@ export default function WeekStats({statData, setStatData}){
                                     <tbody>
                                     {statData && statData.map((s, i) => {
                                         return (
-                                            <tr id={"metRow-"+(i+1)} key={"metRow-"+(i+1)}>
+                                            <tr id={"metRow-"+i} key={"metRow-"+i}>
                                                 <td>{s.name}</td>
-                                                <td className="count-value">{s.curr_qty}</td>
-                                                <td><span className={s.change >= 0 ? 'white-text wdm-progress' : 'red-text wdm-progress'} >{Math.abs(s.change)}% 
+                                                <td className="count-value">{numberFormatter(s.curr_qty,s.is_currency !== undefined)}</td>
+                                                <td><span className={s.change >= 0 ? 'white-text wdm-progress' : 'red-text wdm-progress'} >{numberFormatter(Math.round(s.change * 100))}% 
                                                 <img src={s.change >= 0 ? greenUp : redDown} /></span></td>
                                                 <td className="blank-col"></td>
-                                                <td className="count-value">{s.old_qty}</td>
+                                                <td className="count-value">{numberFormatter(s.old_qty,s.is_currency !== undefined)}</td>
                                             </tr>
                                         )
                                     })}
@@ -304,8 +446,8 @@ export default function WeekStats({statData, setStatData}){
 															onChange={e => {
 																setData(
 																	prevState => {
-																		prevState.curr_qty =
-																			e.target.value;
+																		prevState.curr_qty = e.target.value;
+																		prevState.change = prevState.old_qty > 0 ? (prevState.curr_qty - prevState.old_qty) / prevState.old_qty : 0;
 																		return {
 																			...prevState,
 																		};
@@ -331,8 +473,8 @@ export default function WeekStats({statData, setStatData}){
 															onChange={e => {
 																setData(
 																	prevState => {
-																		prevState.old_qty =
-																			e.target.value;
+																		prevState.old_qty = e.target.value;
+																		prevState.change = prevState.old_qty > 0 ? (prevState.curr_qty - prevState.old_qty) / prevState.old_qty : 0;
 																		return {
 																			...prevState,
 																		};
@@ -417,18 +559,18 @@ export default function WeekStats({statData, setStatData}){
 
                                     </tbody>
                                 </table>
-                                <div className="text-center mt-35">
-                                    <a 
-                                    href="#" 
-                                    className="transparent-btn"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        setAddNew(true);
-                                    }}
-                                    >
-                                        <img src={greenAdd}/> Add Another Row
-                                    </a>
-                                </div>
+                            </div>
+                            <div className="text-center mt-35">
+                                <a 
+                                href="#" 
+                                className="transparent-btn"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    setAddNew(true);
+                                }}
+                                >
+                                    <img src={greenAdd}/> Add Another Row
+                                </a>
                             </div>
                         </div>
                     </div>
