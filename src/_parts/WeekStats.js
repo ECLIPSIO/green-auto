@@ -66,7 +66,7 @@ export default function WeekStats({statData, setStatData}){
         let elem = [];
 
         statData.map((stat, i) => {
-            elem.push(<div className="dropdown-item">
+            elem.push(<div className="dropdown-item" key={i}>
                 <div className="custom-checkbox">
                     <input className="styled-checkbox" id={"metCheckbox-"+i} type="checkbox" value={i} onChange={(e) => {hideShowRow(e.target.value)}}/>
                     <label htmlFor={"metCheckbox-"+i}>{stat['name']}</label>
@@ -75,6 +75,8 @@ export default function WeekStats({statData, setStatData}){
         });
         return elem;
     }
+
+	const [additionalMetrics, setAdditionalMetrics] = useState([]);
 	
 	const protocol = window.location.protocol;
 	const data_url = (protocol == "http:" ? "http://ec2-50-112-66-106.us-west-2.compute.amazonaws.com" : "https://doubleclutch.com") + "/bridge/gas/google_combined.php";
@@ -117,12 +119,12 @@ export default function WeekStats({statData, setStatData}){
 	tempHEndDate.setDate(tempHEndDate.getDate() - 7);
 	const [histEndDate, setHistEndDate] = useState(tempHEndDate);
 
-    const [data, setData] = useState({
-		name: 'Leads',
-		curr_qty: 110,
-		change: 10,
-		old_qty: 110,
-	});
+    const [currentNewData, setCurrentNewData] = useState([]);
+
+	const [newDataDefault, setNewDataDefault] = useState([]);
+
+	const [customMetric, setCustomMetric] = useState("");
+
 	const histDate = {
 		start : histStartDate,
 		end   : histEndDate,
@@ -172,7 +174,6 @@ export default function WeekStats({statData, setStatData}){
 	const prevDealership = useRef(0);
 
 	const isGoogleLoading = useRef(false);
-	const [googleData, setGoogleData] = useState(null);
 	const[loader, showLoader] = useState(false);
 
 	const usePrevious = (value, initialValue) => {
@@ -215,7 +216,8 @@ export default function WeekStats({statData, setStatData}){
 		if(user && (user.dealership_id != prevDealership.current || (currStartDate && currEndDate && histStartDate && histEndDate && !(prevCurrStart.current == currStartDate.getTime() && prevCurrEnd.current == currEndDate.getTime() && prevHistStart.current == histStartDate.getTime() && prevHistEnd.current == histEndDate.getTime()) && currStartDate.getTime() <= currEndDate.getTime() && histStartDate.getTime() <= histEndDate.getTime()))) {
 
 			isGoogleLoading.current = true;
-			setGoogleData(null);
+			//setGoogleData(null);
+			setStatData(null);
             showLoader(true);
 			console.log("getting data");
 
@@ -226,23 +228,62 @@ export default function WeekStats({statData, setStatData}){
 			prevDealership.current = user.dealership_id;
 
 			axios.get(buildUrl(data_url)).then(function (response) {
-				var gas_data = response.data;
+				var gas_data = response.data['stats_data'];
 				console.log("got analytics data");
 				console.log(gas_data);
 				if(typeof gas_data !== 'object' || gas_data === null) gas_data = null;
 
 				isGoogleLoading.current = false;
-				setGoogleData(gas_data);
+				//setGoogleData(gas_data);
                 showLoader(false);
 
 				//if(!(gas_data && gas_data.analytics_data.has_history)) alert("No data for historical period");
 
 				setStatData(gas_data);
 
+				var tempMetrics = [];
+
+				response.data['custom_stats'].map((stat, i) => {
+					tempMetrics.push(stat);
+				});
+
+				setAdditionalMetrics(tempMetrics);
+
+				var tempNewData = {
+					name: tempMetrics[0],
+					curr_qty: 100,
+					change: 0,
+					old_qty: 100,
+				};
+
+				setNewDataDefault(tempNewData);
+
+				setCurrentNewData(tempNewData);
+
 			});
 		} else 
 			console.log("all dates not set, or dates not changed");
 	}, [currStartDate.getTime(), currEndDate.getTime(), histStartDate.getTime(), histEndDate.getTime(), user.dealership_id]);
+
+	const saveCustomMetric = (metric) => {
+		var formData = new FormData();
+
+		formData.append('custom_metric',metric);
+
+		axios.post(data_url + "?save_custom_metric", formData).then(function (response) {
+			console.log("save custom metric");
+			console.log(response.data);
+
+			var tempMetrics = additionalMetrics;
+			tempMetrics.push(metric);
+
+			tempMetrics = [...new Set(tempMetrics)];
+
+			setAdditionalMetrics(tempMetrics);
+		}).catch(e => {
+			console.log(e);
+		});
+	}
 
     const PDFref = React.createRef();
 
@@ -259,7 +300,7 @@ export default function WeekStats({statData, setStatData}){
                         <div className="d-flex align-items-center m-title-flex">
                             <div>
                                 <div className="main-heading">WEEKLY DIGITAL MARKETING STATS</div>
-                                <div className="sub-heading">Instructional copy here lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                                <div className="sub-heading"></div>
                             </div>
                             <div className="ml-auto">
                                 <ReactToPdfMatt targetRef={PDFref} filename={user.dealership + ".pdf"} options={PDFoptions} x={0} y={0} scale={1} backgroundColor={"#23262b"} currentDealership={user.dealership} currDateString={Moment(currStartDate).format('MMMM D, YYYY,') + " to " + Moment(currEndDate).format('MMMM D, YYYY,')} histDateString={Moment(histStartDate).format('MMMM D, YYYY,') + " to " + Moment(histEndDate).format('MMMM D, YYYY,')}>
@@ -283,7 +324,7 @@ export default function WeekStats({statData, setStatData}){
                                     </div>
                                 </div>
                                 <div className="col-md-5">
-                                    <div className="custom-label text-uppercase">Current Period</div>
+                                    <div className="custom-label text-uppercase">Previous Period</div>
                                     <RangeDatePicker
                                         startDate={histStartDate}
                                         endDate={histEndDate}
@@ -299,7 +340,7 @@ export default function WeekStats({statData, setStatData}){
                                     />
                                 </div>
                                 <div className="col-md-5">
-                                    <div className="custom-label text-uppercase">Previous Period</div>
+                                    <div className="custom-label text-uppercase">Current Period</div>
                                     <RangeDatePicker
                                         startDate={currStartDate}
                                         endDate={currEndDate}
@@ -320,118 +361,69 @@ export default function WeekStats({statData, setStatData}){
                                     <thead>
                                         <tr>
                                             <th scope="col">Metric</th>
-                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Current</th>
                                             <th scope="col" className="text-start">Change</th>
                                             <th scope="col" className="blank-col"></th>
-                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Previous</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    {statData && statData.map((s, i) => {
-                                        return (
-                                            <tr id={"metRow-"+i} key={"metRow-"+i}>
-                                                <td>{s.name}</td>
-                                                <td className="count-value">{numberFormatter(s.curr_qty,s.is_currency !== undefined)}</td>
-                                                <td><span className={s.change >= 0 ? 'white-text wdm-progress' : 'red-text wdm-progress'} >{numberFormatter(Math.round(s.change * 100))}% 
-                                                <img src={s.change >= 0 ? greenUp : redDown} /></span></td>
-                                                <td className="blank-col"></td>
-                                                <td className="count-value">{numberFormatter(s.old_qty,s.is_currency !== undefined)}</td>
-                                            </tr>
-                                        )
-                                    })}
+										{statData && statData.map((s, i) => {
+											return (
+												<tr id={"metRow-"+i} key={"metRow-"+i}>
+													<td>{s.name}</td>
+													<td className="count-value">{numberFormatter(s.curr_qty,s.is_currency !== undefined)}</td>
+													<td><span className={s.change >= 0 ? 'white-text wdm-progress' : 'red-text wdm-progress'} >{numberFormatter(Math.round(s.change * 100))}% 
+													<img src={s.change >= 0 ? greenUp : redDown} /></span></td>
+													<td className="blank-col"></td>
+													<td className="count-value">{numberFormatter(s.old_qty,s.is_currency !== undefined)}</td>
+												</tr>
+											)
+										})}
                                         
                                         {addNew && (
 											<tr className='f-total'>
 												<td>
-													<div className='dropdown show custom-white-dropdown'>
-														<a
-															className='btn btn-secondary dropdown-toggle'
-															href='#'
-															role='button'
-															id='dropdownMenuLink'
-															data-toggle='dropdown'
-															aria-haspopup='true'
-															aria-expanded='false'
-														>
-															{data.name}
-														</a>
-														<div
-															className='dropdown-menu'
-															aria-labelledby='dropdownMenuLink'
-														>
-															<a
-																className='dropdown-item'
-																href='#'
-																onClick={e => {
-																	e.preventDefault();
-																	setData(
-																		prevState => {
-																			prevState.name =
-																				'Leads';
-																			return {
-																				...prevState,
-																			};
-																		}
-																	);
-																}}
-															>
-																Leads
+													<div className="metric-input-parent">
+														<div className='dropdown show custom-white-dropdown'>
+															<a className='btn btn-secondary dropdown-toggle' href='#' role='button' id='dropdownMenuLink' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+																Select Metric
 															</a>
-															<a
-																className='dropdown-item'
-																href='#'
-																onClick={e => {
-																	e.preventDefault();
-																	setData(
-																		prevState => {
-																			prevState.name =
-																				'Action';
-																			return {
-																				...prevState,
-																			};
-																		}
-																	);
-																}}
-															>
-																Action
-															</a>
-															<a
-																className='dropdown-item'
-																href='#'
-																onClick={e => {
-																	e.preventDefault();
-																	setData(
-																		prevState => {
-																			prevState.name =
-																				'Another action';
-																			return {
-																				...prevState,
-																			};
-																		}
-																	);
-																}}
-															>
-																Another action
-															</a>
-															<a
-																className='dropdown-item'
-																href='#'
-																onClick={e => {
-																	e.preventDefault();
-																	setData(
-																		prevState => {
-																			prevState.name =
-																				'Something else here';
-																			return {
-																				...prevState,
-																			};
-																		}
-																	);
-																}}
-															>
-																Something else
-																here
-															</a>
+															<div className='dropdown-menu' aria-labelledby='dropdownMenuLink' >
+																{additionalMetrics && additionalMetrics.map((metric,i) => {
+																	return (
+																		<a className='dropdown-item' href='#' key={i}
+																			onClick={e => {
+																				e.preventDefault();
+																				setCustomMetric(metric);
+																				setCurrentNewData(
+																					prevState => {
+																						prevState.name = metric;
+																						return {
+																							...prevState,
+																						};
+																					}
+																				);
+																			}}
+																		>
+																			{metric}
+																		</a>
+																	)
+																})}
+															</div>
+														</div>
+														<div className="metric-input">
+															<input className="form-control w-80 text-center" type="text" value={customMetric} onChange={(e) => {
+																setCustomMetric(e.target.value);
+																setCurrentNewData(
+																	prevState => {
+																		prevState.name = e.target.value;
+																		return {
+																			...prevState,
+																		};
+																	}
+																);
+															}} />
 														</div>
 													</div>
 												</td>
@@ -441,10 +433,10 @@ export default function WeekStats({statData, setStatData}){
 															type='text'
 															className='form-control w-80 text-center'
 															value={
-																data.curr_qty
+																currentNewData.curr_qty
 															}
 															onChange={e => {
-																setData(
+																setCurrentNewData(
 																	prevState => {
 																		prevState.curr_qty = e.target.value;
 																		prevState.change = prevState.old_qty > 0 ? (prevState.curr_qty - prevState.old_qty) / prevState.old_qty : 0;
@@ -459,7 +451,7 @@ export default function WeekStats({statData, setStatData}){
 												</td>
 												<td>
 													<span className='white-text wdm-progress'>
-														10%{' '}
+														Change{' '}
 														<img src={greenUp} />
 													</span>
 												</td>
@@ -469,9 +461,9 @@ export default function WeekStats({statData, setStatData}){
 														<input
 															type='text'
 															className='form-control w-80 text-center'
-															value={data.old_qty}
+															value={currentNewData.old_qty}
 															onChange={e => {
-																setData(
+																setCurrentNewData(
 																	prevState => {
 																		prevState.old_qty = e.target.value;
 																		prevState.change = prevState.old_qty > 0 ? (prevState.curr_qty - prevState.old_qty) / prevState.old_qty : 0;
@@ -492,19 +484,13 @@ export default function WeekStats({statData, setStatData}){
 																	prevState => [
 																		...prevState,
 																		{
-																			...data,
+																			...currentNewData,
 																		},
 																	]
 																);
-																setData({
-																	name: 'Leads',
-																	curr_qty: 110,
-																	change: 10,
-																	old_qty: 110,
-																});
-																setAddNew(
-																	false
-																);
+																setCurrentNewData(newDataDefault);
+																setAddNew(false);
+																saveCustomMetric(customMetric);
 															}}
 														>
 															Save
@@ -567,6 +553,7 @@ export default function WeekStats({statData, setStatData}){
                                 onClick={e => {
                                     e.preventDefault();
                                     setAddNew(true);
+									setCustomMetric(newDataDefault.name);
                                 }}
                                 >
                                     <img src={greenAdd}/> Add Another Row
