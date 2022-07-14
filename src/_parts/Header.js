@@ -80,11 +80,11 @@ export default function Header(props){
 											Specials
 										</NavLink>
 									</li>
-									<li>
+									{user && user.role == 'admin' && (<li>
 										<NavLink exact='true' to='/reporting/weekly-digital-marking-stats'>
 											Weekly Stats
 										</NavLink>
-									</li>
+									</li>)}
 									{user && user.role == 'admin' && (
 										<li>
 											<a
