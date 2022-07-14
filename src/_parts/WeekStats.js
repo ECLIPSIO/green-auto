@@ -553,7 +553,7 @@ export default function WeekStats({statData, setStatData}){
                                 onClick={e => {
                                     e.preventDefault();
                                     setAddNew(true);
-									setCustomMetric(newDataDefault.name);
+									setCustomMetric("");
                                 }}
                                 >
                                     <img src={greenAdd}/> Add Another Row
