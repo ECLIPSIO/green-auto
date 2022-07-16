@@ -264,6 +264,11 @@
   letter-spacing: -0.07px;
   line-height: 16px;
 }
+/* Matt added */
+.vin-search {
+    height: calc(2.25rem + 2px);
+}
+/* End Matt added */
 .tag-box {
     border-radius: 16px;
     background-color: #5D6166;

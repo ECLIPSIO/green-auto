@@ -35,15 +35,18 @@ const Index = ({}) => {
 	const [allMakes, setAllMakes] = useState(null);
 	const [allPriceRanges, setAllPriceRanges] = useState(null);
 	const [allDOLRanges, setAllDOLRanges] = useState(null);
+	const [vinStockSearch, setVinStockSearch] = useState(null);
 
 	const [filterValues, setFilterValues] = useState([]);
 
 	const [fallbackConfig, setFallbackConfig] = useState(null);
+	const [fallbackOptions, setFallbackOptions] = useState(null);
+	const [inventoryPages, setInventoryPages] = useState(null);
 
 	const [settingsSaving, setSettingsSaving] = useState(false);
 
-	// For Owned Drop Down
-	const [ownedConfig, setOwnedConfig] = useState(null);
+	// For Inventory Page Drop Down
+	const [inventoryPage, setInventoryPage] = useState(null);
 	
 
 	const protocol = window.location.protocol;
@@ -115,10 +118,10 @@ const Index = ({}) => {
 	var dol_step = 30;	
 
 	const getInventory = () => {
-		axios.get(inventory_url + "&action=get_inventory").then(function (response) {
+		axios.get(inventory_url + "&action=get_inventory" + (prevDealership.current == user.dealership_id && inventoryPage ? "&selected_page=" + inventoryPage : "")).then(function (response) {
 			var inventory_data = response.data.vehicles;
 			console.log("got inventory data");
-			console.log(inventory_data);
+			console.log(response.data);
 			
 			if(!(inventory_data && inventory_data.length)) alert("No inventory available");
 
@@ -203,14 +206,23 @@ const Index = ({}) => {
 			setBottomVehicles(temp_bottom_vehicles);
 
 			setFallbackConfig(response.data.fallback);
+
+			setFallbackOptions(response.data.backup_options);
+
+			setInventoryPages(response.data.pages);
+			setInventoryPage(response.data.selected_page);
 		}).catch(e => {
 			console.log(e);
 		});
+
+		prevDealership.current = user.dealership_id;
 	}
+
+	const prevDealership = useRef(user.dealership_id);
 
 	useEffectDebugger(() => {
 		getInventory();
-	}, [user.dealership_id]);
+	}, [user.dealership_id, inventoryPage]);
 
 	// Two Open Modals
 	const openModal = () => {
@@ -228,6 +240,32 @@ const Index = ({}) => {
 	$(document).on('hidden.bs.modal','#addBottomVehiclesModal', function (e) {
 		setSelectedBottomVehicles([]);
 	});
+
+	const handleSearchChange = e => {
+		var search_value = e.target.value;
+		
+
+		var temp_top_vehicles = [];
+		var temp_bottom_vehicles = [];
+
+		allTopVehicles.map(function(vehicle) { 
+
+			vehicle['filtered'] = !vehicle.vin.includes(search_value) && !vehicle.stockno.includes(search_value);
+
+			temp_top_vehicles.push(vehicle);
+		});
+
+		allBottomVehicles.map(function(vehicle) { 
+
+			vehicle['filtered'] = !vehicle.vin.includes(search_value) && !vehicle.stockno.includes(search_value);
+
+			temp_bottom_vehicles.push(vehicle);
+		});
+		
+		setVinStockSearch(search_value);
+		setAllTopVehicles(temp_top_vehicles);
+		setAllBottomVehicles(temp_bottom_vehicles);
+	}
 
 	const handleFilterChange = e  => {
 		var filter_name = e.target.name;
@@ -332,19 +370,34 @@ const Index = ({}) => {
 	}
 
 	const saveSettings = () => {
+
+		if(!inventoryPage) {
+			alert("Please select a page");
+			return;
+		}
+
+		if(!fallbackConfig && (!topVehicles || topVehicles.length == 0) && (!bottomVehicles || bottomVehicles.length == 0)) {
+			alert("Please select either a fallback configuration or specific vehicles before saving");
+			return;
+		}
+
 		setSettingsSaving(true);
 
 		var inventory_settings = new FormData();
 
 		topVehicles.map(function(vehicle,i) {
-			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 0}))
+			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 0}));
 		});
 
 		bottomVehicles.map(function(vehicle,i) {
-			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 1}))
+			inventory_settings.append('vehicle[]',JSON.stringify({'vin' : vehicle.vin, 'slider_order' : 1}));
 		});
 
+		if(topVehicles && topVehicles.length == 0 && bottomVehicles && bottomVehicles.length == 0) inventory_settings.append('clear_inventory','true');
+
 		inventory_settings.append('fallback_query',fallbackConfig);
+
+		inventory_settings.append('selected_page',inventoryPage);
 
 		axios.post(inventory_url + "&action=save_inventory", inventory_settings).then(function (response) {
 			console.log("set inventory data");
@@ -377,8 +430,10 @@ const Index = ({}) => {
 				fallbackConfig={fallbackConfig}
 				setFallbackConfig={setFallbackConfig}
 				settingsSaving={settingsSaving}
-				ownedConfig={ownedConfig}
-				setOwnedConfig={setOwnedConfig}
+				inventoryPage={inventoryPage}
+				setInventoryPage={setInventoryPage}
+				fallbackOptions={fallbackOptions}
+				inventoryPages={inventoryPages}
 			/>
 			<div
 				className='modal fade custom-modal'
@@ -411,7 +466,7 @@ const Index = ({}) => {
 						</div>
 						<div className='modal-body'>
 							<div className='row align-items-end'>
-								<div className='col-md-5'>
+								<div className='col-md-6'>
 									<div className='row d-flex'>
 										<div className='col'>
 											<label className='custom-label'>
@@ -426,7 +481,7 @@ const Index = ({}) => {
 										</div>
 										<div className='col'>
 											<label className='custom-label'>
-												Days in lot
+												Days on lot
 											</label>
 											<select className='form-control' name="topDOL" onChange={handleFilterChange}>
 												<option value="all">All</option>
@@ -446,9 +501,15 @@ const Index = ({}) => {
 												})}
 											</select>
 										</div>
+										<div className='col'>
+											<label className='custom-label'>
+												VIN/Stock
+											</label>
+											<input className="form-control vin-search" type="text" value={vinStockSearch} onChange={handleSearchChange} />
+										</div>
 									</div>
 								</div>
-								<div className='col-md-7 text-right pb-5'>
+								<div className='col-md-6 text-right pb-5'>
 									{filterValues && filterValues.map((this_filter, i) => { 
 										return (this_filter['section'] == "top" ? 
 											<span key={i} className='tag-box ml-10'>{this_filter['filter_text']}<a onClick={(e) => {e.preventDefault(); removeFilter(this_filter['filter']); $('select[name="' + this_filter['filter'] + '"').val("all");}} className='cross' >x</a></span> 
@@ -557,7 +618,7 @@ const Index = ({}) => {
 						</div>
 						<div className='modal-body'>
 							<div className='row align-items-end'>
-								<div className='col-md-5'>
+								<div className='col-md-6'>
 									<div className='row d-flex date-filter-block'>
 										<div className='col'>
 											<label className='custom-label'>
@@ -595,9 +656,15 @@ const Index = ({}) => {
 												})}
 											</select>
 										</div>
+										<div className='col'>
+											<label className='custom-label'>
+												VIN/Stock
+											</label>
+											<input className="form-control vin-search" type="text" value={vinStockSearch} onChange={handleSearchChange} />
+										</div>
 									</div>
 								</div>
-								<div className='col-md-7 text-right pb-5'>
+								<div className='col-md-6 text-right pb-5'>
 									{filterValues && filterValues.map((this_filter, i) => { 
 										return (this_filter['section'] == "bottom" ? 
 											<span key={i} className='tag-box ml-10'>{this_filter['filter_text']}<a onClick={(e) => {e.preventDefault(); removeFilter(this_filter['filter']);}} className='cross' >x</a></span> 
