@@ -861,8 +861,8 @@ export default function Main(){
 												</span>
 											</div>
 											<ReactTooltip id='spec-8' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
-											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
 										</div>
 
 										<div className="col">
@@ -888,8 +888,8 @@ export default function Main(){
 												</span>
 											</div>
 											<ReactTooltip id='spec-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
-											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+											{analyticsData && analyticsData.channels && analyticsData.channels.all['ga:pageviewsPerSession'] !== undefined ? getAnalyticsSection(Math.round(analyticsData.channels.all['ga:pageviewsPerSession']*10)/10) : ''}
+											{analyticsData && analyticsData.channels_diff && analyticsData.channels_diff.all['ga:pageviewsPerSession'] ? getAnalyticsIndicator(analyticsData.channels_diff.all['ga:pageviewsPerSession']) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
@@ -910,8 +910,8 @@ export default function Main(){
 												</span>
 											</div>
 											<ReactTooltip id='spec-12' place='top' type='light' effect='solid' html={true}></ReactTooltip>
-											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
-											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+											{analyticsData && analyticsData.total_form_fills !== undefined ? getAnalyticsSection(analyticsData.total_form_fills) : ''}
+											{analyticsData && analyticsData.form_fills_diff ? getAnalyticsIndicator(analyticsData.form_fills_diff) : ''}
 										</div>
 										<div className="col">
 											<div className="custom-label text-uppercase text-center">
