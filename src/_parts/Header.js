@@ -75,29 +75,24 @@ export default function Header(props){
 											Dashboard
 										</NavLink>
 									</li>
+									{user && user.role == 'admin' && (
 									<li>
 										<NavLink exact='true' to='/reporting/specials'>
 											Specials
 										</NavLink>
-									</li>
+									</li>)}
+									{user && user.role == 'admin' && (
 									<li>
 										<NavLink exact='true' to='/reporting/weekly-digital-marking-stats'>
 											Weekly Stats
 										</NavLink>
-									</li>
+									</li>)}
 									{user && user.role == 'admin' && (
-										<li>
-											<a
-												href={
-													'https://doubleclutch.com/appraise/gas-phone-leads.php?dealership=' +
-													user.dealership_id
-												}
-												target='_blank'
-											>
-												Twilio Calls
-											</a>
-										</li>
-									)}
+									<li>
+										<a href={'https://doubleclutch.com/appraise/gas-phone-leads.php?dealership=' + user.dealership_id} target='_blank' >
+											Twilio Calls
+										</a>
+									</li>)}
 									{!user && (
 										<li>
 											<a

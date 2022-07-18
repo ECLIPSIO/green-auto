@@ -426,6 +426,29 @@ body {
 .graph-block img {
 	width: 100%;
 }
+/* Matt added */
+.pdf-background {
+	background: #23262b;
+}
+table.pdf-background tr th,
+table.pdf-background tr td {
+	font-size:20px !important;
+}
+.custom-white-dropdown {
+	width:60%;
+	display: inline-block;
+}
+.metric-input {
+	display: inline-block;
+}
+.metric-input input {
+	width:100% !important;
+}
+.metric-input-parent {
+	position:relative;
+    white-space: nowrap;
+}
+/* end Matt added */
 .cs-table-block table tr th,
 .cs-table-block table tr td {
 	border: none;

@@ -17,8 +17,10 @@ const MainSection = ({
 	fallbackConfig,
 	setFallbackConfig,
 	settingsSaving,
-	ownedConfig,
-	setOwnedConfig
+	inventoryPage,
+	setInventoryPage,
+	fallbackOptions,
+	inventoryPages
 }) => {
 	return (
 		<section className='main-block'>
@@ -34,8 +36,10 @@ const MainSection = ({
 							allTopVehicles={allTopVehicles}
 							fallbackConfig={fallbackConfig}
 							setFallbackConfig={setFallbackConfig}
-							ownedConfig={ownedConfig}
-							setOwnedConfig={setOwnedConfig}
+							inventoryPage={inventoryPage}
+							setInventoryPage={setInventoryPage}
+							fallbackOptions={fallbackOptions}
+							inventoryPages={inventoryPages}
 						/>
 						<SliderBottom
 							bottomVehicles={bottomVehicles}

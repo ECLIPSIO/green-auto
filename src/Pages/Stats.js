@@ -1,8 +1,7 @@
 import WeekStats from "../_parts/WeekStats";
-import statDataJson from '../data/week-stats.json';
 import { useState } from 'react';
 export default function Stats(){
-    let [statData, setStatData] = useState(statDataJson);
+    let [statData, setStatData] = useState(null);
     return(
         <>
         <section className='main-block'>
