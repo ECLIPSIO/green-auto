@@ -22,6 +22,7 @@ import MoreTable from './MoreTable';
 import Gmb from '../components/Gmb';
 import Review from '../components/Review';
 import ReviewForm from '../components/ReviewForm';
+import SpecialData from '../data/special.json';
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -410,6 +411,9 @@ export default function Main(){
 					</li>
 					<li className="nav-item">
 				    	<a className="nav-link" id="cs_5_tab" data-toggle="tab" href="#cs_5" role="tab" aria-controls="cs_5" aria-selected="false">GROW REVIEWS</a>
+					</li>
+					<li className="nav-item">
+				    	<a className="nav-link" id="cs_6_tab" data-toggle="tab" href="#cs_6" role="tab" aria-controls="cs_6" aria-selected="false">SPECIALS PAGE</a>
 					</li>
 				</ul>
 				<div className="tab-content" id="myTabContent">
@@ -815,6 +819,131 @@ export default function Main(){
 					{/* GROW REVIEWS */}
 					<div className="tab-pane fade" id="cs_5" role="tabpanel" aria-labelledby="cs_5_tab">
 						<ReviewForm />
+					</div>
+
+					{/* Special Page */}
+					<div className="tab-pane fade" id="cs_6" role="tabpanel" aria-labelledby="cs_6_tab">
+						{/* <SpecialPage specialData={businessData}/> */}
+						<div className="gray-box px-0">
+							<div className="container-fluid">
+								{/* Data Slide Block */}
+								<div className="l-gray-box mt-40">
+									<div className="d-flex">
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Total Visits
+												<span className="info-msg" data-tip="<h6>TOTAL VISITS</h6>" data-for="spec-6">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-6' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Visits from ads
+												<span className="info-msg" data-tip="<h6>VISITS FROM ADS</h6>" data-for="spec-7">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-7' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												VDP clicks
+												<span className="info-msg" data-tip="<h6>VDP CLICKS</h6>" data-for="spec-8">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-8' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Calls / Texts
+												<span className="info-msg" data-tip="<h6>CALLS / TEXTS</h6>" data-for="spec-9">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-9' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+									</div>
+								</div>
+								<div className="l-gray-box mt-1">
+									<div className='d-flex'>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Leads on page
+												<span className="info-msg" data-tip="<h6>LEADS ON PAGE</h6>" data-for="spec-10">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-10' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Time on site
+												<span className="info-msg" data-tip="<h6>TIME ON SITE</h6>" data-for="spec-11">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-11' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Bounce rate
+												<span className="info-msg" data-tip="<h6>BOUNCE RATE</h6>" data-for="spec-12">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-12' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+										<div className="col">
+											<div className="custom-label text-uppercase text-center">
+												Pages per visit
+												<span className="info-msg" data-tip="<h6>PAGES PER VISIT</h6>" data-for="spec-13">												
+													<img className="ico_info" src={infoIcon} alt="info" />
+												</span>
+											</div>
+											<ReactTooltip id='spec-13' place='top' type='light' effect='solid' html={true}></ReactTooltip>
+											{searchData && searchData.search_data && searchData.search_data[0] && searchData.search_data[0].position !== undefined ? getAnalyticsSection(searchData.search_data[0].position) : ''}
+											{searchData && searchData.search_position_diff ? getAnalyticsIndicator(searchData.search_position_diff) : ''}
+										</div>
+									</div>
+								</div>
+
+								<div className="transparent-box mt-40">
+									<div className="d-flex align-items-center m-title-flex mb-30">
+										<div className="m-title text-uppercase mb-0">
+											TOP VDP CLICK THROUGHS
+											<span className="info-msg">
+												<img className="ico_info" src={infoIcon} alt="info" data-tip='<h6>TOP VDP CLICK THROUGHS</h6>' data-for='spl-page-table'/>
+												<ReactTooltip id='spl-page-table' type='light' place='top' effect='solid' html={true}></ReactTooltip>
+											</span>
+										</div>
+										
+									</div>
+									<div className="cs-table-block">
+										<MoreTable tableData={SpecialData} tableType="special"/>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
