@@ -387,6 +387,14 @@ body {
 .mt-40 {
 	margin-top: 40px !important;
 }
+.mt-1 {
+	margin-top: 1px !important;
+}
+
+.mt-2 {
+	margin-top: 2px !important;
+}
+
 .date-filter-block .col-md-4 {
 	padding-left: 70px;
 	padding-right: 70px;
@@ -490,8 +498,8 @@ table.pdf-background tr td {
 	text-align: center;
 	text-transform: uppercase;
 	border: none;
-	padding: 16px 45px;
-	min-width: 185px;
+	padding: 16px 36px;
+	min-width: 140px;
 }
 .custom-tabs .nav-tabs .nav-link.active {
 	border-radius: 5px 5px 0 0;

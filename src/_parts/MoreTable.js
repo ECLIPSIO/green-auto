@@ -4,6 +4,7 @@ import RenderReferral from "./RenderReferral";
 import RenderIntercept from "./RenderIntercept";
 import RenderTraffic from "./RenderTraffic";
 import RenderAdGroup from "./RenderAdGroup";
+import RenderSpecial from "./RenderSpecial";
 
 const dataAtonce = 10;
 let moreTableDataStack = {
@@ -19,7 +20,8 @@ const components = {
     referral: RenderReferral,
     intercept: RenderIntercept,
     traffic: RenderTraffic,
-    ad_group: RenderAdGroup
+    ad_group: RenderAdGroup,
+    special: RenderSpecial
 };
 
 export default function MoreTable(props) {
